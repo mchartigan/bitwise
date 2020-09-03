@@ -1,2 +1,2 @@
-# bitwise
-A retro-themed social media website for gamers!
+# Bitwise
+A retro-themed social media platform!
