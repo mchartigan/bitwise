@@ -399,7 +399,7 @@ Below are diagrams that show major events in this application, including events 
 
 ### 1. Login Sequence of Events
 
-![](clip_image009.png)
+![](docs/clip_image009.png)
 
 ### 2. Viewing User Timeline Sequence of Events
 
