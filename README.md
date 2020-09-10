@@ -1,4 +1,4 @@
-<div style="text-align:center">
+
 ![](docs/bitwise.png)
 
 CS 30700: Design Document
@@ -12,7 +12,6 @@ Kyle Vandewalle
 Zach George
 
 Zach McClary
-</div>
 
 Index
 =====
@@ -65,110 +64,94 @@ Many social media platforms occupy our attention today. However, as the internet
 Functional Requirements
 -----------------------
 
-1. Account and Profile
+1. Account and Profile: As a user, I would like to...
 
-As a user, I would like to...
+    a. Register an account using a Google email and password
 
-a. Register an account using a Google email and password
+    b. Setup a secure account password
 
-b. Setup a secure account password
+    c. Edit my public profile and private personal information
 
-c. Edit my public profile and private personal information
+    d. Delete my user account and any associated data
 
-d. Delete my user account and any associated data
+    e. Be able to log in and out
 
-e. Be able to log in and out
+2. Posting and Viewing Posts: As a user, I would like to...
 
-2. Posting and Viewing Posts
+    a. Make posts tagged with topics
 
-As a user, I would like to...
+    b. Be able to create new topics
 
-a. Make posts tagged with topics
+    c. See all posts associated with a given topic
 
-b. Be able to create new topics
+    d. Be able to post anonymously
 
-c. See all posts associated with a given topic
+    e. Be able to view the users and topics I follow
 
-d. Be able to post anonymously
+    f. Be able to view my liked, disliked, and saved posts
 
-e. Be able to view the users and topics I follow
+3. Following and Post Interaction: As a user, I would like to...
 
-f. Be able to view my liked, disliked, and saved posts
+    a. Search for a user or topic
 
-3. Following and Post Interaction
+    b. Search for a specific post (if time allows)
 
-As a user, I would like to...
+    c. Follow or unfollow users or topics
 
-a. Search for a user or topic
+    d. Have posts from users from followed topics and users appear in my timeline
 
-b. Search for a specific post (if time allows)
+    e. Have my timeline and post history to appear reverse chronologically
 
-c. Follow or unfollow users or topics
+    f. Save posts from other users
 
-d. Have posts from users from followed topics and users appear in my timeline
+    g. Upvote or downvote posts from other users
 
-e. Have my timeline and post history to appear reverse chronologically
+    h. Comment on a specific post
 
-f. Save posts from other users
+    i. View another person's profile
 
-g. Upvote or downvote posts from other users
+    j. View a timeline of another user's content on their profile
 
-h. Comment on a specific post
+4. User Experience: As a user, I would like to...
 
-i. View another person's profile
+    a. Be able to view the website on mobile or desktop
 
-j. View a timeline of another user's content on their profile
+    b. Be able to switch site color schemes
 
-4. User Experience
+    c. Be able to change settings on the website to accommodate for disabilities
 
-As a user, I would like to...
-
-a. Be able to view the website on mobile or desktop
-
-b. Be able to switch site color schemes
-
-c. Be able to change settings on the website to accommodate for disabilities
-
-d. Infinitely scroll through timelines
+    d. Infinitely scroll through timelines
 
 Non-functional Requirements
 ---------------------------
 
-5. Performance
+5. Performance: As a developer, I would like...
 
-As a developer, I would like...
+    a. The website to run smoothly
 
-a. The website to run smoothly
+    b. The website to support at least 1000 concurrent users
 
-b. The website to support at least 1000 concurrent users
+6. Server: As a developer, I would like...
 
-6. Server
+    a. The server to be able to handle real time communication between itself and the client for all requests made by the user
 
-            As a developer, I would like...
+    b. The server to be able to handle and store user data instantly.
 
-a. The server to be able to handle real time communication between itself and the client for all requests made by the user
+7. User Interface: As a developer, I would like...
 
-b. The server to be able to handle and store user data instantly.
+    a. The website to be easy to use, navigate, and understand
 
-7. User Interface
+    b. The website to be compatible with most browsers (Chrome, Firefox, etc.)
 
-            As a developer, I would like...
+    c. The website to be user friendly
 
-a. The website to be easy to use, navigate, and understand
+    d. The website to be aesthetically pleasing
 
-b. The website to be compatible with most browsers (Chrome, Firefox, etc.)
+8. Security: As a developer, I would like...
 
-c. The website to be user friendly
+    a. Passwords to be encrypted so that they are not visible by developers or unauthorized users
 
-d. The website to be aesthetically pleasing
-
-8. Security
-
-As a developer, I would like...
-
-a. Passwords to be encrypted so that they are not visible by developers or unauthorized users
-
-b. To limit one account per individual
+    b. To limit one account per individual
 
 Design Outline
 ==============
@@ -183,25 +166,25 @@ This project will be a website that allows users to interact with and post image
 
 1. Clients
 
-a. Displays the user interface within the web browser of the users choice.
+    a. Displays the user interface within the web browser of the users choice.
 
-b. Takes user input and generates requests that are sent to the server.
+    b. Takes user input and generates requests that are sent to the server.
 
-c. Receives responses from the server and changes the user interface accordingly.
+    c. Receives responses from the server and changes the user interface accordingly.
 
 2. Server
 
-a. Accepts and handles requests from clients.
+    a. Accepts and handles requests from clients.
 
-b. Sends queries to the database to modify and access data based on validated requests from the client.
+    b. Sends queries to the database to modify and access data based on validated requests from the client.
 
-c. Generates responses based on requests for data and sends them to a specific client.
+    c. Generates responses based on requests for data and sends them to a specific client.
 
 3. Database
 
-a. A document database that stores user data and posts, as well as how each user has interacted with said posts.
+    a. A document database that stores user data and posts, as well as how each user has interacted with said posts.
 
-b. Handles queries from the server and sends data back to the server, related to the initial client request.
+    b. Handles queries from the server and sends data back to the server, related to the initial client request.
 
 Sequence of Events Overview
 ---------------------------
@@ -212,8 +195,7 @@ Database-Server-Client Relationship Diagram
 
 Forward arrows symbolize responses, while backward arrows symbolize requests.
 
-|  |
-|  | ![](docs/clip_image005.jpg) |
+![](docs/clip_image005.jpg)
 
 Design Issues
 =============
@@ -221,51 +203,51 @@ Design Issues
 Functional Issues
 -----------------
 
-1) How do users sign up on Bitwise?
+1. How do users sign up on Bitwise?
 
-a) Username, Email, Password
+    a. Username, Email, Password
 
-b) Username, Email, Password, Phone number
+    b. Username, Email, Password, Phone number
 
-c) Username, Google Account
+    c. Username, Google Account
 
             Chosen Solution: c) Username, Google Account
 
 Justification: Using Google Accounts for sign-in allows us to take advantage of Google's secure authentication as well as email/password storage. Options a) and b) require more feature programming and database storage, whereas option c) already has existing frameworks and tutorials for incorporating Google Account sign-in to websites.
 
-2) What is done about users trying to create similar topics?
+2. What is done about users trying to create similar topics?
 
-a) Merge similar topics into one
+    a. Merge similar topics into one
 
-b) Suggest similar topics as they are being created
+    b. Suggest similar topics as they are being created
 
-c) Allow any topics without moderation or suggestion
+    c. Allow any topics without moderation or suggestion
 
 Chosen Solution: b) Suggest similar topics as they are being created
 
 Justification: Option b) allows for some topic organization without fully moderating posts. This prevents the chaos of having similar topics that are spelled differently be separated into different groups, and makes the user experience easier by having an auto-complete suggestion appear as they are typing their desired topic.
 
-3) How are posts from users and topics followed displayed in a timeline?
+3. How are posts from users and topics followed displayed in a timeline?
 
-a) Just the post displayed
+    a. Just the post displayed
 
-b) The post with the top X liked comments displayed
+    b. The post with the top X liked comments displayed
 
-c) The post with all comments displayed
+    c. The post with all comments displayed
 
-d) The post with the user's comments displayed
+    d. The post with the user's comments displayed
 
-e) The post with the user's comments as well as all followed users comments displayed
+    e. The post with the user's comments as well as all followed users comments displayed
 
             Chosen Solution: a) Just the post, no comments
 
 Justification: Bitwise is about simplifying the social media process in a way that is attractive to users as well as easy to follow and sift through. In keeping with the style of the platform, we want the timeline to be as simple as possible. Users can then interact with the posts and comments on that post by clicking on the post itself and going to a separate webpage. This allows for simplicity of viewing, but still allows the same interaction if the post is interesting enough for a user to click on.
 
-4) Which user-followed posts are displayed on a timeline?
+4. Which user-followed posts are displayed on a timeline?
 
-a) Posts
+    a. Posts
 
-b) Posts and comments
+    b. Posts and comments
 
             Chosen Solution: a) Posts
 
@@ -274,41 +256,41 @@ Justification: If a user is following another user, they would generally want to
 Non-functional Issues
 ---------------------
 
-1) What database will be used?
+1. What database will be used?
 
-a) AWS
+    a. AWS
 
-b) Firebase
+    b. Firebase
 
-c) MongoDB
+    c. MongoDB
 
-d) Google Cloud
+    d. Google Cloud
 
             Chosen Solution: b) Firebase
 
 Justification: Firebase was chosen due to its easier learning curve and ability to host our backend in addition to storing all database information. Furthermore, the plan we chose is free of charge and is sufficient for our application needs.
 
-2) What front-end framework will be used?
+2. What front-end framework will be used?
 
-a) React
+    a. React
 
-b) Angular
+    b. Angular
 
-c) Vuejs
+    c. Vuejs
 
-d) jQuery
+    d. jQuery
 
             Chosen Solution: a) React
 
 Justification: React is an intuitive and "painless" framework for creating a variety of interactive user interfaces, complete with features such as state-managing components. There are numerous tutorials and examples making it easy to learn which is why it was chosen for the front end.
 
-3) What back-end framework will be used?
+3. What back-end framework will be used?
 
-a) Django
+    a. Django
 
-b) Node.js
+    b. Node.js
 
-c) Rails
+    c. Rails
 
             Chosen Solution: b) Node.js
 
