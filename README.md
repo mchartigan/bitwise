@@ -223,7 +223,7 @@ Justification: Using Google Accounts for sign-in allows us to take advantage of 
 
     c. Allow any topics without moderation or suggestion
 
-Chosen Solution: b) Suggest similar topics as they are being created
+            Chosen Solution: b) Suggest similar topics as they are being created
 
 Justification: Option b) allows for some topic organization without fully moderating posts. This prevents the chaos of having similar topics that are spelled differently be separated into different groups, and makes the user experience easier by having an auto-complete suggestion appear as they are typing their desired topic.
 
