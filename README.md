@@ -95,7 +95,7 @@ f. Be able to view my liked, disliked, and saved posts
 
 3. Following and Post Interaction
 
-            As a user, I would like to...
+As a user, I would like to...
 
 a. Search for a user or topic
 
@@ -176,7 +176,7 @@ High Level Overview
 
 This project will be a website that allows users to interact with and post images and text in a manner similar to Twitter. It will use a single server based in the React framework from Javascript that juggles information requests and changes from the entire client base. The server will then transport these information queries into access requests in the database for the project hosted in Firebase, which can either pull or store data. Our point of reference is the design document from the team who built "Show of Hands" for structure of information and diagrams in this section.
 
-![](file:///C:/Users/flyin/AppData/Local/Packages/oice_16_974fa576_32c1d314_ba7/AC/Temp/msohtmlclip1/01/clip_image003.jpg)
+![](docs/clip_image003.jpg)
 --------------------------------------------------------------------------------------------------------------------------
 
 1. Clients
@@ -211,7 +211,7 @@ Database-Server-Client Relationship Diagram
 Forward arrows symbolize responses, while backward arrows symbolize requests.
 
 |  |
-|  | ![](file:///C:/Users/flyin/AppData/Local/Packages/oice_16_974fa576_32c1d314_ba7/AC/Temp/msohtmlclip1/01/clip_image005.jpg) |
+|  | ![](docs/clip_image005.jpg) |
 
 Design Issues
 =============
@@ -318,7 +318,7 @@ Design Details
 Class Design
 ------------
 
-![](file:///C:/Users/flyin/AppData/Local/Packages/oice_16_974fa576_32c1d314_ba7/AC/Temp/msohtmlclip1/01/clip_image007.jpg)
+![](docs/clip_image007.jpg)
 
 ### Classes and Interactions
 
@@ -415,12 +415,12 @@ Below are diagrams that show major events in this application, including events 
 
 ### 1. Login Sequence of Events
 
-![](file:///C:/Users/flyin/AppData/Local/Packages/oice_16_974fa576_32c1d314_ba7/AC/Temp/msohtmlclip1/01/clip_image009.png)
+![](clip_image009.png)
 
 ### 2. Viewing User Timeline Sequence of Events
 
-![](file:///C:/Users/flyin/AppData/Local/Packages/oice_16_974fa576_32c1d314_ba7/AC/Temp/msohtmlclip1/01/clip_image011.png)
+![](docs/clip_image011.png)
 
 ### 3. Creating a Post Sequence of Events
 
-![](file:///C:/Users/flyin/AppData/Local/Packages/oice_16_974fa576_32c1d314_ba7/AC/Temp/msohtmlclip1/01/clip_image013.png)
+![](docs/clip_image013.png)
