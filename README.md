@@ -1,17 +1,9 @@
-
-![](docs/bitwise.png)
+<p align="center"><img src="docs/bitwise.png"></p>
 
 CS 30700: Design Document
+=========================
 
-Mark Hartigan
-
-Nicholas Masso
-
-Kyle Vandewalle
-
-Zach George
-
-Zach McClary
+ Mark Hartigan, Nicholas Masso, Kyle Vandewalle, Zach George, Zach McClary
 
 Index
 =====
