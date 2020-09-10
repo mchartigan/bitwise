@@ -1,3 +1,4 @@
+<div style="text-align:center">
 ![](docs/bitwise.png)
 
 CS 30700: Design Document
@@ -11,49 +12,50 @@ Kyle Vandewalle
 Zach George
 
 Zach McClary
+</div>
 
 Index
 =====
 
-[**Purpose**](docs/Design%20Document.rtf#h.vleb3uk1q44p)[**3**](docs/Design%20Document.rtf#h.vleb3uk1q44p)
+[**Purpose**](#purpose)
 
-[Functional](docs/Design%20Document.rtf#h.yyuzc6k3769x)[  ](docs/Design%20Document.rtf#h.yyuzc6k3769x)[Requirements](docs/Design%20Document.rtf#h.yyuzc6k3769x) [3](docs/Design%20Document.rtf#h.yyuzc6k3769x)
+[Functional Requirements](#functional-requirements)
 
-[Non](docs/Design%20Document.rtf#h.rcd0v0lncqzm)[-](docs/Design%20Document.rtf#h.rcd0v0lncqzm)[functional](docs/Design%20Document.rtf#h.rcd0v0lncqzm)[  ](docs/Design%20Document.rtf#h.rcd0v0lncqzm)[Requirements](docs/Design%20Document.rtf#h.rcd0v0lncqzm) [5](docs/Design%20Document.rtf#h.rcd0v0lncqzm)
+[Non-functional Requirements](#non-functional-requirements)
 
-[**Design**](docs/Design%20Document.rtf#h.qscfx5e5s26j)[](docs/Design%20Document.rtf#h.qscfx5e5s26j)[**Outline**](docs/Design%20Document.rtf#h.qscfx5e5s26j)[**7**](docs/Design%20Document.rtf#h.qscfx5e5s26j)
+[**Design Outline**](#design-outline)
 
-[High](docs/Design%20Document.rtf#h.4bzsf2tms6yg)[  ](docs/Design%20Document.rtf#h.4bzsf2tms6yg)[Level](docs/Design%20Document.rtf#h.4bzsf2tms6yg)[  ](docs/Design%20Document.rtf#h.4bzsf2tms6yg)[Overview](docs/Design%20Document.rtf#h.4bzsf2tms6yg) [7](docs/Design%20Document.rtf#h.4bzsf2tms6yg)
+[High Level Overview](#high-level-overview)
 
-[Sequence](docs/Design%20Document.rtf#h.as1bgqj2xg09)[  ](docs/Design%20Document.rtf#h.as1bgqj2xg09)[of](docs/Design%20Document.rtf#h.as1bgqj2xg09)[  ](docs/Design%20Document.rtf#h.as1bgqj2xg09)[Events](docs/Design%20Document.rtf#h.as1bgqj2xg09)[  ](docs/Design%20Document.rtf#h.as1bgqj2xg09)[Overview](docs/Design%20Document.rtf#h.as1bgqj2xg09) [9](docs/Design%20Document.rtf#h.as1bgqj2xg09)
+[Sequence of Events Overview](#sequence-of-events-overview)
 
-[**Design**](docs/Design%20Document.rtf#h.kyzql3kdsjj)[](docs/Design%20Document.rtf#h.kyzql3kdsjj)[**Issues**](docs/Design%20Document.rtf#h.kyzql3kdsjj)[**10**](docs/Design%20Document.rtf#h.kyzql3kdsjj)
+[**Design Issues**](#design-issues)
 
-[Functional](docs/Design%20Document.rtf#h.rabmtuqt9ino)[  ](docs/Design%20Document.rtf#h.rabmtuqt9ino)[Issues](docs/Design%20Document.rtf#h.rabmtuqt9ino) [10](docs/Design%20Document.rtf#h.rabmtuqt9ino)
+[Functional Issues](#functional-issues)
 
-[Non](docs/Design%20Document.rtf#h.dt3le4ey3lep)[-](docs/Design%20Document.rtf#h.dt3le4ey3lep)[functional](docs/Design%20Document.rtf#h.dt3le4ey3lep)[  ](docs/Design%20Document.rtf#h.dt3le4ey3lep)[Issues](docs/Design%20Document.rtf#h.dt3le4ey3lep) [12](docs/Design%20Document.rtf#h.dt3le4ey3lep)
+[Non-functional Issues](#non-functional-issues)
 
-[**Design**](docs/Design%20Document.rtf#h.1n7vtljyjzew)[](docs/Design%20Document.rtf#h.1n7vtljyjzew)[**Details**](docs/Design%20Document.rtf#h.1n7vtljyjzew)[**14**](docs/Design%20Document.rtf#h.1n7vtljyjzew)
+[**Design Details**](#design-details)
 
-[Class](docs/Design%20Document.rtf#h.l13tzg9ald89)[  ](docs/Design%20Document.rtf#h.l13tzg9ald89)[Design](docs/Design%20Document.rtf#h.l13tzg9ald89) [14](docs/Design%20Document.rtf#h.l13tzg9ald89)
+[Class Design](#class-design)
 
-[Classes](docs/Design%20Document.rtf#h.ctgmcu4ok06y)[  ](docs/Design%20Document.rtf#h.ctgmcu4ok06y)[and](docs/Design%20Document.rtf#h.ctgmcu4ok06y)[  ](docs/Design%20Document.rtf#h.ctgmcu4ok06y)[Interactions](docs/Design%20Document.rtf#h.ctgmcu4ok06y) [15](docs/Design%20Document.rtf#h.ctgmcu4ok06y)
+[Classes and Interactions](#classes-and-interactions)
 
-[User](docs/Design%20Document.rtf#h.6uifzv5gyopy) [15](docs/Design%20Document.rtf#h.6uifzv5gyopy)
+[User](#user)
 
-[Post](docs/Design%20Document.rtf#h.qxrns8ausd2d) [15](docs/Design%20Document.rtf#h.qxrns8ausd2d)
+[Post](#post)
 
-[Comment](docs/Design%20Document.rtf#h.zex4kacyrus2) [16](docs/Design%20Document.rtf#h.zex4kacyrus2)
+[Comment](#comment)
 
-[Topic](docs/Design%20Document.rtf#h.kklfsn8yupy9) [16](docs/Design%20Document.rtf#h.kklfsn8yupy9)
+[Topic](#topic)
 
-[Sequence](docs/Design%20Document.rtf#h.4lz0gx1kd9op)[  ](docs/Design%20Document.rtf#h.4lz0gx1kd9op)[Diagram](docs/Design%20Document.rtf#h.4lz0gx1kd9op) [17](docs/Design%20Document.rtf#h.4lz0gx1kd9op)
+[Sequence Diagram](#sequence-diagram)
 
-[Login](docs/Design%20Document.rtf#h.wbyry3oud0i2)[  ](docs/Design%20Document.rtf#h.wbyry3oud0i2)[Sequence](docs/Design%20Document.rtf#h.wbyry3oud0i2)[  ](docs/Design%20Document.rtf#h.wbyry3oud0i2)[of](docs/Design%20Document.rtf#h.wbyry3oud0i2)[  ](docs/Design%20Document.rtf#h.wbyry3oud0i2)[Events](docs/Design%20Document.rtf#h.wbyry3oud0i2) [17](docs/Design%20Document.rtf#h.wbyry3oud0i2)
+[Login Sequence of Events](#login-sequence-of-events)
 
-[Viewing](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[  ](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[User](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[  ](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[Timeline](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[  ](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[Sequence](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[  ](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[of](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[  ](docs/Design%20Document.rtf#h.yw9ppkstnqcv)[Events](docs/Design%20Document.rtf#h.yw9ppkstnqcv) [18](docs/Design%20Document.rtf#h.yw9ppkstnqcv)
+[Viewing User Timeline Sequence of Events](#viewing-user-timeline-sequence-of-events)
 
-[Creating](docs/Design%20Document.rtf#h.8nc3bs74ol78)[  ](docs/Design%20Document.rtf#h.8nc3bs74ol78)[a](docs/Design%20Document.rtf#h.8nc3bs74ol78)[  ](docs/Design%20Document.rtf#h.8nc3bs74ol78)[Post](docs/Design%20Document.rtf#h.8nc3bs74ol78)[  ](docs/Design%20Document.rtf#h.8nc3bs74ol78)[Sequence](docs/Design%20Document.rtf#h.8nc3bs74ol78)[  ](docs/Design%20Document.rtf#h.8nc3bs74ol78)[of](docs/Design%20Document.rtf#h.8nc3bs74ol78)[  ](docs/Design%20Document.rtf#h.8nc3bs74ol78)[Events](docs/Design%20Document.rtf#h.8nc3bs74ol78) [19](docs/Design%20Document.rtf#h.8nc3bs74ol78)
+[Creating a Post Sequence of Events](#creating-a-post-sequence-of-events)
 
 Purpose
 =======
