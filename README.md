@@ -19,43 +19,43 @@ Index
 
 [**Purpose**](#purpose)
 
-[Functional Requirements](#functional-requirements)
+  * [Functional Requirements](#functional-requirements)
 
-[Non-functional Requirements](#non-functional-requirements)
+  * [Non-functional Requirements](#non-functional-requirements)
 
 [**Design Outline**](#design-outline)
 
-[High Level Overview](#high-level-overview)
+  * [High Level Overview](#high-level-overview)
 
-[Sequence of Events Overview](#sequence-of-events-overview)
+  * [Sequence of Events Overview](#sequence-of-events-overview)
 
 [**Design Issues**](#design-issues)
 
-[Functional Issues](#functional-issues)
+  * [Functional Issues](#functional-issues)
 
-[Non-functional Issues](#non-functional-issues)
+  * [Non-functional Issues](#non-functional-issues)
 
 [**Design Details**](#design-details)
 
-[Class Design](#class-design)
+  * [Class Design](#class-design)
 
-[Classes and Interactions](#classes-and-interactions)
+  * [Classes and Interactions](#classes-and-interactions)
 
-[User](#user)
+    * [User](#user)
 
-[Post](#post)
+    * [Post](#post)
 
-[Comment](#comment)
+    * [Comment](#comment)
 
-[Topic](#topic)
+    * [Topic](#topic)
 
-[Sequence Diagram](#sequence-diagram)
+  * [Sequence Diagram](#sequence-diagram)
 
-[Login Sequence of Events](#login-sequence-of-events)
+    * [Login Sequence of Events](#login-sequence-of-events)
 
-[Viewing User Timeline Sequence of Events](#viewing-user-timeline-sequence-of-events)
+    * [Viewing User Timeline Sequence of Events](#viewing-user-timeline-sequence-of-events)
 
-[Creating a Post Sequence of Events](#creating-a-post-sequence-of-events)
+    * [Creating a Post Sequence of Events](#creating-a-post-sequence-of-events)
 
 Purpose
 =======
