@@ -58,92 +58,88 @@ Functional Requirements
 
 1. Account and Profile: As a user, I would like to...
 
-    a. Register an account using a Google email and password
+    a. be able to register an account using a Google email
 
-    b. Setup a secure account password
+    b. be able to log in and out
 
-    c. Edit my public profile and private personal information
+    c. be able to edit my public profile and private personal information
 
-    d. Delete my user account and any associated data
-
-    e. Be able to log in and out
+    d. be able to delete my user account and any associated data
 
 2. Posting and Viewing Posts: As a user, I would like to...
 
-    a. Make posts tagged with topics
+    a. be able to create a post
 
-    b. Be able to create new topics
+    b. be able to tag posts with topics
 
-    c. See all posts associated with a given topic
+    c. be able to create new topics
 
-    d. Be able to post anonymously
+    d. be able to see all posts associated with a given topic
 
-    e. Be able to view the users and topics I follow
+    e. be able to post anonymously
 
-    f. Be able to view my liked, disliked, and saved posts
+    f. be able to view the users and topics I follow
+
+    g. be able to view my liked, disliked, and saved posts
 
 3. Following and Post Interaction: As a user, I would like to...
 
-    a. Search for a user or topic
+    a. be able to search for a user or topic
 
-    b. Search for a specific post (if time allows)
+    b. be able to search for a specific post (if time allows)
 
-    c. Follow or unfollow users or topics
+    c. be able to follow or unfollow users or topics
 
-    d. Have posts from users from followed topics and users appear in my timeline
+    d. be able to see posts from followed users and topics in my timeline
 
-    e. Have my timeline and post history to appear reverse chronologically
+    e. be able to see my timeline and userline in reverse chronological order
 
-    f. Save posts from other users
+    f. be able to save posts from other users
 
-    g. Upvote or downvote posts from other users
+    g. be able to upvote or downvote posts from other users
 
-    h. Comment on a specific post
+    h. be able to comment on a specific post
 
-    i. View another person's profile
-
-    j. View a timeline of another user's content on their profile
+    i. be able to view a user’s profile and respective userline
 
 4. User Experience: As a user, I would like to...
 
-    a. Be able to view the website on mobile or desktop
+    a. be able to view the website on mobile or desktop
 
-    b. Be able to switch site color schemes
+    b. be able to switch site color schemes
 
-    c. Be able to change settings on the website to accommodate for disabilities
+    c. be able to change settings on the website to accommodate for disabilities
 
-    d. Infinitely scroll through timelines
+    d. be able to “infinitely scroll” through my timeline
 
 Non-functional Requirements
 ---------------------------
 
 5. Performance: As a developer, I would like...
 
-    a. The website to run smoothly
+    a. the website to run smoothly
 
-    b. The website to support at least 1000 concurrent users
+    b. the website to support at least 1000 concurrent users
 
 6. Server: As a developer, I would like...
 
-    a. The server to be able to handle real time communication between itself and the client for all requests made by the user
+    a. the server to be able to handle real time communication between itself and the client for all requests made by the user
 
-    b. The server to be able to handle and store user data instantly.
+    b. the server to be able to handle and store user data instantly.
 
 7. User Interface: As a developer, I would like...
 
-    a. The website to be easy to use, navigate, and understand
+    a. the website to be easy to use, navigate, and understand
 
-    b. The website to be compatible with most browsers (Chrome, Firefox, etc.)
+    b. the website to be compatible with most browsers (Chrome, Firefox, etc.)
 
-    c. The website to be user friendly
+    c. the website to be user friendly
 
-    d. The website to be aesthetically pleasing
+    d. the website to be aesthetically pleasing
 
 8. Security: As a developer, I would like...
 
-    a. Passwords to be encrypted so that they are not visible by developers or unauthorized users
-
-    b. To limit one account per individual
+    a. to limit one account/username per Google email
 
 Design Outline
 ==============
