@@ -2,27 +2,32 @@
     <head>
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
-        <link rel="stylesheet" href="styles.css">
+        <!-- <link rel="stylesheet" href="styles.css"> -->
+        <title>Bitwise Home</title>
     </head>
     <body>
 
-        <h1>Cloud Cafe</h1>
-
-        <div class="content">
-
-            <form id="add-cafe-form">
-                <input type="text" name="content" placeholder="Enter a Post">
+        <h1>Homepage</h1>
+        <div class="content"> 
+            <form id="user-login">
                 <input type="text" name="username" placeholder="username">
-                <button>Add Cafe</button>
+                <input type="text" name="password" placeholder="password">
+                <button>create account</button>
+                <button>login</button>
+                <button>logout</button>
             </form>
 
-            <ul id="cafe-list"></ul>
-
+            <form id="create-post-form">
+                <input type="text" name="content" placeholder="Enter a Post">
+                <input type="checkbox" name="anonymous" value="anonymous">
+                <button>Add Post</button>
+            </form>
+            <ul id="timeline"></ul>
         </div>
 
         <script>
             // Initialize Firebase
-            var config = {
+            var config = { 
                 apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
                 authDomain: "bitwise-a3c2d.firebaseapp.com",
                 databaseURL: "https://bitwise-a3c2d.firebaseio.com",
