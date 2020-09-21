@@ -2,12 +2,13 @@
     <head>
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
-        <!-- <link rel="stylesheet" href="styles.css"> -->
+        <link rel="stylesheet" href="styles.css">
         <title>Bitwise Home</title>
     </head>
     <body>
 
         <h1>Homepage</h1>
+        <h2 id="login-status">Not logged in</h2>
         <div class="content"> 
             <form id="user-login">
                 <input type="text" name="username" placeholder="username">
@@ -19,7 +20,9 @@
 
             <form id="create-post-form">
                 <input type="text" name="content" placeholder="Enter a Post">
+                <input type="text" name="topic" placeholder="Enter a topic">
                 <input type="checkbox" name="anonymous" value="anonymous">
+                <label for="anonymous"> Anonymous</label>
                 <button>Add Post</button>
             </form>
             <ul id="timeline"></ul>
@@ -37,6 +40,6 @@
             firebase.initializeApp(config);
             const db = firebase.firestore();
         </script>
-        <script src="app.js"></script>
+        <script src="scripts/index.js"></script>
     </body>
 </html>
