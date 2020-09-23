@@ -1,7 +1,18 @@
 // DOM elements
-const loginForm = document.querySelector('#user-login');
-const postForm = document.querySelector('#create-post-form');
-const postList = document.querySelector('#timeline');
+const loginButton = document.querySelector('#login-button');
+const postForm    = document.querySelector('#create-post-form');
+const postList    = document.querySelector('#timeline');
+
+// navigate to login page
+function login() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      firebase.auth().signOut();
+    } else {
+      location.replace("login.html");
+    }
+  });
+}
 
 // create element & render cafe
 function renderPost(doc){
@@ -37,20 +48,6 @@ function renderPost(doc){
       db.collection('posts').doc(id).delete();
   });
 }
-
-loginForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  console.log(e)
-
-  // TODO: this is where you could test login features, but i was looking at another 
-  // tutorial on how to do that in the easy way - it opens up that little window
-  // for google sign-in.
-  // https://firebase.google.com/docs/auth/web/firebaseui
-
-  document.getElementById('login-status').innerHTML = "logged in as: " + loginForm.username.value;
-  loginForm.username.value = '';
-  loginForm.password.value = '';
-});
 
 postForm.addEventListener('submit', (e) =>{
   e.preventDefault();
@@ -157,4 +154,13 @@ var endless = {
 document.addEventListener('DOMContentLoaded', function() {
   // 
   endless.init();
+});
+
+// listener to see if user is logged in
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    loginButton.innerText = 'Logged in as ' + user.displayName + '. Sign out';
+  } else {
+    loginButton.innerText = 'Sign In';
+  }
 });
