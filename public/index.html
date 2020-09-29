@@ -1,16 +1,18 @@
 <html>
     <head>
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css' />
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     </head>
     <body>
         <section class='ui three column centered padded grid'>
-            <div class='column' id='account-info'>
+            <div class='column'>
                 <h1>Edit Account Info</h1>
                 
-                <form class='ui form'>
+                <form class='ui form' id='account-info'>
                     <div class='field'>
                         <label>Username</label>
-                        <input type="text" placeholder="retrieving username..." id="username" />
+                        <input type="text" placeholder="retrieving username..." id="username" required/>
                     </div>
 
                     <div class='field'>
@@ -38,10 +40,11 @@
                     <br>
 
                     <div class='field'>
-                        <input type="file" onchange='chooseFile(event)' />
+                        <input type="file" accept=".jpg" id="file" onchange='chooseFile(event)' />
                     </div>
                     
                     <div class=' ui fluid teal submit button' onclick='saveButtonPressed()'>Save</div>
+                    <div class="ui error message"></div>
                 </form>
             </div>
         </section>
