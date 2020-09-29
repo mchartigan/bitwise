@@ -1,37 +1,72 @@
 <html>
     <head>
-        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
-        <link rel="stylesheet" href="styles.css">
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css' />
     </head>
     <body>
+        <section class='ui three column centered padded grid'>
+            <div class='column' id='account-info'>
+                <h1>Edit Account Info</h1>
+                
+                <form class='ui form'>
+                    <div class='field'>
+                        <label>Username</label>
+                        <input type="text" placeholder="retrieving username..." id="username" />
+                    </div>
 
-        <h1>Account Information</h1>
+                    <div class='field'>
+                        <label>Email</label>
+                        <input type="text" placeholder="retrieving email..." id="email" disabled/>
+                    </div>
 
-        <div class="content">
+                    <div class='field'>
+                        <label>Bio</label>
+                        <textarea rows="2" type="text" placeholder="retrieving bio..." id="bio" ></textarea>
+                    </div>
 
-            <form id="account-info-form">
-                <input type="text" name="username" placeholder="USERNAME">
-                <input type="text" name="email" placeholder="EMAIL">
-                <input type="text" name="bio" placeholder="BIO">
-                <input type="text" name="icon" placeholder="ICON">
-                <button id="save-button">Save</button>
-            </form>
+                    <div class='field'>
+                        <label>Profile Picture</label>
+                    </div>
+                    <img src='https://via.placeholder.com/150' class='ui small image' id='img'>
+                    <style>
+                        img {
+                            image-rendering: -moz-crisp-edges;
+                            image-rendering: -webkit-crisp-edges;
+                            image-rendering: pixelated;
+                            image-rendering: crisp-edges;
+                        }
+                    </style>
+                    <br>
 
-        </div>
+                    <div class='field'>
+                        <input type="file" onchange='chooseFile(event)' />
+                    </div>
+                    
+                    <div class=' ui fluid teal submit button' onclick='saveButtonPressed()'>Save</div>
+                </form>
+            </div>
+        </section>
+
+        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
 
         <script>
             // Initialize Firebase
-            var config = {
+            var firebaseConfig = {
                 apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
                 authDomain: "bitwise-a3c2d.firebaseapp.com",
                 databaseURL: "https://bitwise-a3c2d.firebaseio.com",
                 projectId: "bitwise-a3c2d",
+                storageBucket: "bitwise-a3c2d.appspot.com",
+                messagingSenderId: "1025486551841",
                 appId: "1:1025486551841:web:24f84a09e2f70631625c60",
+                measurementId: "G-9DCMV9YV2N"
             };
-            firebase.initializeApp(config);
+            firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
         </script>
+
         <script src="app.js"></script>
     </body>
 </html>

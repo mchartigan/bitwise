@@ -1,20 +1,37 @@
 const UID = '9fvVztcaIGAn5mxGODAE';
 
-const form = document.querySelector('#account-info-form');
+//const form = document.querySelector('#account-info-form');
+let username = document.getElementById('username'),
+    email = document.getElementById('email')
+    bio = document.getElementById('bio'),
+    img = document.getElementById('img');
 
 db.collection("users").doc(UID).onSnapshot(function(doc) {
-    form.username.value = doc.data().username;
-    form.email.value = doc.data().email;
-    form.bio.value = doc.data().bio;
-    form.icon.value = doc.data().icon;
+    username.value = doc.data().username;
+    email.value = doc.data().email;
+    bio.value = doc.data().bio;
+    firebase.storage().ref('usercontent/' + UID + '/profile.jpg').getDownloadURL().then(imgURL => {
+        img.src = imgURL;
+    })
 });
 
-form.addEventListener('#save-button', (e) => {
-    e.preventDefault();
+let file = {}
+
+function chooseFile(e) {
+    file = e.target.files[0];
+}
+
+function saveButtonPressed() {
     db.collection('users').doc(UID).set({
-        username: form.username.value,
-        email: form.email.value,
-        bio: form.bio.value,
-        icon: form.icon.value
-    });
-});
+        username: username.value,
+        email: email.value,
+        bio: bio.value,
+    })
+
+    firebase.storage().ref('usercontent/' + UID + '/profile.jpg').put(file).then(function () {
+        console.log('Successfully Uploaded')
+        firebase.storage().ref('usercontent/' + UID + '/profile.jpg').getDownloadURL().then(imgURL => {
+            img.src = imgURL;
+        })
+    })
+}
