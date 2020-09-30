@@ -1,6 +1,5 @@
 // DOM elements
 const loginButton = document.querySelector('#login-button');
-const postForm    = document.querySelector('#create-post-form');
 const postList    = document.querySelector('#timeline');
 
 // navigate to login page
@@ -8,10 +7,15 @@ function login() {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       firebase.auth().signOut();
-    } else {
-      location.replace("login.html");
+    }
+    else {
+      location.replace("common/login.html");
     }
   });
+}
+
+function createPost() {
+  location.replace("common/new_post.html");
 }
 
 // create element & render cafe
@@ -30,9 +34,6 @@ function renderPost(doc){
   created.textContent = doc.data().created.toDate().toTimeString();
   cross.textContent = 'delete';
 
-  postForm.topic.value = '';
-  postForm.content.value = '';
-
   li.appendChild(topic)
   li.appendChild(content);
   li.appendChild(author);
@@ -48,32 +49,6 @@ function renderPost(doc){
       db.collection('posts').doc(id).delete();
   });
 }
-
-postForm.addEventListener('submit', (e) =>{
-  e.preventDefault();
-  //console.log(e);
-  var author
-  if (postForm.anonymous.value) {
-    author = null;
-  } else {
-    author = null // replace with UID later
-  }
-
-  postForm.content.value = '';
-  postForm.topic.value = '';
-
-  db.collection('posts').add({
-    author: author,
-    content: postForm.content.value,
-    embed: null,
-    created: new Date(),
-    parent: null,
-    children: [null],
-    topic: postForm.topic.value,
-    upvotes: [null],
-    downvotes: [null]
-  });
-});
 
 
 //okay well i dont WANT a real time listener...i want infinite scroll and not auto-updating posts

@@ -4,14 +4,17 @@
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
-        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-
     </head>
     <body>
-        <div id="firebaseui-auth-container"></div>
-        <div id="loader">Loading...</div>
-        <button onclick="anonymousLogin()">Continue without signing in</button>
-
+        <div class="content"> 
+            <form id="create-post-form">
+                <input type="text" name="content" placeholder="Enter a Post">
+                <input type="text" name="topic" placeholder="Enter a topic">
+                <input type="checkbox" name="anonymous" value="anonymous">
+                <label for="anonymous"> Anonymous</label>
+                <button>Add Post</button>
+            </form>
+        </div>
         <script>
             // Initialize Firebase
             var config = { 
@@ -24,6 +27,6 @@
             firebase.initializeApp(config);
             const db = firebase.firestore();
         </script>
-        <script src="js/login.js"></script>
+        <script src="/js/new_post.js"></script>
     </body>
 </html>

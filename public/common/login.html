@@ -4,19 +4,13 @@
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
-        <link rel="stylesheet" href="css/styles.css">
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
-        <title>Bitwise Home</title>
     </head>
     <body>
-
-        <h1>Homepage</h1>
-
-        <div class="content"> 
-            <button id="login-button" onclick="login()">Sign In</button>
-            <button id="post-button" onclick="createPost()">Create a Post</button>
-            <ul id="timeline"></ul>
-        </div>
+        <div id="firebaseui-auth-container"></div>
+        <div id="loader">Loading...</div>
+        <button onclick="anonymousLogin()">Continue without signing in</button>
 
         <script>
             // Initialize Firebase
@@ -30,6 +24,6 @@
             firebase.initializeApp(config);
             const db = firebase.firestore();
         </script>
-        <script src="js/index.js"></script>
+        <script src="../js/login.js"></script>
     </body>
 </html>
