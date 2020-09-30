@@ -11,24 +11,9 @@
                 
                 <form class='ui form' id='account-info'>
                     <div class='field'>
-                        <label>Username</label>
-                        <input type="text" placeholder="retrieving username..." id="username-field" required/>
-                    </div>
-
-                    <div class='disabled field'>
-                        <label>Email</label>
-                        <input type="text" placeholder="retrieving email..." id="email-field"/>
-                    </div>
-
-                    <div class='field'>
-                        <label>Bio</label>
-                        <textarea rows="2" type="text" placeholder="retrieving bio..." id="bio-txt-field" ></textarea>
-                    </div>
-
-                    <div class='field'>
                         <label>Profile Picture</label>
                     </div>
-                    <img src='https://via.placeholder.com/150' class='ui small image' id='profile-image'>
+                    <img src='https://via.placeholder.com/150' class='ui medium image' id='profile-image'>
                     <style>
                         img {
                             image-rendering: -moz-crisp-edges;
@@ -39,12 +24,35 @@
                     </style>
                     <br>
 
-                    <div class='inline field'>
-                        <input type="file" accept=".jpg" id="image-file-field" onchange='chooseFile(event)' />
-                        <div class="ui button" onclick="removeImage()">Remove</div>
+                    <label class="ui basic button" for="image-file-field">
+                        <i class="file icon"></i>
+                        Upload
+                    </label>
+                    <input type="file" accept=".jpg" id="image-file-field" style="display: none" onchange='chooseFile(event)' />
+                    <div class="ui basic button" onclick="removeImage()">
+                        <i class="trash icon"></i>
+                        Remove
+                    </div>
+                    <br><br>
+
+                    <div class='field'>
+                        <label>Username</label>
+                        <input type="text" id="username-field" required/>
                     </div>
 
-                    <div class=' ui fluid teal submit button'>Save</div>
+                    <div class='field'>
+                        <label>Short Bio</label>
+                        <textarea rows="2" type="text" id="bio-txt-field" ></textarea>
+                    </div>
+
+                    <div class='disabled field'>
+                        <label>Email</label>
+                        <input type="text" placeholder="retrieving email..." id="email-field"/>
+                    </div>
+                    <br>
+
+                    <div class=' ui teal submit button'>Save</div>
+                    <div class=' ui basic button' onclick="resetAccountInfo()">Cancel</div>
                     <div class="ui error message"></div>
                 </form>
             </div>

@@ -17,13 +17,28 @@ let usernameField = document.getElementById('username-field'),
 
 // Listen to user document from database for changes, refresh account info
 docRef.onSnapshot(function(doc) {
+    displayAccountInfo(doc);
+});
+
+function displayAccountInfo(doc) {
+    imageFileField.value = '';
+    imageFile = {};
+
     usernameField.value = doc.data().username;
     emailField.value = doc.data().email;
     bioTxtField.value = doc.data().bioText;
     hasProfileImage = doc.data().picFlag;
 
     displayImage();
-});
+}
+
+function resetAccountInfo() {
+    docRef.get().then(function(doc) {
+        displayAccountInfo(doc);
+    });
+
+    $('.ui.form').form('reset');
+}
 
 function displayImage() {
     var path = null;
@@ -56,6 +71,7 @@ function displayImage() {
 }
 
 function removeImage() {
+    // Stage remove image change
     if (hasProfileImage) {
         imageFileField.value = '';
         imageFile = {};
@@ -67,6 +83,8 @@ function removeImage() {
 function chooseFile(e) {
     imageFile = e.target.files[0];
     hasProfileImage = true;
+
+    // Stage chosen image file
     displayImage();
 }
 
@@ -106,10 +124,17 @@ $('#account-info').form({
     on: 'blur',
     fields: {
         username: {
-            identifier: 'username',
+            identifier: 'username-field',
             rules: [{
                 type: 'empty',
                 prompt: 'Please enter a username'
+            }]
+        },
+        bio: {
+            identifier: 'bio-txt-field',
+            rules: [{
+                type   : 'maxLength[160]',
+                prompt : 'Your bio must not be more that {ruleValue} characters'
             }]
         }
     },
@@ -123,3 +148,4 @@ $('#account-info').form({
         return false;
     }
 });
+
