@@ -1,7 +1,8 @@
 // ------TO DO------
 // GET UID FROM AUTH (CURRENT LOGGED IN USER)
 // ON ACCOUNT REGISTRATION, SET INITIAL USERNAME, INITAL BIO, EMAIL, PICFLAG (false)
-const UID = firebase.auth().currentUser.uid;;
+console.log(firebase.auth().currentUser);
+const UID = firebase.auth().currentUser.uid;
 
 var storage = firebase.storage();
 var storageRef = storage.ref();
