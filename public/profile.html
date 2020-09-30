@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+        <link rel="stylesheet" href="css/profile-styles.css">
+    </head>
+    <body>
+
+        <h1>Account Information</h1>
+
+        <div class="content">
+
+            <form id="account-info-form">
+                <input type="text" name="username" placeholder="USERNAME">
+                <input type="text" name="email" placeholder="EMAIL">
+                <input type="text" name="bio" placeholder="BIO">
+                <input type="text" name="icon" placeholder="ICON">
+                <button id="save-button">Edit Profile</button>
+            </form>
+
+        </div>
+
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
+                authDomain: "bitwise-a3c2d.firebaseapp.com",
+                databaseURL: "https://bitwise-a3c2d.firebaseio.com",
+                projectId: "bitwise-a3c2d",
+                appId: "1:1025486551841:web:24f84a09e2f70631625c60",
+            };
+            firebase.initializeApp(config);
+            const db = firebase.firestore();
+        </script>
+        <script src="js/profile.js"></script>
+    </body>
+</html>
