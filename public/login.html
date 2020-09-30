@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+        <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
+    </head>
+    <body>
+        <div id="firebaseui-auth-container"></div>
+        <div id="loader">Loading...</div>
+        <button onclick="anonymousLogin()">Continue without signing in</button>
+
+        <script>
+            // Initialize Firebase
+            var config = { 
+                apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
+                authDomain: "bitwise-a3c2d.firebaseapp.com",
+                databaseURL: "https://bitwise-a3c2d.firebaseio.com",
+                projectId: "bitwise-a3c2d",
+                appId: "1:1025486551841:web:24f84a09e2f70631625c60",
+            };
+            firebase.initializeApp(config);
+            const db = firebase.firestore();
+        </script>
+        <script src="js/login.js"></script>
+    </body>
+</html>

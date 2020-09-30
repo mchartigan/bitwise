@@ -1,0 +1,85 @@
+body{
+    background: #12001a;
+    font-family: ubuntu;
+}
+
+h1{
+    color: #fff;
+    font-size: 64px;
+    letter-spacing: 2px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+h2{
+    color: #fff;
+    font-size: 30px;
+    letter-spacing: 2px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.content{
+    background: #fff;
+    max-width: 960px;
+    margin: 30px auto;
+    padding:  20px 30px;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 1px 3px 5px rgba(0,0,0,0.1)
+}
+
+ul{
+    list-style-type: none;
+    padding: 0;
+}
+
+li{
+    padding: 20px;
+    background: #f6f6f6;
+    font-size: 20px;
+    color: #555;
+    position: relative;
+    border-bottom: 1px solid #e6e6e6;
+    height: 60px;
+}
+
+
+li span{
+    display: block;
+}
+
+li span:nth-child(1){
+    font-size: 16px;
+    margin-top: 6px;
+    color: rgb(140, 0, 255);
+}
+
+li span:nth-child(2){
+    font-size: 16px;
+    margin-top: 6px;
+    color: rgb(0, 0, 0);
+}
+
+li span:nth-child(3){
+    font-size: 12px;
+    margin-top: 6px;
+    color: rgb(153, 153, 153);
+}
+
+li span:nth-child(4){
+    font-size: 16px;
+    margin-top: 6px;
+    color: #999;
+}
+
+li div{
+    position: absolute;
+    top: 0;
+    right: 0px;
+    background: rgba(255,255,255,0.6);
+    width: 80px;
+    text-align: center;
+    padding: 10px 0;
+    font-weight:  bold;
+    cursor:  pointer;
+}
