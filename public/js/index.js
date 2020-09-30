@@ -1,7 +1,8 @@
 // DOM elements
-const loginButton = document.querySelector('#login-button');
-const postForm    = document.querySelector('#create-post-form');
-const postList    = document.querySelector('#timeline');
+const loginButton   = document.querySelector('#login-button');
+const profileButton = document.querySelector('#profile-button');
+const postForm      = document.querySelector('#create-post-form');
+const postList      = document.querySelector('#timeline');
 
 // navigate to login page
 function login() {
@@ -10,6 +11,15 @@ function login() {
       firebase.auth().signOut();
     } else {
       location.replace("login.html");
+    }
+  });
+}
+
+// navigate to user profile page when logged in
+function myProfile() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      location.replace("profile.html");
     }
   });
 }
@@ -56,7 +66,7 @@ postForm.addEventListener('submit', (e) =>{
   if (postForm.anonymous.value) {
     author = null;
   } else {
-    author = null // replace with UID later
+    author = null; // replace with UID later
   }
 
   postForm.content.value = '';
@@ -162,5 +172,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     loginButton.innerText = 'Logged in as ' + user.displayName + '. Sign out';
   } else {
     loginButton.innerText = 'Sign In';
+    //Hide "My Profile" button if not signed in
+    document.getElementById("profile-button").style.visibility="hidden";
   }
 });
