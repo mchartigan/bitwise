@@ -7,28 +7,28 @@
     <body>
         <section class='ui three column centered padded grid'>
             <div class='column'>
-                <h1>Edit Account Info</h1>
+                <h1>Account Information</h1>
                 
                 <form class='ui form' id='account-info'>
                     <div class='field'>
                         <label>Username</label>
-                        <input type="text" placeholder="retrieving username..." id="username" required/>
+                        <input type="text" placeholder="retrieving username..." id="username-field" required/>
                     </div>
 
-                    <div class='field'>
+                    <div class='disabled field'>
                         <label>Email</label>
-                        <input type="text" placeholder="retrieving email..." id="email" disabled/>
+                        <input type="text" placeholder="retrieving email..." id="email-field"/>
                     </div>
 
                     <div class='field'>
                         <label>Bio</label>
-                        <textarea rows="2" type="text" placeholder="retrieving bio..." id="bio" ></textarea>
+                        <textarea rows="2" type="text" placeholder="retrieving bio..." id="bio-txt-field" ></textarea>
                     </div>
 
                     <div class='field'>
                         <label>Profile Picture</label>
                     </div>
-                    <img src='https://via.placeholder.com/150' class='ui small image' id='img'>
+                    <img src='https://via.placeholder.com/150' class='ui small image' id='profile-image'>
                     <style>
                         img {
                             image-rendering: -moz-crisp-edges;
@@ -39,11 +39,12 @@
                     </style>
                     <br>
 
-                    <div class='field'>
-                        <input type="file" accept=".jpg" id="file" onchange='chooseFile(event)' />
+                    <div class='inline field'>
+                        <input type="file" accept=".jpg" id="image-file-field" onchange='chooseFile(event)' />
+                        <div class="ui button" onclick="removeImage()">Remove</div>
                     </div>
-                    
-                    <div class=' ui fluid teal submit button' onclick='saveButtonPressed()'>Save</div>
+
+                    <div class=' ui fluid teal submit button'>Save</div>
                     <div class="ui error message"></div>
                 </form>
             </div>

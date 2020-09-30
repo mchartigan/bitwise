@@ -1,4 +1,108 @@
-$('form').form({
+// ------TO DO------
+// GET UID FROM AUTH (CURRENT LOGGED IN USER)
+// ON ACCOUNT REGISTRATION, SET INITIAL USERNAME, INITAL BIO, EMAIL, PICFLAG (false)
+const UID = '9fvVztcaIGAn5mxGODAE';
+
+var storage = firebase.storage();
+var storageRef = storage.ref();
+var docRef = db.collection("users").doc(UID);
+
+let usernameField = document.getElementById('username-field'),
+    emailField = document.getElementById('email-field')
+    bioTxtField = document.getElementById('bio-txt-field'),
+    imageFileField = document.getElementById('image-file-field'),
+    profileImage = document.getElementById('profile-image'),
+    hasProfileImage = false,
+    imageFile = {};
+
+// Listen to user document from database for changes, refresh account info
+docRef.onSnapshot(function(doc) {
+    usernameField.value = doc.data().username;
+    emailField.value = doc.data().email;
+    bioTxtField.value = doc.data().bioText;
+    hasProfileImage = doc.data().picFlag;
+
+    displayImage();
+});
+
+function displayImage() {
+    var path = null;
+
+    if (hasProfileImage) {
+        if (imageFileField.files.length != 0) {
+            // Display chosen image file
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                profileImage.src = e.target.result;
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            // Display stored image file
+            path = 'usercontent/' + UID + '/profile.jpg';
+        }
+    } else {
+        // Display default image file
+        path = 'usercontent/default/profile.jpg';
+    }
+
+    if (path != null) {
+        storageRef.child(path).getDownloadURL().then(imgURL => {
+            console.log('Successfully Downloaded: ',path); // DEBUG LOG
+            profileImage.src = imgURL;
+        }).catch(err => {
+            console.log('Failed to Download: ',path); // DEBUG LOG
+        });
+    }
+}
+
+function removeImage() {
+    if (hasProfileImage) {
+        imageFileField.value = '';
+        imageFile = {};
+        hasProfileImage = false;
+        displayImage();
+    }
+}
+
+function chooseFile(e) {
+    imageFile = e.target.files[0];
+    hasProfileImage = true;
+    displayImage();
+}
+
+function submitForm() {
+    console.log('Form Submitted'); // DEBUG LOG
+
+    // Update firestore with new field values
+    docRef.set({
+        username: usernameField.value,
+        bioText: bioTxtField.value
+    },{merge: true})
+
+    if (imageFileField.files.length != 0) {
+        // Update storage with new image file
+        var path = 'usercontent/' + UID + '/profile.jpg';
+        storageRef.child(path).put(imageFile).then(function () {
+            console.log('Successfully Uploaded: ',path); // DEBUG LOG
+
+            docRef.set({
+                picFlag: true
+            },{merge: true})
+        }).catch(err => {
+            console.log('Failed to Upload: ',path); // DEBUG LOG
+        });
+    }
+    
+    // Save remove profile image change
+    if (!hasProfileImage) {
+        docRef.set({
+            picFlag: false
+        },{merge: true})
+    }
+}
+
+// Form Validation
+$('#account-info').form({
     on: 'blur',
     fields: {
         username: {
@@ -7,55 +111,15 @@ $('form').form({
                 type: 'empty',
                 prompt: 'Please enter a username'
             }]
-        },
-        file: {
-            identifier: 'file',
-            rules: [{
-                type: 'empty',
-                prompt: 'Please choose a file'
-            }]
         }
+    },
+    onFailure: function() {
+        console.log('Validation Failed')
+        return false;
+    },
+    onSuccess: function(event,fields) {
+        console.log('Validation Succeeded')
+        submitForm();
+        return false;
     }
 });
-
-const UID = '9fvVztcaIGAn5mxGODAE';
-
-//const form = document.querySelector('#account-info-form');
-let username = document.getElementById('username'),
-    email = document.getElementById('email')
-    bio = document.getElementById('bio'),
-    img = document.getElementById('img'),
-    user_err = document.getElementById('username-error');
-
-db.collection("users").doc(UID).onSnapshot(function(doc) {
-    username.value = doc.data().username;
-    email.value = doc.data().email;
-    bio.value = doc.data().bio;
-
-    firebase.storage().ref('usercontent/' + UID + '/profile.jpg').getDownloadURL().then(imgURL => {
-        img.src = imgURL;
-    })
-});
-
-let file = {}
-
-function chooseFile(e) {
-    file = e.target.files[0];
-}
-
-function saveButtonPressed() {
-    db.collection('users').doc(UID).set({
-        username: username.value,
-        email: email.value,
-        bio: bio.value,
-    })
-
-    if (file != null) {
-        firebase.storage().ref('usercontent/' + UID + '/profile.jpg').put(file).then(function () {
-            // console.log('Successfully Uploaded')
-            firebase.storage().ref('usercontent/' + UID + '/profile.jpg').getDownloadURL().then(imgURL => {
-                img.src = imgURL;
-            })
-        })
-    }
-}
