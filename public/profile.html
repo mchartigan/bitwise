@@ -75,7 +75,9 @@
                 appId: "1:1025486551841:web:24f84a09e2f70631625c60",
                 measurementId: "G-9DCMV9YV2N"
             };
-            firebase.initializeApp(firebaseConfig);
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
             const db = firebase.firestore();
         </script>
 

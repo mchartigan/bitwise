@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // listener to see if user is logged in
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    loginButton.innerText = 'Logged in as ' + user.displayName + '. Sign out';
+    loginButton.innerText = 'Logged in as ' + user.uid + '. Sign out';
   } else {
     loginButton.innerText = 'Sign In';
     //Hide "My Profile" button if not signed in

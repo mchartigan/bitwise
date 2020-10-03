@@ -1,12 +1,26 @@
 // ------TO DO------
-// GET UID FROM AUTH (CURRENT LOGGED IN USER)
 // ON ACCOUNT REGISTRATION, SET INITIAL USERNAME, INITAL BIO, EMAIL, PICFLAG (false)
-console.log(firebase.auth().currentUser);
-const UID = firebase.auth().currentUser.uid;
 
-var storage = firebase.storage();
-var storageRef = storage.ref();
-var docRef = db.collection("users").doc(UID);
+var UID = null;
+var storage = null;
+var storageRef = null;
+var docRef = null;
+
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        UID = user.uid;
+        console.log('Retrieved UID')
+        storage = firebase.storage();
+        storageRef = storage.ref();
+        docRef = db.collection("users").doc(UID);
+
+        docRef.get().then(function(doc) {
+            displayAccountInfo(doc);
+        });
+    } else {
+        console.error('NO LOGGED IN USER, CANNOT VIEW ACCOUNT INFORMATION');
+    }
+});
 
 let usernameField = document.getElementById('username-field'),
     emailField = document.getElementById('email-field')
@@ -17,9 +31,11 @@ let usernameField = document.getElementById('username-field'),
     imageFile = {};
 
 // Listen to user document from database for changes, refresh account info
-docRef.onSnapshot(function(doc) {
-    displayAccountInfo(doc);
-});
+if (UID) {
+    docRef.onSnapshot(function(doc) {
+        displayAccountInfo(doc);
+    });
+}
 
 function displayAccountInfo(doc) {
     imageFileField.value = '';
