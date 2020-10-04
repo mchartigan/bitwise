@@ -3,64 +3,88 @@
         <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
         <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
     </head>
     <body>
-        <section class='ui three column centered padded grid'>
-            <div class='column'>
-                <h1>Account Information</h1>
-                
-                <form class='ui form' id='account-info'>
-                    <div class='field'>
-                        <label>Profile Picture</label>
+        <div class="ui fixed teal inverted menu">
+            <div class="ui fluid container">
+                <a href="index.html" class="header item">
+                    <img id="logo-icon" class="logo">
+                    &nbsp; Bitwise
+                </a>
+                <div class="ui simple right dropdown item">
+                    <img id="profile-icon" class="logo">
+                    <div id="account-dropdown">
+                        retrieving...
                     </div>
-                    <img src='https://via.placeholder.com/150' class='ui medium image' id='profile-image'>
-                    <style>
-                        img {
-                            image-rendering: -moz-crisp-edges;
-                            image-rendering: -webkit-crisp-edges;
-                            image-rendering: pixelated;
-                            image-rendering: crisp-edges;
-                        }
-                    </style>
-                    <br>
-
-                    <label class="ui basic button" for="image-file-field">
-                        <i class="file icon"></i>
-                        Upload
-                    </label>
-                    <input type="file" accept=".jpg" id="image-file-field" style="display: none" onchange='chooseFile(event)' />
-                    <div class="ui basic button" onclick="removeImage()">
-                        <i class="trash icon"></i>
-                        Remove
+                    
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item" href="profile.html">Profile</a>
+                        <a class="item" href="account.html">Account Information</a>
+                        <a class="item" href="#" onclick="signOut()">
+                            <h4 class="ui red header">Sign Out</h4>
+                        </a>
                     </div>
-                    <br><br>
-
-                    <div class='field'>
-                        <label>Username</label>
-                        <input type="text" id="username-field" required/>
-                    </div>
-
-                    <div class='field'>
-                        <label>Short Bio</label>
-                        <textarea rows="2" type="text" id="bio-txt-field" ></textarea>
-                    </div>
-
-                    <div class='disabled field'>
-                        <label>Email</label>
-                        <input type="text" placeholder="retrieving email..." id="email-field"/>
-                    </div>
-                    <br>
-
-                    <div class=' ui teal submit button'>Save</div>
-                    <div class=' ui basic button' onclick="resetAccountInfo()">Cancel</div>
-                    <div class="ui error message"></div>
-                </form>
+                </div>
             </div>
-        </section>
+        </div>
+
+        <div class='ui main text container'>
+            <br><br>
+            <h1 class="ui header">Account Information</h1>
+            
+            <form class='ui form' id='account-info'>
+                <div class='field'>
+                    <label>Profile Picture</label>
+                </div>
+                <img src='https://via.placeholder.com/150' class='ui medium image' id='profile-image'>
+                <style>
+                    img {
+                        image-rendering: -moz-crisp-edges;
+                        image-rendering: -webkit-crisp-edges;
+                        image-rendering: pixelated;
+                        image-rendering: crisp-edges;
+                    }
+                </style>
+                <br>
+
+                <label class="ui basic button" for="image-file-field">
+                    <i class="file icon"></i>
+                    Upload
+                </label>
+                <input type="file" accept=".jpg" id="image-file-field" style="display: none" onchange='uploadImage(event)'/>
+                <div class="ui basic button" onclick="removeImage()">
+                    <i class="trash icon"></i>
+                    Remove
+                </div>
+                <br><br>
+
+                <div class='field'>
+                    <label>Username</label>
+                    <input type="text" id="username-field" required/>
+                </div>
+
+                <div class='field'>
+                    <label>Short Bio</label>
+                    <textarea rows="2" type="text" id="bio-txt-field" ></textarea>
+                </div>
+
+                <div class='disabled field'>
+                    <label>Email</label>
+                    <input type="text" placeholder="retrieving email..." id="email-field"/>
+                </div>
+                <br>
+
+                <div class=' ui teal submit button'>Save</div>
+                <div class=' ui basic button' onclick="cancelForm()">Cancel</div>
+                <div class="ui error message"></div>
+            </form>
+        </div>
 
         <script>
             // Initialize Firebase
@@ -75,9 +99,11 @@
                 appId: "1:1025486551841:web:24f84a09e2f70631625c60",
                 measurementId: "G-9DCMV9YV2N"
             };
+
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
             }
+            
             const db = firebase.firestore();
         </script>
 
