@@ -15,23 +15,27 @@ let usernameField = document.getElementById('username-field'),
     imageFile = {};
 
 firebase.auth().onAuthStateChanged(function(user) {
-    loadLogoIcon();
-
     if (user) {
         UID = user.uid;
         console.log('Retrieved UID');
 
         docRef = db.collection("users").doc(UID);
 
-        docRef.get().then(function(doc) {
-            loadProfileIcon(doc);
-            document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-            accountInfo(doc);
-        });
+        loadMenu();
     } else {
         console.error('NO LOGGED IN USER, CANNOT VIEW ACCOUNT INFORMATION');
     }
 });
+
+function loadMenu() {
+    loadLogoIcon();
+
+    docRef.get().then(function(doc) {
+        loadProfileIcon(doc);
+        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
+        accountInfo(doc);
+    });
+}
 
 function loadLogoIcon() {
     storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
@@ -64,15 +68,15 @@ function signOut() {
 
 function accountInfo(doc) {
     // Fill out account info form with current info
-    imageFileField.value = '';
-    imageFile = {};
-
     usernameField.value = doc.data().username;
     emailField.value = doc.data().email;
     bioTxtField.value = doc.data().bioText;
     hasProfileImage = doc.data().picFlag;
 
     previewImage();
+
+    imageFileField.value = '';
+    imageFile = {};
 }
 
 function previewImage() {
@@ -124,7 +128,7 @@ function removeImage() {
 }
 
 function saveForm() {
-    console.log('Form Submitted'); // DEBUG LOG
+    console.log('Account Information Saved'); // DEBUG LOG
 
     // Update firestore with new field values
     docRef.set({
@@ -152,6 +156,8 @@ function saveForm() {
             picFlag: false
         },{merge: true})
     }
+
+    loadMenu();
 }
 
 function cancelForm() {
