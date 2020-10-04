@@ -19,7 +19,7 @@ function login() {
 function myProfile() {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      location.replace("profile.html");
+      location.replace("account.html");
     }
   });
 }
