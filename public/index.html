@@ -27,14 +27,17 @@
 
         <script>
             // Initialize Firebase
-            var config = { 
+            var firebaseConfig = { 
                 apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
                 authDomain: "bitwise-a3c2d.firebaseapp.com",
                 databaseURL: "https://bitwise-a3c2d.firebaseio.com",
                 projectId: "bitwise-a3c2d",
+                storageBucket: "bitwise-a3c2d.appspot.com",
+                messagingSenderId: "1025486551841",
                 appId: "1:1025486551841:web:24f84a09e2f70631625c60",
+                measurementId: "G-9DCMV9YV2N"
             };
-            firebase.initializeApp(config);
+            firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
         </script>
         <script src="js/index.js"></script>

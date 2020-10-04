@@ -1,12 +1,10 @@
 // ------TO DO------
-// GET UID FROM AUTH (CURRENT LOGGED IN USER)
 // ON ACCOUNT REGISTRATION, SET INITIAL USERNAME, INITAL BIO, EMAIL, PICFLAG (false)
-console.log(firebase.auth().currentUser);
-const UID = firebase.auth().currentUser.uid;
 
+var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
-var docRef = db.collection("users").doc(UID);
+var docRef = null;
 
 let usernameField = document.getElementById('username-field'),
     emailField = document.getElementById('email-field')
@@ -16,32 +14,67 @@ let usernameField = document.getElementById('username-field'),
     hasProfileImage = false,
     imageFile = {};
 
-// Listen to user document from database for changes, refresh account info
-docRef.onSnapshot(function(doc) {
-    displayAccountInfo(doc);
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        UID = user.uid;
+        console.log('Retrieved UID');
+
+        docRef = db.collection("users").doc(UID);
+
+        loadMenu();
+    } else {
+        console.error('NO LOGGED IN USER, CANNOT VIEW ACCOUNT INFORMATION');
+    }
 });
 
-function displayAccountInfo(doc) {
-    imageFileField.value = '';
-    imageFile = {};
+function loadMenu() {
+    loadLogoIcon();
 
+    docRef.get().then(function(doc) {
+        loadProfileIcon(doc);
+        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
+        accountInfo(doc);
+    });
+}
+
+function loadLogoIcon() {
+    storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
+        $('#logo-icon').attr('src', imgURL);
+        console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
+    }).catch(err => {
+        console.log('Failed to Download  Icon'); // DEBUG LOG
+    });
+}
+
+function loadProfileIcon(doc) {
+    if (doc.data().picFlag) {
+        path = 'usercontent/' + UID + '/profile.jpg';
+    } else {
+        path = 'usercontent/default/profile.jpg';
+    }
+
+    storageRef.child(path).getDownloadURL().then(imgURL => {
+        $('#profile-icon').attr('src', imgURL);
+        console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
+    }).catch(err => {
+        console.log('Failed to Download Profile Icon'); // DEBUG LOG
+    });
+}
+
+function accountInfo(doc) {
+    // Fill out account info form with current info
     usernameField.value = doc.data().username;
     emailField.value = doc.data().email;
     bioTxtField.value = doc.data().bioText;
     hasProfileImage = doc.data().picFlag;
 
-    displayImage();
+    previewImage();
+
+    imageFileField.value = '';
+    imageFile = {};
 }
 
-function resetAccountInfo() {
-    docRef.get().then(function(doc) {
-        displayAccountInfo(doc);
-    });
-
-    $('.ui.form').form('reset');
-}
-
-function displayImage() {
+function previewImage() {
     var path = null;
 
     if (hasProfileImage) {
@@ -71,26 +104,26 @@ function displayImage() {
     }
 }
 
+function uploadImage(e) {
+    imageFile = e.target.files[0];
+    hasProfileImage = true;
+
+    // Stage chosen image file
+    previewImage();
+}
+
 function removeImage() {
     // Stage remove image change
     if (hasProfileImage) {
         imageFileField.value = '';
         imageFile = {};
         hasProfileImage = false;
-        displayImage();
+        previewImage();
     }
 }
 
-function chooseFile(e) {
-    imageFile = e.target.files[0];
-    hasProfileImage = true;
-
-    // Stage chosen image file
-    displayImage();
-}
-
-function submitForm() {
-    console.log('Form Submitted'); // DEBUG LOG
+function saveForm() {
+    console.log('Account Information Saved'); // DEBUG LOG
 
     // Update firestore with new field values
     docRef.set({
@@ -118,6 +151,17 @@ function submitForm() {
             picFlag: false
         },{merge: true})
     }
+
+    loadMenu();
+}
+
+function cancelForm() {
+    // Reset form values
+    docRef.get().then(function(doc) {
+        accountInfo(doc);
+    });
+
+    $('.ui.form').form('reset');
 }
 
 // Form Validation
@@ -145,7 +189,7 @@ $('#account-info').form({
     },
     onSuccess: function(event,fields) {
         console.log('Validation Succeeded')
-        submitForm();
+        saveForm();
         return false;
     }
 });
