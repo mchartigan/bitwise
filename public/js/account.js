@@ -61,11 +61,6 @@ function loadProfileIcon(doc) {
     });
 }
 
-function signOut() {
-    firebase.auth().signOut();
-    location.replace("index.html");
-}
-
 function accountInfo(doc) {
     // Fill out account info form with current info
     usernameField.value = doc.data().username;
