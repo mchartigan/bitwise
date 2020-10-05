@@ -1,4 +1,9 @@
-function anonymousLogin() { location.replace('index.html')}
+var UID = null;
+var storage = firebase.storage();
+var storageRef = storage.ref();
+var docRef = null;
+
+loadLogoIcon();
 
 // Initialize the FirebaseUI Widget using Firebase.
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -9,7 +14,25 @@ var uiConfig = {
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
-      return true;
+
+      UID = firebase.auth().currentUser.uid;
+      docRef = db.collection("users").doc(UID);
+      
+      docRef.get().then(function(doc) {
+        if (doc.data().email) {
+          // Redirect to homepage
+          location.replace("index.html");
+        } else {
+          // Force new user to fill out username
+          return docRef.set({
+            username: 'NewUser',
+            bioText: '',
+            email: firebase.auth().currentUser.email
+          },{merge: true}).then(() => {
+            location.replace("account.html");
+          });
+        }
+      });
     },
     uiShown: function() {
       // The widget is rendered.
@@ -32,3 +55,12 @@ var uiConfig = {
 
 // The start method will wait until the DOM is loaded.
 ui.start('#firebaseui-auth-container', uiConfig);
+
+function loadLogoIcon() {
+  storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
+      $('#logo-icon').attr('src', imgURL);
+      console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
+  }).catch(err => {
+      console.log('Failed to Download  Icon'); // DEBUG LOG
+  });
+}
