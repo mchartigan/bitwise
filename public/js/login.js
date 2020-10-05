@@ -25,9 +25,10 @@ var uiConfig = {
         } else {
           // Force new user to fill out username
           return docRef.set({
-            email: firebase.auth().currentUser.email
+            email: firebase.auth().currentUser.email,
+            username: 'defaultUser'
           },{merge: true}).then(() => {
-            location.replace("register.html");
+            location.replace("account.html");
           });
         }
       });
