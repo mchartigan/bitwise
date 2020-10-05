@@ -15,7 +15,7 @@ function login() {
 }
 
 function createPost() {
-  location.replace("common/new_post.html");
+  location.replace("common/create_post.html");
 }
 
 // create element & render cafe

@@ -5,7 +5,10 @@ postForm.addEventListener('submit', (e) =>{
     //console.log(e);
     var author;
     var uid;
-    if (!postForm.anonymous.value) author = null;
+    if (postForm.anonymous.checked) {
+        author = null;
+        uid    = null;
+    }
     else {
         uid = firebase.auth().currentUser.uid;
         
@@ -15,11 +18,13 @@ postForm.addEventListener('submit', (e) =>{
                 console.log(user.username);
             });
         }
-        else author = null;
+        else {
+            author = null;
+            uid    = null;
+        }
     }
     console.log(author);
-  
-    console.log(postForm.content.value);
+    console.log(uid);
 
     db.collection('posts').add({
         author: author,
