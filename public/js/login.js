@@ -26,7 +26,7 @@ var uiConfig = {
           // Force new user to fill out username
           return docRef.set({
             username: 'NewUser',
-            bio: '',
+            bioText: '',
             email: firebase.auth().currentUser.email
           },{merge: true}).then(() => {
             location.replace("account.html");
