@@ -2,49 +2,49 @@ const postForm = document.querySelector('#create-post-form');
 
 postForm.addEventListener('submit', (e) =>{
     e.preventDefault();
-    //console.log(e);
-    var author;
-    var uid;
-    if (postForm.anonymous.checked) {
-        author = null;
-        uid    = null;
+    
+    var uid = firebase.auth().currentUser.uid;
+    // if user chose to post anonymously or isn't signed in, post anonymously
+    if (postForm.anonymous.checked || !uid) {
+        addPost(
+            auth=null,
+            uid=null,
+            body=postForm.content.value,
+            subject=postForm.topic.value
+        );
     }
+    // otherwise post with username attached
     else {
-        uid = firebase.auth().currentUser.uid;
-        
-        if (uid) {
-            db.collection('users').doc(uid).get().then(user => {
-                author = user.username;
-                console.log(user.username);
-            });
-        }
-        else {
-            author = null;
-            uid    = null;
-        }
+        db.collection('users').doc(uid).get().then(user => {
+            addPost(
+                auth=user.data().username,
+                uid=uid,
+                body=postForm.content.value,
+                subject=postForm.topic.value
+            );
+        });
     }
-    console.log(author);
-    console.log(uid);
+});
 
+// function to generate post s.t. posting with username agrees with promise
+function addPost(auth, uid, body, subject) {
     db.collection('posts').add({
-        author: author,
+        author: auth,
         authoruid: uid,
-        content: postForm.content.value,
+        content: body,
         embed: null,
         created: new Date(),
         parent: null,
         children: [null],
-        topic: postForm.topic.value,
+        topic: subject,
         upvotes: [null],
         downvotes: [null]
     }).then(reference => {
         if(reference) {
             postForm.content.value = '';
             postForm.topic.value = '';
-    
+
             location.replace("/index.html");
         }
     });
-});
-  
-  
+}
