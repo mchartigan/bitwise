@@ -1,5 +1,8 @@
+var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
+var docRef = null;
+
 loadLogoIcon();
 
 // Initialize the FirebaseUI Widget using Firebase.
@@ -11,7 +14,23 @@ var uiConfig = {
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
-      return true;
+
+      UID = firebase.auth().currentUser.uid;
+      docRef = db.collection("users").doc(UID);
+      
+      docRef.get().then(function(doc) {
+        if (doc.data().email) {
+          // Redirect to homepage
+          location.replace("index.html");
+        } else {
+          // Force new user to fill out username
+          return docRef.set({
+            email: firebase.auth().currentUser.email
+          },{merge: true}).then(() => {
+            location.replace("register.html");
+          });
+        }
+      });
     },
     uiShown: function() {
       // The widget is rendered.
