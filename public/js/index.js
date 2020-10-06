@@ -21,6 +21,7 @@ function createPost() {
 // create element & render cafe
 function renderPost(doc){
   let li = document.createElement('li');
+  let title = document.createElement('span');
   let topic = document.createElement('span');
   let content = document.createElement('span');
   let author = document.createElement('span');
@@ -28,13 +29,15 @@ function renderPost(doc){
   let cross = document.createElement('div');
 
   li.setAttribute('data-id', doc.id);
+  //title.textContent = doc.data().title;
   topic.textContent = doc.data().topic;
   content.textContent = doc.data().content;
   author.textContent = doc.data().author;
   created.textContent = doc.data().created.toDate().toTimeString();
   cross.textContent = 'delete';
 
-  li.appendChild(topic)
+  li.appendChild(title);
+  li.appendChild(topic);
   li.appendChild(content);
   li.appendChild(author);
   li.appendChild(created);

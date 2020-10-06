@@ -1,32 +1,91 @@
 <html>
     <head>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
-        <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
     </head>
     <body>
-        <div class="content"> 
-            <form id="create-post-form">
-                <input type="text" name="content" placeholder="Enter a Post">
-                <input type="text" name="topic" placeholder="Enter a topic">
-                <input type="checkbox" name="anonymous" value="anonymous">
-                <label for="anonymous"> Anonymous</label>
-                <button>Add Post</button>
+        <div class="ui fixed violet inverted menu">
+            <div class="ui fluid container">
+                <a href="/index.html" class="header item">
+                    <img id="logo-icon" class="logo">
+                    &nbsp; Bitwise
+                </a>
+                <div class="ui simple right dropdown item">
+                    <img id="profile-icon" class="logo">
+                    <div id="account-dropdown">
+                        retrieving...
+                    </div>
+                    
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item" href="profile.html">Profile</a>
+                        <a class="item" href="account.html">Account Information</a>
+                        <a class="item" href="/index.html" onclick="firebase.auth().signOut()">
+                            <h4 class="ui red header">Sign Out</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='ui main text container'>
+            <br><br>
+            <h1 class="ui header">Account Information</h1>
+            
+            <form class='ui form' id='create-post'>
+                <div class='field'>
+                    <label>Title</label>
+                    <input type="text" placeholder="Title your post here" id="title-field" required/>
+                </div>
+
+                <div class='field'>
+                    <label>Body</label>
+                    <textarea rows="4" type="text" placeholder="Add a post body here" id="body-field" ></textarea>
+                </div>
+
+                <div class='field'>
+                    <label>Topic</label>
+                    <input type="text" placeholder="Tag with a topic (optional)" id="topic-field"/>
+                </div>
+                <br>
+
+                <div class=' ui violet submit button'>Save</div>
+                <div class=' ui basic button' onclick="cancelPost()">Clear</div>
+                <div class='ui violet toggle checkbox'>
+                    <input type='checkbox' name='anonymous'>
+                    <label>Anonymous?</label>
+                </div>
+                <div class="ui error message"></div>
             </form>
         </div>
+
         <script>
             // Initialize Firebase
-            var config = { 
+            var firebaseConfig = {
+
                 apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
                 authDomain: "bitwise-a3c2d.firebaseapp.com",
                 databaseURL: "https://bitwise-a3c2d.firebaseio.com",
                 projectId: "bitwise-a3c2d",
+                storageBucket: "bitwise-a3c2d.appspot.com",
+                messagingSenderId: "1025486551841",
                 appId: "1:1025486551841:web:24f84a09e2f70631625c60",
+                measurementId: "G-9DCMV9YV2N"
             };
-            firebase.initializeApp(config);
+
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            
             const db = firebase.firestore();
         </script>
-        <script src="/js/create_post.js"></script>
+
+        <script src="../js/create_post.js"></script>
     </body>
 </html>
