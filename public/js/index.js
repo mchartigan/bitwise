@@ -11,7 +11,7 @@ function login() {
       firebase.auth().signOut();
     }
     else {
-      location.replace("common/login.html");
+      location.replace("/common/login.html");
     }
   });
 }
@@ -20,13 +20,13 @@ function login() {
 function myProfile() {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      location.replace("account.html");
+      location.replace("/common/account.html");
     }
   });
 }
 
 function createPost() {
-  location.replace("common/create_post.html");
+  location.replace("/common/create_post.html");
 }
 
 // create element & render cafe

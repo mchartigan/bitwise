@@ -21,7 +21,7 @@ var uiConfig = {
       docRef.get().then(function(doc) {
         if (doc.data().email) {
           // Redirect to homepage
-          location.replace("index.html");
+          location.replace("/index.html");
         } else {
           // Force new user to fill out username
           return docRef.set({
@@ -29,7 +29,7 @@ var uiConfig = {
             bioText: '',
             email: firebase.auth().currentUser.email
           },{merge: true}).then(() => {
-            location.replace("account.html");
+            location.replace("/common/account.html");
           });
         }
       });
