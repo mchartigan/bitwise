@@ -69,7 +69,7 @@ function addPost(auth, uid, title, body, subject) {
             topicField.value = '';
 
 
-            //location.replace("/index.html");
+            location.replace("/index.html");
         }
     });
 }
