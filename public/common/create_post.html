@@ -16,7 +16,8 @@
                     <img id="logo-icon" class="logo">
                     &nbsp; Bitwise
                 </a>
-                <div class="ui simple right dropdown item">
+                <a href="/common/login.html" class="right header item" id="signin-button">Sign In</a>
+                <div class="ui simple right dropdown item" id="parent-dropdown-item">
                     <img id="profile-icon" class="logo">
                     <div id="account-dropdown">
                         retrieving...
@@ -57,6 +58,16 @@
                 <div class='field'>
                     <label>Attach a Picture</label>
                 </div>
+                <img src='//:0' class='hidden ui small image' id='post-image'>
+                <style>
+                    img {
+                        image-rendering: -moz-crisp-edges;
+                        image-rendering: -webkit-crisp-edges;
+                        image-rendering: pixelated;
+                        image-rendering: crisp-edges;
+                    }
+                </style>
+                <br><br>
                 <label class="ui violet basic button" for="image-file-field">
                     <i class="file icon"></i>
                     Upload
