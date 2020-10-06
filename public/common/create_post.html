@@ -53,7 +53,20 @@
                     <label>Topic</label>
                     <input type="text" placeholder="Tag with a topic (optional)" id="topic-field"/>
                 </div>
-                <br>
+
+                <div class='field'>
+                    <label>Attach a Picture</label>
+                </div>
+                <label class="ui violet basic button" for="image-file-field">
+                    <i class="file icon"></i>
+                    Upload
+                </label>
+                <input type="file" accept=".png, .jpg, .jpeg" id="image-file-field" style="display: none" onchange='uploadImage(event)'/>
+                <div class="ui basic button" onclick="removeImage()">
+                    <i class="trash icon"></i>
+                    Remove
+                </div>
+                <br><br>
 
                 <div class=' ui violet submit button'>Submit</div>
                 <div class=' ui basic button' onclick="cancelPost()">Clear</div>
