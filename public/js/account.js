@@ -133,30 +133,39 @@ function saveForm() {
     if (imageFileField.files.length != 0) {
         // Update storage with new image file
         var path = 'usercontent/' + UID + '/profile.jpg';
+        
         storageRef.child(path).put(imageFile).then(() => {
             console.log('Successfully Uploaded: ',path); // DEBUG LOG
 
-            db.collection("users").doc(UID).set({
-                picFlag: true
-            },{merge: true}).then(() => {
-                loadMenu();
-                accountInfo();
-            });
+            updateProfileImageURL(path,true);
         }).catch(err => {
             console.log('Failed to Upload: ',path); // DEBUG LOG
         });
     } else if (!hasProfileImage) {
         // Save remove profile image change
-        db.collection("users").doc(UID).set({
-            picFlag: false
-        },{merge: true}).then(() => {
-            loadMenu();
-            accountInfo();
-        });
+        path = 'usercontent/default/profile.jpg';
+
+        updateProfileImageURL(path,false);
     }
 
     imageFileField.value = '';
     imageFile = {};
+}
+
+function updateProfileImageURL(path, flag) {
+    storageRef.child(path).getDownloadURL().then(imgURL => {
+        console.log('Successfully retrieved profile image download URL: ', imgURL); // DEBUG LOG
+
+        db.collection("users").doc(UID).set({
+            picFlag: flag, // -------------------REMOVE LATER ONCE URL FUNCTIONALITY IS IMPLEMENTED-----------------------------\\
+            profileImageURL: imgURL
+        },{merge: true}).then(() => {
+            loadMenu();
+            accountInfo();
+        });
+    }).catch(err => {
+        console.log('Failed to retrieve profile image download URL'); // DEBUG LOG
+    });
 }
 
 function cancelForm() {

@@ -1,6 +1,4 @@
 // DOM elements
-const loginButton   = document.querySelector('#login-button');
-const profileButton = document.querySelector('#profile-button');
 const postForm      = document.querySelector('#create-post-form');
 const postList      = document.querySelector('#timeline');
 
