@@ -12,7 +12,7 @@
     <body>
         <div class="ui fixed violet inverted menu">
             <div class="ui fluid container">
-                <a href="index.html" class="header item">
+                <a href="/index.html" class="header item">
                     <img id="logo-icon" class="logo">
                     &nbsp; Bitwise
                 </a>
@@ -24,9 +24,9 @@
                     
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <a class="item" href="profile.html">Profile</a>
-                        <a class="item" href="account.html">Account Information</a>
-                        <a class="item" href="index.html" onclick="firebase.auth().signOut()">
+                        <a class="item" href="/common/profile.html">Profile</a>
+                        <a class="item" href="/common/account.html">Account Information</a>
+                        <a class="item" href="/index.html" onclick="firebase.auth().signOut()">
                             <h4 class="ui red header">Sign Out</h4>
                         </a>
                     </div>
@@ -107,6 +107,6 @@
             const db = firebase.firestore();
         </script>
 
-        <script src="js/account.js"></script>
+        <script src="/js/account.js"></script>
     </body>
 </html>

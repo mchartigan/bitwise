@@ -10,39 +10,50 @@
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+        
+        <link rel="stylesheet" href="/css/styles.css">
+        <title>Profile</title>
     </head>
     <body>
         <div class="ui fixed violet inverted menu">
             <div class="ui fluid container">
-                <a href="index.html" class="header item">
+                <a href="/index.html" class="header item">
                     <img id="logo-icon" class="logo">
                     &nbsp; Bitwise
                 </a>
+                <div class="ui simple right dropdown item" id="user-dropdown">
+                    <img id="profile-icon" class="logo">
+                    <div id="account-dropdown">
+                        retrieving...
+                    </div>
+                    
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item" href="/common/profile.html">Profile</a>
+                        <a class="item" href="/common/account.html">Account Information</a>
+                        <a class="item" href="/index.html" onclick="firebase.auth().signOut()">
+                            <h4 class="ui red header">Sign Out</h4>
+                        </a>
+                    </div>
+                </div>
+                <a href="/common/login.html" class="right header item" id="login-button">Login</a>
             </div>
         </div>
 
-        <div id='container' class='ui five column centered middle aligned grid'>
-            <style>
-                #container {
-                    height: 100vh;
-                }
-            </style>
+        <br><br><br>
 
-            <div class="row">
-                <div class="second column">
-                    <div id="firebaseui-auth-container" class='ui basic fluid violet button'></div>
-                    <div id="loader">Loading Google Authentication Widget...</div>
-                    <br>
-                    <a href="index.html" class='ui fluid violet button'>Continue Without Signing In</a>
-                </div>
-            </div>
+        <div class="parent">
+            <img class="child" id="profile-picture">
+            </img><div class="child inline-block-child" id="profile-data"></div>
+        </div>
+        <br>
+        <div class="content"> 
+            <ul id="timeline"></ul>
         </div>
 
         <script>
             // Initialize Firebase
-            var firebaseConfig = {
-
+            var firebaseConfig = { 
                 apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
                 authDomain: "bitwise-a3c2d.firebaseapp.com",
                 databaseURL: "https://bitwise-a3c2d.firebaseio.com",
@@ -52,13 +63,9 @@
                 appId: "1:1025486551841:web:24f84a09e2f70631625c60",
                 measurementId: "G-9DCMV9YV2N"
             };
-
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            
+            firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
         </script>
-        <script src="js/login.js"></script>
+        <script src="/js/profile.js"></script>
     </body>
 </html>
