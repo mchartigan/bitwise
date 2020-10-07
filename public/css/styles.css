@@ -70,31 +70,41 @@ li span{
 }
 
 li span:nth-child(1){
+    /* title */
+    font-weight: bold;
     font-size: 16px;
     margin-top: 6px;
     color: rgb(140, 0, 255);
 }
 
 li span:nth-child(2){
-    font-size: 16px;
+    /* topic */
+    font-size: 20px;
     margin-top: 6px;
     color: #fff;
 }
 
 li span:nth-child(3){
-    font-size: 12px;
+    font-size: 16px;
     margin-top: 6px;
     color: rgb(153, 153, 153);
 }
 
 li span:nth-child(4){
+    font-weight: bold;
     font-size: 16px;
     margin-top: 6px;
     color: #999;
 }
 
-li img:nth-child(5){
-    max-height: 100px;
+li span:nth-child(5){
+    font-size: 12px;
+    margin-top: 6px;
+    color: #999;
+}
+
+li img{
+    max-height: 150px;
     margin-top: 6px;
 }
 
