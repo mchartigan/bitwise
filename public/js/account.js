@@ -4,7 +4,6 @@
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
-var docRef = null;
 
 let usernameField = document.getElementById('username-field'),
     emailField = document.getElementById('email-field')
@@ -19,9 +18,8 @@ firebase.auth().onAuthStateChanged(function(user) {
         UID = user.uid;
         console.log('Retrieved UID');
 
-        docRef = db.collection("users").doc(UID);
-
         loadMenu();
+        accountInfo();
     } else {
         console.error('NO LOGGED IN USER, CANNOT VIEW ACCOUNT INFORMATION');
     }
@@ -30,10 +28,9 @@ firebase.auth().onAuthStateChanged(function(user) {
 function loadMenu() {
     loadLogoIcon();
 
-    docRef.get().then(function(doc) {
+    db.collection("users").doc(UID).get().then(function(doc) {
         loadProfileIcon(doc);
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-        accountInfo(doc);
     });
 }
 
@@ -61,17 +58,19 @@ function loadProfileIcon(doc) {
     });
 }
 
-function accountInfo(doc) {
-    // Fill out account info form with current info
-    usernameField.value = doc.data().username;
-    emailField.value = doc.data().email;
-    bioTxtField.value = doc.data().bioText;
-    hasProfileImage = doc.data().picFlag;
+function accountInfo() {
+    db.collection("users").doc(UID).get().then(function(doc) {
+        // Fill out account info form with current info
+        usernameField.value = doc.data().username;
+        emailField.value = doc.data().email;
+        bioTxtField.value = doc.data().bioText;
+        hasProfileImage = doc.data().picFlag;
+    }).then(() => {
+        previewImage();
 
-    previewImage();
-
-    imageFileField.value = '';
-    imageFile = {};
+        imageFileField.value = '';
+        imageFile = {};
+    });
 }
 
 function previewImage() {
@@ -126,7 +125,7 @@ function saveForm() {
     console.log('Account Information Saved'); // DEBUG LOG
 
     // Update firestore with new field values
-    docRef.set({
+    db.collection("users").doc(UID).set({
         username: usernameField.value,
         bioText: bioTxtField.value
     },{merge: true})
@@ -134,32 +133,44 @@ function saveForm() {
     if (imageFileField.files.length != 0) {
         // Update storage with new image file
         var path = 'usercontent/' + UID + '/profile.jpg';
-        storageRef.child(path).put(imageFile).then(function () {
+        
+        storageRef.child(path).put(imageFile).then(() => {
             console.log('Successfully Uploaded: ',path); // DEBUG LOG
 
-            docRef.set({
-                picFlag: true
-            },{merge: true})
+            updateProfileImageURL(path,true);
         }).catch(err => {
             console.log('Failed to Upload: ',path); // DEBUG LOG
         });
-    }
-    
-    // Save remove profile image change
-    if (!hasProfileImage) {
-        docRef.set({
-            picFlag: false
-        },{merge: true})
+    } else if (!hasProfileImage) {
+        // Save remove profile image change
+        path = 'usercontent/default/profile.jpg';
+
+        updateProfileImageURL(path,false);
     }
 
-    loadMenu();
+    imageFileField.value = '';
+    imageFile = {};
+}
+
+function updateProfileImageURL(path, flag) {
+    storageRef.child(path).getDownloadURL().then(imgURL => {
+        console.log('Successfully retrieved profile image download URL: ', imgURL); // DEBUG LOG
+
+        db.collection("users").doc(UID).set({
+            picFlag: flag, // -------------------REMOVE LATER ONCE URL FUNCTIONALITY IS IMPLEMENTED-----------------------------\\
+            profileImageURL: imgURL
+        },{merge: true}).then(() => {
+            loadMenu();
+            accountInfo();
+        });
+    }).catch(err => {
+        console.log('Failed to retrieve profile image download URL'); // DEBUG LOG
+    });
 }
 
 function cancelForm() {
     // Reset form values
-    docRef.get().then(function(doc) {
-        accountInfo(doc);
-    });
+    accountInfo();
 
     $('.ui.form').form('reset');
 }
