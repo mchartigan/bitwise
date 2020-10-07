@@ -97,6 +97,9 @@ var endless = {
             }
 
             if (!endless.first && endless.hasMore) {
+                    // ============================================================================================================
+                    // -------------------------TODO: SHOW ANONYMOUS POSTS IF THE LOGGED IN USER POSTED IT-------------------------
+                    // ============================================================================================================
                     db.collection('posts')
                     .where('authoruid', 'in', following)
                     .orderBy('created', 'desc')
