@@ -18,30 +18,29 @@
         <div class="ui fixed violet inverted menu">
             <div class="ui fluid container">
                 <a href="/index.html" class="header item">
-                    <img id="logo-icon" class="logo">
+                    <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5">
                     &nbsp; Bitwise
                 </a>
                 <div class="ui simple right dropdown item" id="user-dropdown">
-                    <img id="profile-icon" class="logo">
+                    <img id="profile-icon" class="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551">
                     <div id="account-dropdown">
-                        retrieving...
+                        &nbsp; retrieving...
                     </div>
                     
                     <i class="dropdown icon"></i>
                     <div class="menu">
                         <a class="item" href="/common/profile.html">Profile</a>
                         <a class="item" href="/common/account.html">Account Information</a>
-                        <a class="item" href="/index.html" onclick="firebase.auth().signOut()">
+                        <a class="item" href="/common/login.html" onclick="firebase.auth().signOut()">
                             <h4 class="ui red header">Sign Out</h4>
                         </a>
                     </div>
                 </div>
-                <a href="/common/login.html" class="right header item" id="login-button">Login</a>
+                <a href="/common/login.html" class="right header item" id="login-button">Log In</a>
             </div>
         </div>
 
         <br><br><br>
-
         <div class="parent">
             <img class="child" id="profile-picture">
             </img><div class="child inline-block-child" id="profile-data"></div>

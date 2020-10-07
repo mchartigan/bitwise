@@ -2,8 +2,6 @@ var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
 
-loadLogoIcon();
-
 // Initialize the FirebaseUI Widget using Firebase.
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
@@ -17,12 +15,13 @@ var uiConfig = {
       UID = firebase.auth().currentUser.uid;
       
       db.collection("users").doc(UID).get().then(function(doc) {
-        if (doc.data().email) {
+        if (doc.data()) {
           // Redirect to homepage
           location.replace("/index.html");
         } else {
           // Force new user to fill out username
           return db.collection("users").doc(UID).set({
+            profileImageURL: "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551",
             username: firebase.auth().currentUser.displayName,
             bioText: '',
             email: firebase.auth().currentUser.email
@@ -55,12 +54,3 @@ var uiConfig = {
 ui.start('#firebaseui-auth-container', uiConfig);
 
 function anonymousLogin() { location.replace('/index.html')}
-
-function loadLogoIcon() {
-  storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-      $('#logo-icon').attr('src', imgURL);
-      console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-  }).catch(err => {
-      console.log('Failed to Download  Icon'); // DEBUG LOG
-  });
-}

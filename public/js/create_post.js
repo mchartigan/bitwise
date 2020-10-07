@@ -1,3 +1,6 @@
+// ------TO DO------
+// Give live preview of post card
+
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
@@ -24,36 +27,22 @@ storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-
         UID = user.uid;
-        console.log('Retrieved UID');
-
         docRef = db.collection("users").doc(UID);
 
-        docRef.get().then(function(doc) {
-            loadProfileIcon(doc);
-            document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-        });
+        loadDropdown();
+    
+        $("#login-button").hide();
+        $("#user-dropdown").show();
     } else {
-        
-        // hide dropdown and replace with a signin button
-        $('#parent-dropdown-item').hide();
-        $('#signin-button').show();
+        location.replace("/common/login.html");
     }
 });
-
-function loadProfileIcon(doc) {
-    if (doc.data().picFlag) {
-        path = 'usercontent/' + UID + '/profile.jpg';
-    } else {
-        path = 'usercontent/default/profile.jpg';
-    }
-
-    storageRef.child(path).getDownloadURL().then(imgURL => {
-        $('#profile-icon').attr('src', imgURL);
-        console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
-    }).catch(err => {
-        console.log('Failed to Download Profile Icon'); // DEBUG LOG
+  
+function loadDropdown() {
+    docRef.get().then(function(doc) {
+        $('#profile-icon').attr('src', doc.data().profileImageURL);
+        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
     });
 }
 
@@ -130,7 +119,7 @@ function addPost(auth, uid, title, body, subject) {
                         image: downloadURL
                     },{merge: true});
 
-                    cancelPost();
+                    cancelPost(); // ----------------what is the point of calling cancel post here if it redirects to index.html anyway
 
                     console.log('Successfully Uploaded: ', path); // DEBUG LOG
                     location.replace("/index.html");
@@ -139,7 +128,7 @@ function addPost(auth, uid, title, body, subject) {
                 });
             }
             else {
-                cancelPost();
+                cancelPost();     // ----------------same as above...
                 location.replace("/index.html");
             }
         }
