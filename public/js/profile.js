@@ -97,6 +97,9 @@ var endless = {
             }
 
             if (!endless.first && endless.hasMore) {
+                    // ============================================================================================================
+                    // -------------------------TODO: SHOW ANONYMOUS POSTS IF THE LOGGED IN USER POSTED IT-------------------------
+                    // ============================================================================================================
                     db.collection('posts')
                     .where('authoruid', 'in', following)
                     .orderBy('created', 'desc')
@@ -134,41 +137,12 @@ var endless = {
     }
 };
 
-
 // -----------------------zach g's user stuff---------------------------------------------- \\
-
-
-function loadMenu() {
-    loadLogoIcon();
-
-    docRef.get().then(function (doc) {
-        loadProfileIcon(doc);
+  
+function loadDropdown() {
+    db.collection("users").doc(UID).get().then(function(doc) {
+        $('#profile-icon').attr('src', doc.data().profileImageURL);
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-    });
-}
-
-function loadLogoIcon() {
-    storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-        $('#logo-icon').attr('src', imgURL);
-        //console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-    }).catch(err => {
-        //console.log('Failed to Download  Icon'); // DEBUG LOG
-    });
-}
-
-function loadProfileIcon(doc) {
-    if (doc.data().picFlag) {
-        path = 'usercontent/' + UID + '/profile.jpg';
-    } else {
-        path = 'usercontent/default/profile.jpg';
-    }
-
-    storageRef.child(path).getDownloadURL().then(imgURL => {
-        $('#profile-icon').attr('src', imgURL);
-        $('#profile-picture').attr('src', imgURL);
-        //console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
-    }).catch(err => {
-        //console.log('Failed to Download Profile Icon'); // DEBUG LOG
     });
 }
 
@@ -183,12 +157,15 @@ firebase.auth().onAuthStateChanged(function (user) {
         UID = user.uid;
         docRef = db.collection("users").doc(UID);
 
-        loadMenu();
-
         $("#login-button").hide();
         $("#user-dropdown").show();
 
+        loadDropdown();
+
         // load the user's profile information into the top
+        docRef.get().then(function(doc) {
+            $('#profile-picture').attr('src', doc.data().profileImageURL);
+        });
 
         let tcontent = document.createElement('div');
         let uname = document.createElement('h1');
@@ -205,8 +182,6 @@ firebase.auth().onAuthStateChanged(function (user) {
             profile.append(tcontent);
         });
 
-
-
         // get a list of users whose posts we want to see
         // as this is the users own page, its just the user
 
@@ -216,12 +191,9 @@ firebase.auth().onAuthStateChanged(function (user) {
     } else {
         docRef = null;
 
-        loadLogoIcon();
-
         $("#login-button").show();
         $("#user-dropdown").hide();
     }
-
 });
 
 // run after page initialization

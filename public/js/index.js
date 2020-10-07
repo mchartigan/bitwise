@@ -2,31 +2,6 @@
 const postForm      = document.querySelector('#create-post-form');
 const postList      = document.querySelector('#timeline');
 
-// navigate to login page
-function login() {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      firebase.auth().signOut();
-    }
-    else {
-      location.replace("/common/login.html");
-    }
-  });
-}
-
-// navigate to user profile page when logged in
-function myProfile() {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      location.replace("/common/account.html");
-    }
-  });
-}
-
-function createPost() {
-  location.replace("/common/create_post.html");
-}
-
 // create element & render cafe
 function renderPost(doc){
   let li = document.createElement('li');
@@ -151,53 +126,28 @@ document.addEventListener('DOMContentLoaded', function() {
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
+var docRef = null;
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     UID = user.uid;
+    docRef = db.collection("users").doc(UID);
 
-    loadMenu();
+    loadDropdown();
 
     $("#login-button").hide();
     $("#user-dropdown").show();
+    $("#create-post-button").show();
   } else {
-
-    loadLogoIcon();
-
     $("#login-button").show();
     $("#user-dropdown").hide();
+    $("#create-post-button").hide();
   }
 });
 
-function loadMenu() {
-  loadLogoIcon();
-
-  db.collection("users").doc(UID).get().then(function(doc) {
-      loadProfileIcon(doc);
-      document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-  });
-}
-
-function loadLogoIcon() {
-  storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-      $('#logo-icon').attr('src', imgURL);
-      console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-  }).catch(err => {
-      console.log('Failed to Download  Icon'); // DEBUG LOG
-  });
-}
-
-function loadProfileIcon(doc) {
-  if (doc.data().picFlag) {
-      path = 'usercontent/' + UID + '/profile.jpg';
-  } else {
-      path = 'usercontent/default/profile.jpg';
-  }
-
-  storageRef.child(path).getDownloadURL().then(imgURL => {
-      $('#profile-icon').attr('src', imgURL);
-      console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
-  }).catch(err => {
-      console.log('Failed to Download Profile Icon'); // DEBUG LOG
-  });
+function loadDropdown() {
+    docRef.get().then(function(doc) {
+        $('#profile-icon').attr('src', doc.data().profileImageURL);
+        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
+    });
 }
