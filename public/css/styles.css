@@ -1,11 +1,13 @@
 body{
-    background: #12001a;
-    font-family: ubuntu;
+    background: #000000;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12;
 }
 
 h1{
     color: #fff;
-    font-size: 64px;
+    font-size: 45px;
     letter-spacing: 2px;
     margin-top: 10px;
     text-align: left;
@@ -13,10 +15,28 @@ h1{
 
 h2{
     color: #fff;
-    font-size: 30px;
+    font-size: 25px;
     letter-spacing: 2px;
     margin-top: 10px;
     text-align: left;
+}
+
+.parent {
+    background: #000;
+    padding: 10px;
+    height: 150px;
+    width: 100%;
+    margin: 10px 10px;
+    display: inline-flex;
+    align-content: center;
+}
+
+.child {
+    background: rgb(78, 0, 131);
+    padding: 10px;
+    height: 150px;
+    max-width: 810px;
+    margin: 0 auto;
 }
 
 .content{
@@ -24,23 +44,24 @@ h2{
     max-width: 960px;
     margin: 30px auto;
     padding:  20px 30px;
-    border-radius: 10px 10px 10px 10px;
-    box-shadow: 1px 3px 5px rgba(0,0,0,0.1)
+    border-radius: 5px 5px 5px 5px;
 }
 
 ul{
     list-style-type: none;
     padding: 0;
+    border: 2px solid #fff;
+    background: #000;
 }
 
 li{
     padding: 20px;
-    background: #f6f6f6;
+    background: #000000;
     font-size: 20px;
     color: #555;
     position: relative;
     border-bottom: 1px solid #e6e6e6;
-    height: 60px;
+    min-height: 100px;
 }
 
 
@@ -57,7 +78,7 @@ li span:nth-child(1){
 li span:nth-child(2){
     font-size: 16px;
     margin-top: 6px;
-    color: rgb(0, 0, 0);
+    color: #fff;
 }
 
 li span:nth-child(3){
@@ -70,6 +91,11 @@ li span:nth-child(4){
     font-size: 16px;
     margin-top: 6px;
     color: #999;
+}
+
+li img:nth-child(5){
+    max-height: 100px;
+    margin-top: 6px;
 }
 
 li div{
