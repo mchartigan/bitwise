@@ -21,7 +21,7 @@ var uiConfig = {
       docRef.get().then(function(doc) {
         if (doc.data().email) {
           // Redirect to homepage
-          location.replace("index.html");
+          location.replace("/index.html");
         } else {
           // Force new user to fill out username
           return docRef.set({
@@ -29,7 +29,7 @@ var uiConfig = {
             bioText: '',
             email: firebase.auth().currentUser.email
           },{merge: true}).then(() => {
-            location.replace("account.html");
+            location.replace("/common/account.html");
           });
         }
       });
@@ -42,7 +42,7 @@ var uiConfig = {
   },
   // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
   signInFlow: 'popup',
-  signInSuccessUrl: 'index.html',
+  signInSuccessUrl: '/index.html',
   signInOptions: [
     // Leave the lines as is for the providers you want to offer your users.
     firebase.auth.GoogleAuthProvider.PROVIDER_ID
@@ -55,6 +55,8 @@ var uiConfig = {
 
 // The start method will wait until the DOM is loaded.
 ui.start('#firebaseui-auth-container', uiConfig);
+
+function anonymousLogin() { location.replace('/index.html')}
 
 function loadLogoIcon() {
   storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {

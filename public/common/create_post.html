@@ -10,13 +10,14 @@
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
     </head>
     <body>
-        <div class="ui fixed teal inverted menu">
+        <div class="ui fixed violet inverted menu">
             <div class="ui fluid container">
                 <a href="/index.html" class="header item">
                     <img id="logo-icon" class="logo">
                     &nbsp; Bitwise
                 </a>
-                <div class="ui simple right dropdown item">
+                <a href="/common/login.html" class="right header item" id="signin-button">Sign In</a>
+                <div class="ui simple right dropdown item" id="parent-dropdown-item">
                     <img id="profile-icon" class="logo">
                     <div id="account-dropdown">
                         retrieving...
@@ -36,13 +37,28 @@
 
         <div class='ui main text container'>
             <br><br>
-            <h1 class="ui header">Account Information</h1>
+            <h1 class="ui header">Create a Post</h1>
             
-            <form class='ui form' id='account-info'>
+            <form class='ui form' id='create-post'>
                 <div class='field'>
-                    <label>Profile Picture</label>
+                    <label>Title</label>
+                    <input type="text" placeholder="Title your post here" id="title-field" required/>
                 </div>
-                <img src='https://via.placeholder.com/150' class='ui medium image' id='profile-image'>
+
+                <div class='field'>
+                    <label>Body</label>
+                    <textarea rows="4" type="text" placeholder="Add a post body here" id="body-field" ></textarea>
+                </div>
+
+                <div class='field'>
+                    <label>Topic</label>
+                    <input type="text" placeholder="Tag with a topic (optional)" id="topic-field"/>
+                </div>
+
+                <div class='field'>
+                    <label>Attach a Picture</label>
+                </div>
+                <img src='//:0' class='hidden ui small image' id='post-image'>
                 <style>
                     img {
                         image-rendering: -moz-crisp-edges;
@@ -51,9 +67,8 @@
                         image-rendering: crisp-edges;
                     }
                 </style>
-                <br>
-
-                <label class="ui basic button" for="image-file-field">
+                <br><br>
+                <label class="ui violet basic button" for="image-file-field">
                     <i class="file icon"></i>
                     Upload
                 </label>
@@ -64,24 +79,12 @@
                 </div>
                 <br><br>
 
-                <div class='field'>
-                    <label>Username</label>
-                    <input type="text" id="username-field" required/>
+                <div class=' ui violet submit button'>Submit</div>
+                <div class=' ui basic button' onclick="cancelPost()">Clear</div>
+                <div class='ui violet toggle checkbox'>
+                    <input type='checkbox' name='anonymous'>
+                    <label>Anonymous?</label>
                 </div>
-
-                <div class='field'>
-                    <label>Short Bio</label>
-                    <textarea rows="2" type="text" id="bio-txt-field" ></textarea>
-                </div>
-
-                <div class='disabled field'>
-                    <label>Email</label>
-                    <input type="text" placeholder="retrieving email..." id="email-field"/>
-                </div>
-                <br>
-
-                <div class=' ui teal submit button'>Save</div>
-                <div class=' ui basic button' onclick="cancelForm()">Cancel</div>
                 <div class="ui error message"></div>
             </form>
         </div>
@@ -107,6 +110,6 @@
             const db = firebase.firestore();
         </script>
 
-        <script src="/js/account.js"></script>
+        <script src="../js/create_post.js"></script>
     </body>
 </html>
