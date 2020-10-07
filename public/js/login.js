@@ -21,6 +21,7 @@ var uiConfig = {
         } else {
           // Force new user to fill out username
           return db.collection("users").doc(UID).set({
+            profileImageURL: "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551",
             username: firebase.auth().currentUser.displayName,
             bioText: '',
             email: firebase.auth().currentUser.email

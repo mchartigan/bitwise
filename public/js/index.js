@@ -126,10 +126,12 @@ document.addEventListener('DOMContentLoaded', function() {
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
+var docRef = null;
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     UID = user.uid;
+    docRef = db.collection("users").doc(UID);
 
     loadDropdown();
 
@@ -137,8 +139,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     $("#user-dropdown").show();
     $("#create-post-button").show();
   } else {
-
-
     $("#login-button").show();
     $("#user-dropdown").hide();
     $("#create-post-button").hide();
@@ -146,23 +146,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 function loadDropdown() {
-  db.collection("users").doc(UID).get().then(function(doc) {
-      loadProfileIcon(doc);
-      document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-  });
-}
-
-function loadProfileIcon(doc) {
-  if (doc.data().picFlag) {
-      path = 'usercontent/' + UID + '/profile.jpg';
-  } else {
-      path = 'usercontent/default/profile.jpg';
-  }
-
-  storageRef.child(path).getDownloadURL().then(imgURL => {
-      $('#profile-icon').attr('src', imgURL);
-      console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
-  }).catch(err => {
-      console.log('Failed to Download Profile Icon'); // DEBUG LOG
-  });
+    docRef.get().then(function(doc) {
+        $('#profile-icon').attr('src', doc.data().profileImageURL);
+        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
+    });
 }

@@ -141,24 +141,8 @@ var endless = {
   
 function loadDropdown() {
     db.collection("users").doc(UID).get().then(function(doc) {
-        loadProfileIcon(doc);
+        $('#profile-icon').attr('src', doc.data().profileImageURL);
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-    });
-}
-  
-function loadProfileIcon(doc) {
-    if (doc.data().picFlag) {
-        path = 'usercontent/' + UID + '/profile.jpg';
-    } else {
-        path = 'usercontent/default/profile.jpg';
-    }
-  
-    storageRef.child(path).getDownloadURL().then(imgURL => {
-        $('#profile-icon').attr('src', imgURL);
-        $('#profile-picture').attr('src', imgURL); // move later
-        //console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
-    }).catch(err => {
-        //console.log('Failed to Download Profile Icon'); // DEBUG LOG
     });
 }
 
@@ -173,12 +157,15 @@ firebase.auth().onAuthStateChanged(function (user) {
         UID = user.uid;
         docRef = db.collection("users").doc(UID);
 
-        loadDropdown();
-
         $("#login-button").hide();
         $("#user-dropdown").show();
 
+        loadDropdown();
+
         // load the user's profile information into the top
+        docRef.get().then(function(doc) {
+            $('#profile-picture').attr('src', doc.data().profileImageURL);
+        });
 
         let tcontent = document.createElement('div');
         let uname = document.createElement('h1');
