@@ -12,8 +12,7 @@
         <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
         
         <link rel="stylesheet" href="css/styles.css">
-        <link rel="shortcut icon" href="favicon.ico">
-        <title>Bitwise Home</title>
+        <title>Profile</title>
     </head>
     <body>
         <div class="ui fixed violet inverted menu">
@@ -42,14 +41,13 @@
         </div>
 
         <br><br><br>
+
+        <div class="parent">
+            <img class="child" id="profile-picture">
+            </img><div class="child inline-block-child" id="profile-data"></div>
+        </div>
+        <br>
         <div class="content"> 
-            <form id="create-post-form">
-                <input type="text" name="content" placeholder="Enter a Post">
-                <input type="text" name="topic" placeholder="Enter a topic">
-                <input type="checkbox" name="anonymous" value="anonymous">
-                <label for="anonymous"> Anonymous</label>
-                <button>Add Post</button>
-            </form>
             <ul id="timeline"></ul>
         </div>
 
@@ -68,6 +66,6 @@
             firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
         </script>
-        <script src="js/index.js"></script>
+        <script src="js/profile.js"></script>
     </body>
 </html>
