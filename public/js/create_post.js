@@ -1,3 +1,6 @@
+// ------TO DO------
+// Give live preview of post card
+
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();

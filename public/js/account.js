@@ -1,6 +1,3 @@
-// ------TO DO------
-// ON ACCOUNT REGISTRATION, SET INITIAL USERNAME, INITAL BIO, EMAIL, PICFLAG (false)
-
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
@@ -18,20 +15,16 @@ firebase.auth().onAuthStateChanged(function(user) {
         UID = user.uid;
         console.log('Retrieved UID');
 
-        loadMenu();
+        loadMenuBar();
         accountInfo();
     } else {
         console.error('NO LOGGED IN USER, CANNOT VIEW ACCOUNT INFORMATION');
     }
 });
 
-function loadMenu() {
+function loadMenuBar() {
     loadLogoIcon();
-
-    db.collection("users").doc(UID).get().then(function(doc) {
-        loadProfileIcon(doc);
-        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-    });
+    loadDropdown();
 }
 
 function loadLogoIcon() {
@@ -40,6 +33,13 @@ function loadLogoIcon() {
         console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
     }).catch(err => {
         console.log('Failed to Download  Icon'); // DEBUG LOG
+    });
+}
+
+function loadDropdown() {
+    db.collection("users").doc(UID).get().then(function(doc) {
+        loadProfileIcon(doc);
+        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
     });
 }
 
@@ -160,7 +160,7 @@ function updateProfileImageURL(path, flag) {
             picFlag: flag, // -------------------REMOVE LATER ONCE URL FUNCTIONALITY IS IMPLEMENTED-----------------------------\\
             profileImageURL: imgURL
         },{merge: true}).then(() => {
-            loadMenu();
+            loadDropdown();
             accountInfo();
         });
     }).catch(err => {

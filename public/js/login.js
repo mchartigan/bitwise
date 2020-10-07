@@ -4,6 +4,15 @@ var storageRef = storage.ref();
 
 loadLogoIcon();
 
+function loadLogoIcon() {
+  storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
+      $('#logo-icon').attr('src', imgURL);
+      console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
+  }).catch(err => {
+      console.log('Failed to Download  Icon'); // DEBUG LOG
+  });
+}
+
 // Initialize the FirebaseUI Widget using Firebase.
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
@@ -55,12 +64,3 @@ var uiConfig = {
 ui.start('#firebaseui-auth-container', uiConfig);
 
 function anonymousLogin() { location.replace('/index.html')}
-
-function loadLogoIcon() {
-  storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-      $('#logo-icon').attr('src', imgURL);
-      console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-  }).catch(err => {
-      console.log('Failed to Download  Icon'); // DEBUG LOG
-  });
-}

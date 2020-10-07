@@ -2,31 +2,6 @@
 const postForm      = document.querySelector('#create-post-form');
 const postList      = document.querySelector('#timeline');
 
-// navigate to login page
-function login() {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      firebase.auth().signOut();
-    }
-    else {
-      location.replace("/common/login.html");
-    }
-  });
-}
-
-// navigate to user profile page when logged in
-function myProfile() {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      location.replace("/common/account.html");
-    }
-  });
-}
-
-function createPost() {
-  location.replace("/common/create_post.html");
-}
-
 // create element & render cafe
 function renderPost(doc){
   let li = document.createElement('li');
@@ -156,22 +131,27 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     UID = user.uid;
 
-    loadMenu();
+    loadMenuBar();
 
     $("#login-button").hide();
     $("#user-dropdown").show();
+    $("#create-post-button").show();
   } else {
 
     loadLogoIcon();
 
     $("#login-button").show();
     $("#user-dropdown").hide();
+    $("#create-post-button").hide();
   }
 });
 
-function loadMenu() {
+function loadMenuBar() {
   loadLogoIcon();
+  loadDropdown();
+}
 
+function loadDropdown() {
   db.collection("users").doc(UID).get().then(function(doc) {
       loadProfileIcon(doc);
       document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;

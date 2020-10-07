@@ -134,41 +134,41 @@ var endless = {
     }
 };
 
-
 // -----------------------zach g's user stuff---------------------------------------------- \\
 
-
-function loadMenu() {
+function loadMenuBar() {
     loadLogoIcon();
-
-    docRef.get().then(function (doc) {
+    loadDropdown();
+}
+  
+function loadDropdown() {
+    db.collection("users").doc(UID).get().then(function(doc) {
         loadProfileIcon(doc);
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
     });
 }
-
+  
 function loadLogoIcon() {
     storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
         $('#logo-icon').attr('src', imgURL);
-        //console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
+        console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
     }).catch(err => {
-        //console.log('Failed to Download  Icon'); // DEBUG LOG
+        console.log('Failed to Download  Icon'); // DEBUG LOG
     });
 }
-
+  
 function loadProfileIcon(doc) {
     if (doc.data().picFlag) {
         path = 'usercontent/' + UID + '/profile.jpg';
     } else {
         path = 'usercontent/default/profile.jpg';
     }
-
+  
     storageRef.child(path).getDownloadURL().then(imgURL => {
         $('#profile-icon').attr('src', imgURL);
-        $('#profile-picture').attr('src', imgURL);
-        //console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
+        console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
     }).catch(err => {
-        //console.log('Failed to Download Profile Icon'); // DEBUG LOG
+        console.log('Failed to Download Profile Icon'); // DEBUG LOG
     });
 }
 
@@ -183,7 +183,7 @@ firebase.auth().onAuthStateChanged(function (user) {
         UID = user.uid;
         docRef = db.collection("users").doc(UID);
 
-        loadMenu();
+        loadMenuBar();
 
         $("#login-button").hide();
         $("#user-dropdown").show();
@@ -205,8 +205,6 @@ firebase.auth().onAuthStateChanged(function (user) {
             profile.append(tcontent);
         });
 
-
-
         // get a list of users whose posts we want to see
         // as this is the users own page, its just the user
 
@@ -221,7 +219,6 @@ firebase.auth().onAuthStateChanged(function (user) {
         $("#login-button").show();
         $("#user-dropdown").hide();
     }
-
 });
 
 // run after page initialization
