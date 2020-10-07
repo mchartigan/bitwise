@@ -17,7 +17,7 @@ var uiConfig = {
       UID = firebase.auth().currentUser.uid;
       
       db.collection("users").doc(UID).get().then(function(doc) {
-        if (doc.data().email) {
+        if (doc.data()) {
           // Redirect to homepage
           location.replace("/index.html");
         } else {
