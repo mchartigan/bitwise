@@ -131,14 +131,13 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     UID = user.uid;
 
-    loadMenuBar();
+    loadDropdown();
 
     $("#login-button").hide();
     $("#user-dropdown").show();
     $("#create-post-button").show();
   } else {
 
-    loadLogoIcon();
 
     $("#login-button").show();
     $("#user-dropdown").hide();
@@ -146,24 +145,10 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-function loadMenuBar() {
-  loadLogoIcon();
-  loadDropdown();
-}
-
 function loadDropdown() {
   db.collection("users").doc(UID).get().then(function(doc) {
       loadProfileIcon(doc);
       document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-  });
-}
-
-function loadLogoIcon() {
-  storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-      $('#logo-icon').attr('src', imgURL);
-      console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-  }).catch(err => {
-      console.log('Failed to Download  Icon'); // DEBUG LOG
   });
 }
 

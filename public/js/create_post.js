@@ -29,7 +29,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         UID = user.uid;
     
-        loadMenuBar();
+        loadDropdown();
     
         $("#login-button").hide();
         $("#user-dropdown").show();
@@ -38,24 +38,10 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 });
   
-function loadMenuBar() {
-    loadLogoIcon();
-    loadDropdown();
-}
-  
 function loadDropdown() {
     db.collection("users").doc(UID).get().then(function(doc) {
         loadProfileIcon(doc);
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-    });
-}
-  
-function loadLogoIcon() {
-    storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-        $('#logo-icon').attr('src', imgURL);
-        console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-    }).catch(err => {
-        console.log('Failed to Download  Icon'); // DEBUG LOG
     });
 }
   
@@ -147,7 +133,7 @@ function addPost(auth, uid, title, body, subject) {
                         image: downloadURL
                     },{merge: true});
 
-                    cancelPost();
+                    cancelPost(); // ----------------what is the point of calling cancel post here if it redirects to index.html anyway
 
                     console.log('Successfully Uploaded: ', path); // DEBUG LOG
                     location.replace("/index.html");
@@ -156,7 +142,7 @@ function addPost(auth, uid, title, body, subject) {
                 });
             }
             else {
-                cancelPost();
+                cancelPost();     // ----------------same as above...
                 location.replace("/index.html");
             }
         }

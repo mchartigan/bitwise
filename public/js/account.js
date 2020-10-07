@@ -15,26 +15,12 @@ firebase.auth().onAuthStateChanged(function(user) {
         UID = user.uid;
         console.log('Retrieved UID');
 
-        loadMenuBar();
+        loadDropdown();
         accountInfo();
     } else {
-        console.error('NO LOGGED IN USER, CANNOT VIEW ACCOUNT INFORMATION');
+        location.replace("/common/login.html");
     }
 });
-
-function loadMenuBar() {
-    loadLogoIcon();
-    loadDropdown();
-}
-
-function loadLogoIcon() {
-    storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-        $('#logo-icon').attr('src', imgURL);
-        console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-    }).catch(err => {
-        console.log('Failed to Download  Icon'); // DEBUG LOG
-    });
-}
 
 function loadDropdown() {
     db.collection("users").doc(UID).get().then(function(doc) {
