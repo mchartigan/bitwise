@@ -16,29 +16,38 @@ function myProfile() {
 }
 
 // create element & render cafe
-function renderPost(doc) {
+function renderPost(doc){
     let li = document.createElement('li');
+    let title = document.createElement('span');
     let topic = document.createElement('span');
     let content = document.createElement('span');
     let author = document.createElement('span');
     let created = document.createElement('span');
     let img = document.createElement('img');
     let cross = document.createElement('div');
-
+  
     li.setAttribute('data-id', doc.id);
-    topic.textContent = doc.data().topic;
+    if (doc.data().topic != '') {
+      topic.textContent = "topic: " + doc.data().topic;
+    } 
+    title.textContent = doc.data().title;
     content.textContent = doc.data().content;
-    author.textContent = doc.data().author;
+    if (doc.data().author != null) {
+      author.textContent = "author: " + doc.data().author;
+    } else {
+      author.textContent = "[anonymous]"
+    }
     created.textContent = doc.data().created.toDate();
     img.setAttribute('src', doc.data().image);
     cross.textContent = 'delete';
-
-    li.appendChild(topic)
+  
+    li.appendChild(topic);
+    li.appendChild(title);
     li.appendChild(content);
     li.appendChild(author);
     li.appendChild(created);
     if (doc.data().image != null) {
-        li.appendChild(img);
+      li.appendChild(img);
     }
     li.appendChild(cross);
 

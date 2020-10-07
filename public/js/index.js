@@ -14,16 +14,22 @@ function renderPost(doc){
   let cross = document.createElement('div');
 
   li.setAttribute('data-id', doc.id);
-  //title.textContent = doc.data().title;
-  topic.textContent = doc.data().topic;
+  if (doc.data().topic != '') {
+    topic.textContent = "topic: " + doc.data().topic;
+  } 
+  title.textContent = doc.data().title;
   content.textContent = doc.data().content;
-  author.textContent = doc.data().author;
+  if (doc.data().author != null) {
+    author.textContent = "author: " + doc.data().author;
+  } else {
+    author.textContent = "[anonymous]"
+  }
   created.textContent = doc.data().created.toDate();
   img.setAttribute('src', doc.data().image);
   cross.textContent = 'delete';
 
-  li.appendChild(title);
   li.appendChild(topic);
+  li.appendChild(title);
   li.appendChild(content);
   li.appendChild(author);
   li.appendChild(created);
