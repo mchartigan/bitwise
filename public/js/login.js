@@ -1,7 +1,6 @@
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
-var docRef = null;
 
 loadLogoIcon();
 
@@ -16,16 +15,15 @@ var uiConfig = {
       // or whether we leave that to developer to handle.
 
       UID = firebase.auth().currentUser.uid;
-      docRef = db.collection("users").doc(UID);
       
-      docRef.get().then(function(doc) {
+      db.collection("users").doc(UID).get().then(function(doc) {
         if (doc.data().email) {
           // Redirect to homepage
           location.replace("/index.html");
         } else {
           // Force new user to fill out username
-          return docRef.set({
-            username: 'NewUser',
+          return db.collection("users").doc(UID).set({
+            username: firebase.auth().currentUser.displayName,
             bioText: '',
             email: firebase.auth().currentUser.email
           },{merge: true}).then(() => {

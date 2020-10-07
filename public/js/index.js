@@ -1,6 +1,4 @@
 // DOM elements
-const loginButton   = document.querySelector('#login-button');
-const profileButton = document.querySelector('#profile-button');
 const postForm      = document.querySelector('#create-post-form');
 const postList      = document.querySelector('#timeline');
 
@@ -153,19 +151,16 @@ document.addEventListener('DOMContentLoaded', function() {
 var UID = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
-var docRef = null;
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     UID = user.uid;
-    docRef = db.collection("users").doc(UID);
 
     loadMenu();
 
     $("#login-button").hide();
     $("#user-dropdown").show();
   } else {
-    docRef = null;
 
     loadLogoIcon();
 
@@ -177,7 +172,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 function loadMenu() {
   loadLogoIcon();
 
-  docRef.get().then(function(doc) {
+  db.collection("users").doc(UID).get().then(function(doc) {
       loadProfileIcon(doc);
       document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
   });
