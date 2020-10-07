@@ -22,6 +22,7 @@ function renderPost(doc) {
     let content = document.createElement('span');
     let author = document.createElement('span');
     let created = document.createElement('span');
+    let img = document.createElement('img');
     let cross = document.createElement('div');
 
     li.setAttribute('data-id', doc.id);
@@ -29,12 +30,16 @@ function renderPost(doc) {
     content.textContent = doc.data().content;
     author.textContent = doc.data().author;
     created.textContent = doc.data().created.toDate();
+    img.setAttribute('src', doc.data().image);
     cross.textContent = 'delete';
 
     li.appendChild(topic)
     li.appendChild(content);
     li.appendChild(author);
     li.appendChild(created);
+    if (doc.data().image != null) {
+        li.appendChild(img);
+    }
     li.appendChild(cross);
 
     postList.append(li);
