@@ -27,31 +27,45 @@ storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-
         UID = user.uid;
-        console.log('Retrieved UID');
-
-        docRef = db.collection("users").doc(UID);
-
-        docRef.get().then(function(doc) {
-            loadProfileIcon(doc);
-            document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-        });
+    
+        loadMenuBar();
+    
+        $("#login-button").hide();
+        $("#user-dropdown").show();
     } else {
-        
-        // hide dropdown and replace with a signin button
-        $('#parent-dropdown-item').hide();
-        $('#signin-button').show();
+        location.replace("/common/login.html");
     }
 });
-
+  
+function loadMenuBar() {
+    loadLogoIcon();
+    loadDropdown();
+}
+  
+function loadDropdown() {
+    db.collection("users").doc(UID).get().then(function(doc) {
+        loadProfileIcon(doc);
+        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
+    });
+}
+  
+function loadLogoIcon() {
+    storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
+        $('#logo-icon').attr('src', imgURL);
+        console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
+    }).catch(err => {
+        console.log('Failed to Download  Icon'); // DEBUG LOG
+    });
+}
+  
 function loadProfileIcon(doc) {
     if (doc.data().picFlag) {
         path = 'usercontent/' + UID + '/profile.jpg';
     } else {
         path = 'usercontent/default/profile.jpg';
     }
-
+  
     storageRef.child(path).getDownloadURL().then(imgURL => {
         $('#profile-icon').attr('src', imgURL);
         console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG

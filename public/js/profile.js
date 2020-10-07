@@ -166,9 +166,10 @@ function loadProfileIcon(doc) {
   
     storageRef.child(path).getDownloadURL().then(imgURL => {
         $('#profile-icon').attr('src', imgURL);
-        console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
+        $('#profile-picture').attr('src', imgURL); // move later
+        //console.log('Successfully Downloaded Profile Icon'); // DEBUG LOG
     }).catch(err => {
-        console.log('Failed to Download Profile Icon'); // DEBUG LOG
+        //console.log('Failed to Download Profile Icon'); // DEBUG LOG
     });
 }
 
