@@ -51,7 +51,7 @@ function loadPosts() {
                 querySnapshot.forEach(doc => {
                     const postProps = {
                         authorUID: doc.data().authoruid,
-                        created: doc.data().created.toDate().toString(),
+                        created: jQuery.timeago(doc.data().created.toDate()),
                         topic: doc.data().topic,
                         title: doc.data().title,
                         content: doc.data().content,
