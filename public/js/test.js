@@ -55,7 +55,7 @@ function loadPosts() {
                         topic: doc.data().topic,
                         title: doc.data().title,
                         content: doc.data().content,
-                        imgURL: doc.data().image
+                        imageURL: doc.data().image
                     };
 
                     posts.push(<Post {...postProps} key={doc.id}/>);

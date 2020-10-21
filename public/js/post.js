@@ -16,6 +16,8 @@ class Post extends React.Component {
         this.contentText = this.props.content;
         if (this.props.imageURL != null) {
             this.imageURL = this.props.imageURL;
+        } else {
+            this.imageURL = null;
         }
 
         db.collection("users").doc(this.props.authorUID).get().then((doc) => {
@@ -40,10 +42,9 @@ class Post extends React.Component {
                     </div>
                     <div className="text">
                         <div className="ui medium header">{this.titleText}</div>
-                    </div>
-                    <div className="text">
                         {this.contentText}
                     </div>
+                    {this.imageURL != null && <img className="ui small image" src={this.imageURL}/>}
                     <div className="actions">
                         <a className="reply">Reply</a>
                     </div>
