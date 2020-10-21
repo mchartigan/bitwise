@@ -3,6 +3,9 @@ var storage = firebase.storage();
 var storageRef = storage.ref();
 var docRef = null;
 
+var uids = [];
+var usernames = [];
+
 let usernameField = document.getElementById('username-field'),
     emailField = document.getElementById('email-field')
     bioTxtField = document.getElementById('bio-txt-field'),
@@ -15,12 +18,27 @@ firebase.auth().onAuthStateChanged(function(user) {
         UID = user.uid;
         docRef = db.collection("users").doc(UID);
 
+        getUserList();
         loadDropdown();
         loadAccountInfo();
     } else {
         location.replace("/common/login.html");
     }
 });
+
+function getUserList() {
+    db.collection('users').orderBy('username').get().then(function (querySnapshot) {
+        if (!querySnapshot.empty) {
+            var i = 0;
+            querySnapshot.forEach(doc => {
+                uids[i] = doc.id;
+                usernames[i] = doc.data().username;
+                i++;
+            });
+            i = 0;
+        }
+    });
+}
 
 function loadDropdown() {
     docRef.get().then(function(doc) {
@@ -96,6 +114,10 @@ function cancelForm() {
     $('.ui.form').form('reset');
 }
 
+$.fn.form.settings.rules.usernameExists = function(param) {
+    return checkDuplicates(param);
+}
+
 // Form Validation
 $('#account-info').form({
     on: 'blur',
@@ -105,13 +127,17 @@ $('#account-info').form({
             rules: [{
                 type: 'empty',
                 prompt: 'Please enter a username'
+            },
+            {
+                type: 'usernameExists',
+                prompt: 'This username already exists. Please choose a unique username'
             }]
         },
         bio: {
             identifier: 'bio-txt-field',
             rules: [{
                 type   : 'maxLength[160]',
-                prompt : 'Your bio must not be more that {ruleValue} characters'
+                prompt : 'Your bio must not be more than {ruleValue} characters'
             }]
         }
     },
@@ -125,4 +151,14 @@ $('#account-info').form({
         return false;
     }
 });
+
+function checkDuplicates(param) {
+    var i;
+    for (i = 0; i < usernames.length; i++) {
+        if ((usernames[i] == param) && (uids[i] != UID)) {
+            return false;
+        }
+    }
+    return true;
+}
 
