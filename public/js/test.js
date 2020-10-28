@@ -29,7 +29,6 @@ function loadDropdown() {
 // Loads all of the logged in users posts
 function loadPosts() {
     db.collection('posts')
-        .where('authoruid', 'in', [UID])
         .orderBy('created', 'desc')
         .get().then(function (querySnapshot) {
             if (querySnapshot.empty) {

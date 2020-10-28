@@ -1,6 +1,10 @@
 // **************************** TODO **************************** \\
-// Add delete post button if it is current user
 // Save and unsave icon change
+// Anonymous replies?
+// Add delete post button ONLY IF IT IS CURRENT USER
+// Check for errors when replying or deleting deleted posts
+// Delete grandchildren on delete
+// Change account info to use update instead of set/merge
 // ************************************************************** \\
 
 'use strict';
@@ -18,7 +22,6 @@ class Post extends React.Component {
         this.type = this.props.type;
 
         db.collection('posts').doc(this.postID).get().then((doc) => {
-            this.authorUID = doc.data().authoruid,
             this.createdText = jQuery.timeago(doc.data().created.toDate());
             this.contentText = doc.data().content;
 
@@ -34,13 +37,23 @@ class Post extends React.Component {
 
             this.repliesID = doc.data().children;
 
-            db.collection("users").doc(this.authorUID).get().then((doc) => {
-                this.authorUsername = doc.data().username,
-                this.authorImageURL = doc.data().profileImageURL
+            if (doc.data().anon) {
+                this.authorUsername = "Anonymous";
+                this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
 
                 // Re-render post
                 this.setState({ retrievedPost: true });
-            });
+            } else {
+                this.authorUID = doc.data().authoruid;
+
+                db.collection("users").doc(this.authorUID).get().then((doc) => {
+                    this.authorUsername = doc.data().username;
+                    this.authorImageURL = doc.data().profileImageURL;
+    
+                    // Re-render post
+                    this.setState({ retrievedPost: true });
+                });
+            }
         });
 
         this.repliesHTML = null;
@@ -55,7 +68,7 @@ class Post extends React.Component {
         $('.ui.reply.form').form('remove errors');
 
         // Toggle reply form
-        const replyForm = event.target.parentNode.parentNode.children[6];
+        const replyForm = event.target.parentNode.parentNode.parentNode.children[4];
 
         if (replyForm.style.display === "none") {
             $(".ui.reply.form").hide();
@@ -78,7 +91,7 @@ class Post extends React.Component {
 
     deleteClick = () => {
         console.log("Delete Post:", this.postID);
-        
+
         db.collection("posts").doc(this.postID).get().then((doc) => {
             console.log("Removed Child From: ", doc.data().parent);
 
@@ -119,6 +132,8 @@ class Post extends React.Component {
     }
 
     addReply = (parentPostID, replyText) => {
+        // ************ PREVENT GUEST USER ERRORS ************
+
         newPost(parentPostID, UID, null, null, replyText, null);
 
         // *********** ADD IMEDIATE UPDATE TO FEED ***********
@@ -162,7 +177,9 @@ class Post extends React.Component {
     render() {
         return (
             <div className="comment" id={"post-"+this.postID}>
-                <div className="ui divider"></div>
+                <div>
+                    {this.type == "post" && <div className="ui divider"></div>}
+                </div>
 
                 <a className="avatar">
                     <img src={this.authorImageURL}></img>
@@ -191,30 +208,32 @@ class Post extends React.Component {
 
                     <div className="actions">
                         <a className="reply" onClick={this.replyClick}><i className="reply icon"></i>Reply</a>
-                        <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
-                            <i className="chevron down icon"></i>
-                            Expand
-                        </a>
-                        <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
-                            <i className="chevron up icon"></i>
-                            Collapse
-                        </a>
+                        <span style={{ display: (this.state.retrievedPost && this.repliesID.length ? "" : "none") }}>
+                            <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
+                                <i className="chevron down icon"></i>
+                                Expand
+                            </a>
+                            <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
+                                <i className="chevron up icon"></i>
+                                Collapse
+                            </a>
+                        </span>
                     </div>
-
-                    <div className={(this.state.collapsedReplies ? "collapsed " : "") + "comments"}>
-                        {this.repliesHTML}
-                    </div>
-                    
-                    <form className="ui reply form" id={"reply-form-"+this.postID} style={{ display: "none" }}>
-                        <div className="field">
-                            <textarea className="reply text area" id="reply-text-area"></textarea>
-                        </div>
-                        <div className="ui error message"></div>
-                        <div className="ui violet submit labeled icon button">
-                            <i className="icon edit"></i> Add Reply
-                        </div>
-                    </form>
                 </div>
+
+                <div className={(this.state.collapsedReplies ? "collapsed " : "") + "comments"}>
+                    {this.repliesHTML}
+                </div>
+                
+                <form className="ui reply form" id={"reply-form-"+this.postID} style={{ display: "none" }}>
+                    <div className="field">
+                        <textarea className="reply text area" id="reply-text-area"></textarea>
+                    </div>
+                    <div className="ui error message"></div>
+                    <div className="ui violet submit labeled icon button">
+                        <i className="icon edit"></i> Add Reply
+                    </div>
+                </form>
             </div>
         );
     }
@@ -233,8 +252,8 @@ function newPost(parent, UID, topic, title, body, imageURL) {
         title: title,
         content: body,
         image: imageURL,
-        upvotes: [null],
-        downvotes: [null]
+        upvotes: [],
+        downvotes: []
     }).then(postDocRef => {
         db.collection('posts').doc(parent).update({
             children: firebase.firestore.FieldValue.arrayUnion(postDocRef.id)
