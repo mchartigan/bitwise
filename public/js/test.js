@@ -12,13 +12,10 @@ firebase.auth().onAuthStateChanged(function (user) {
 
         $("#login-button").hide();
         $("#user-dropdown").show();
-        $("#create-post-button").show();
 
         loadPosts();
     } else {
-        $("#login-button").show();
-        $("#user-dropdown").hide();
-        $("#create-post-button").hide();
+        location.replace("/common/login.html");
     }
 });
 
@@ -39,29 +36,26 @@ function loadPosts() {
                 // Display error message
                 ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
             } else {
-                // Threaded post container
-                ReactDOM.render(<div className="ui threaded comments">
-                                    <div id="posts"></div>
-                                </div>,
-                                document.querySelector('#feed'));
-
-                const posts = [];
+                var posts = [];
 
                 // Loop through each post to add formatted JSX element to list
                 querySnapshot.forEach(doc => {
-                    const postProps = {
-                        authorUID: doc.data().authoruid,
-                        created: jQuery.timeago(doc.data().created.toDate()),
-                        topic: doc.data().topic,
-                        title: doc.data().title,
-                        content: doc.data().content,
-                        imageURL: doc.data().image
-                    };
-
-                    posts.push(<Post {...postProps} key={doc.id}/>);
+                    // Only display parent posts (no comments)
+                    if (doc.data().parent == null) {
+                        const postProps = {
+                            postID: doc.id,
+                            type: "post"
+                        };
+    
+                        posts.push(<Post {...postProps} key={doc.id}/>);
+                    }
                 });
 
-                ReactDOM.render(posts, document.querySelector('#posts'));
+                // Threaded post container
+                ReactDOM.render(<div className="ui threaded comments">
+                                    {posts}
+                                </div>,
+                                document.querySelector('#feed'));
             }
         });
 }
