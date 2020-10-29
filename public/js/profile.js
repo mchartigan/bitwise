@@ -85,8 +85,37 @@ var endless = {
 
                 endless.query.forEach(q => {
                     // work on this idiot
-                    q.limit(20)
+                    q.limit(40)
                     .get().then(function (querySnapshot) {
+                        if (querySnapshot.empty) {
+                            // Display error message
+                            ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
+                        } else {
+                            var posts = [];
+            
+                            // Loop through each post to add formatted JSX element to list
+                            querySnapshot.forEach(doc => {
+                                // Only display parent posts (no comments)
+                                if (doc.data().parent == null) {
+                                    const postProps = {
+                                        postID: doc.id,
+                                        type: "post"
+                                    };
+                
+                                    posts.push(<Post {...postProps} key={doc.id}/>);
+                                }
+                            });
+            
+                            // Threaded post container
+                            ReactDOM.render(<div className="ui threaded comments">
+                                                {posts}
+                                            </div>,
+                                            document.querySelector('#feed'));
+                        }
+
+
+
+                        /*
                         if (querySnapshot.empty) {
                             endless.hasMore = false;
                             endless.first = false;
@@ -100,10 +129,12 @@ var endless = {
                                 endless.first = false;
                             });
                         }
+                        */
                     });
                 })
             }
 
+            /*
             if (!endless.first && endless.hasMore) {
                     // ============================================================================================================
                     // -------------------------TODO: SHOW ANONYMOUS POSTS IF THE LOGGED IN USER POSTED IT-------------------------
@@ -124,6 +155,7 @@ var endless = {
                         }
                     });
             }
+            */
         }
     },
 
@@ -162,6 +194,8 @@ function loadDropdown() {
 
 function loadProfile() {
     var pagename = window.location.href.split('/')[4];
+    var viewUID;
+    var following;
 
     let tcontent = document.createElement('div');
     let uname = document.createElement('h1');
