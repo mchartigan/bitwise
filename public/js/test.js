@@ -15,7 +15,8 @@ firebase.auth().onAuthStateChanged(function (user) {
 
         loadPosts();
     } else {
-        location.replace("/common/login.html");
+        loadPosts();
+        //location.replace("/common/login.html");
     }
 });
 
