@@ -5,7 +5,6 @@ const postForm = document.querySelector('#create-post-form');
 const postList = document.querySelector('#timeline');
 const profile = document.querySelector('#profile-data');
 
-
 // navigate to user profile page when logged in
 function myProfile() {
     firebase.auth().onAuthStateChanged(function (user) {
@@ -71,6 +70,7 @@ var endless = {
     first: true, // is this the first loading cycle?
     prevDoc: null,
     following: null,
+    query: null,
 
     /* (B) LOAD CONTENTS */
     load: function () {
@@ -83,10 +83,9 @@ var endless = {
                 // load one post to start the query offset
                 // if the user isnt following anything this will need to be fixed
 
-                db.collection('posts')
-                    .where('authoruid', 'in', following)
-                    .orderBy('created', 'desc')
-                    .limit(20)
+                endless.query.forEach(q => {
+                    // work on this idiot
+                    q.limit(20)
                     .get().then(function (querySnapshot) {
                         if (querySnapshot.empty) {
                             endless.hasMore = false;
@@ -102,16 +101,14 @@ var endless = {
                             });
                         }
                     });
-
+                })
             }
 
             if (!endless.first && endless.hasMore) {
                     // ============================================================================================================
                     // -------------------------TODO: SHOW ANONYMOUS POSTS IF THE LOGGED IN USER POSTED IT-------------------------
                     // ============================================================================================================
-                    db.collection('posts')
-                    .where('authoruid', 'in', following)
-                    .orderBy('created', 'desc')
+                    endless.query[0]
                     .startAfter(endless.prevDoc).limit(2).get().then(querySnapshot => {
                         if (querySnapshot.empty) {
                             // theres none left.
@@ -133,8 +130,16 @@ var endless = {
     /* (C) INIT */
     init: function (following) {
         endless.following = following;
-        // (C1) ATTACH SCROLL LISTENER
-        // Credits: https://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
+        endless.query = new Array;
+
+        var numQueries = Math.ceil(following.length / 10);
+
+        for (var i = 0; i < numQueries; i++) {
+            endless.query[i] = db.collection('posts')
+                .where('authoruid', 'in', following.slice(i*10, (i+1)*10))
+                .orderBy('created', 'desc')
+        }
+
         window.addEventListener("scroll", function () {
             if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
                 endless.load();
@@ -155,6 +160,36 @@ function loadDropdown() {
     });
 }
 
+function loadProfile() {
+    var pagename = window.location.href.split('/')[4];
+
+    let tcontent = document.createElement('div');
+    let uname = document.createElement('h1');
+    let description = document.createElement('h2');
+
+    db.collection('users')
+    .where('username', '==', pagename)
+    .get().then(querySnapshot => {
+        viewUID = querySnapshot.docs[0].id;
+
+        db.collection("users").doc(viewUID).get().then(doc => {
+            $('#profile-picture').attr('src', doc.data().profileImageURL);
+
+            tcontent.setAttribute('data-id', doc.id);
+            uname.textContent = doc.data().username;
+            description.textContent = doc.data().bioText;
+    
+            tcontent.appendChild(uname);
+            tcontent.appendChild(description);
+    
+            profile.append(tcontent);
+
+            following = [viewUID];
+            endless.init(following);
+        });
+    });
+}
+
 // load the profile data
 var UID = null;
 var storage = firebase.storage();
@@ -170,39 +205,13 @@ firebase.auth().onAuthStateChanged(function (user) {
         $("#user-dropdown").show();
 
         loadDropdown();
-
-        // load the user's profile information into the top
-        docRef.get().then(function(doc) {
-            $('#profile-picture').attr('src', doc.data().profileImageURL);
-        });
-
-        let tcontent = document.createElement('div');
-        let uname = document.createElement('h1');
-        let description = document.createElement('h2');
-
-        docRef.get().then(function(doc) {
-            tcontent.setAttribute('data-id', doc.id);
-            uname.textContent = doc.data().username;
-            description.textContent = doc.data().bioText;
-
-            tcontent.appendChild(uname);
-            tcontent.appendChild(description);
-        
-            profile.append(tcontent);
-        });
-
-        // get a list of users whose posts we want to see
-        // as this is the users own page, its just the user
-
-        following = [UID];
-        endless.init(following);
-
     } else {
         docRef = null;
 
         $("#login-button").show();
         $("#user-dropdown").hide();
     }
+    loadProfile();
 });
 
 // run after page initialization
