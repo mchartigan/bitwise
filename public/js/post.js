@@ -1,8 +1,5 @@
 // **************************** TODO **************************** \\
 // Save and unsave icon change (will be similar to like and unlike)
-// Anonymous replies??
-// Check for errors when replying or deleting deleted posts
-// Delete grandchildren on delete
 // Change account info to use update instead of set/merge
 // Box shadow margin/padding change on threaded comments
 // ************************************************************** \\
@@ -15,11 +12,15 @@ class Post extends React.Component {
         this.state = {
             retrievedPost: false,
             retrievedReplies: false,
-            collapsedReplies: true
+            collapsedReplies: true,
+            deleted: false
         };
 
         this.postID = this.props.postID;
         this.type = this.props.type;
+
+        this.repliesID = [];
+        this.repliesHTML = [];
 
         db.collection('posts').doc(this.postID).get().then((doc) => {
             this.authorUID = doc.data().authoruid;
@@ -56,8 +57,6 @@ class Post extends React.Component {
                 });
             }
         });
-
-        this.repliesHTML = null;
     }
 
     replyClick = (event) => {
@@ -70,11 +69,6 @@ class Post extends React.Component {
 
         // Toggle reply form
         const replyForm = event.target.parentNode.parentNode.parentNode.parentNode.children[4];
-
-        // **************************************************************** \\
-        // *************** ONLY HIDE ITEMS IF OF PROPER TYPE ************** \\
-        // **** OCCASIONAL BUG WHERE QUICK CLICKS HIDE THE WRONG THING **** \\ 
-        // **************************************************************** \\
 
         if (replyForm.style.display === "none") {
             $(".ui.reply.form").hide();
@@ -96,16 +90,20 @@ class Post extends React.Component {
 
     editClick = () => {
         // DO NOT LET A USER EDIT IF NOT THE AUTHOR OR NOT LOGGED IN!!
+
         console.log("Edit Post:", this.postID)
     }
 
     deleteClick = () => {
         // DO NOT LET A USER DELETE IF NOT THE AUTHOR OR NOT LOGGED IN!!
 
-        console.log("Delete Post:", this.postID);
         deletePost(this.postID);
-
-        // *********** ADD IMEDIATE UPDATE TO FEED ***********
+        
+        
+        if (this.type == "comment") {
+            this.props.onDelete(this.postID);
+        }
+        this.setState({ deleted: true });
     }
 
     expandClick = (event) => {
@@ -113,11 +111,7 @@ class Post extends React.Component {
         event.target.onselectstart = function() { return false; };
 
         if (!this.state.retrievedReplies) {
-            // Load replies
-            this.repliesHTML = this.repliesID.map(replyID => (
-                <Post postID={replyID} type="comment" key={replyID}/>
-            ));
-            
+            this.updateReplies();
             this.setState({
                 retrievedReplies: true,
                 collapsedReplies: false
@@ -134,10 +128,44 @@ class Post extends React.Component {
         this.setState({ collapsedReplies: true });
     }
 
-    addReply = (parentPostID, replyText) => {
-        addPost(false, parentPostID, UID, null, null, replyText, null);
+    updateReplies = () => {
+        this.repliesHTML = this.repliesID.map(replyID => (
+            <Post postID={replyID} type="comment" onDelete={this.deleteReply} key={replyID}/>
+        ));
+    }
 
-        // *********** ADD IMEDIATE UPDATE TO FEED ***********
+    addReply = (parentPostID, replyText, anonFlag) => {
+        (async () => {
+            // Add post to database
+            const replyID = await addPost(anonFlag, parentPostID, UID, null, null, replyText, null);
+
+            // Update the feed
+            this.repliesID.push(replyID);
+            this.updateReplies();
+            this.setState({
+                retrievedReplies: true,
+                collapsedReplies: false
+            });
+        })();
+    }
+
+    deleteReply = (replyID) => {
+        let index = this.repliesID.indexOf(replyID);
+        if (index >= 0) {
+            this.repliesID.splice( index, 1 );
+        }
+        this.updateReplies();
+
+        if (this.repliesID.length) {
+            // Collapse if no replies
+            this.setState({
+                collapsedReplies: false
+            });
+        } else {
+            this.setState({
+                collapsedReplies: true
+            });
+        }
     }
 
     componentDidMount() {
@@ -157,17 +185,17 @@ class Post extends React.Component {
             onFailure: function () {
                 return false;
             },
-            onSuccess: function (event, fields) {
+            onSuccess: function () {
                 const replyText = $('#reply-form-'+post.postID).find('#reply-text-area').val();
-                console.log("Reply to post: ",post.postID);
-                console.log("Text: ",replyText)
-                post.addReply(post.postID,replyText);
+                const anonFlag = $('#reply-form-'+post.postID).find('#anonymous-reply-flag').checkbox('is checked');
+                post.addReply(post.postID,replyText,anonFlag);
 
-                // ****** MAYBE CHANGE LATER ****** \\
+                console.log("Reply to post: ",post.postID);
+                console.log("Text: ",replyText);
+                console.log("Anonymous: ",anonFlag)
+
                 $(".ui.reply.form").hide();
                 $(".reply.text.area").val("");
-                //location.reload();
-                // ******************************** \\
 
                 return false;
             }
@@ -177,7 +205,7 @@ class Post extends React.Component {
     // Render post
     render() {
         return (
-            <div className="comment" id={"post-"+this.postID}>
+            <div className="comment" id={"post-"+this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
                 <div>
                     {this.type == "post" && <div className="ui divider"></div>}
                 </div>
@@ -235,6 +263,12 @@ class Post extends React.Component {
                         <textarea className="reply text area" id="reply-text-area"></textarea>
                     </div>
                     <div className="ui error message"></div>
+                    <div className="field">
+                        <div className="ui checkbox" id="anonymous-reply-flag">
+                            <input type="checkbox"></input>
+                            <label>Anonymous</label>
+                        </div>
+                    </div>
                     <div className="ui violet submit labeled icon button">
                         <i className="icon edit"></i> Add Reply
                     </div>
@@ -250,49 +284,49 @@ class Post extends React.Component {
 function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
     // ******* NO IMAGE FUNCTIONALITY YET *******
 
-    db.collection('posts').add({
-        anon: anonymous,
-        parent: parentID,
-        children: [],
-        authoruid: UID,
-        created: new Date(),
-        topic: topic,
-        title: title,
-        content: body,
-        image: imageURL,
-        upvotes: [],
-        downvotes: []
-    }).then(postDocRef => {
-        db.collection('posts').doc(parentID).update({
-            children: firebase.firestore.FieldValue.arrayUnion(postDocRef.id)
-        }).then(() => {
-            console.log("Added Post: ", postDocRef.id);
+    return new Promise(resolve => {
+        db.collection('posts').add({
+            anon: anonymous,
+            parent: parentID,
+            children: [],
+            authoruid: UID,
+            created: new Date(),
+            topic: topic,
+            title: title,
+            content: body,
+            image: imageURL,
+            upvotes: [],
+            downvotes: []
+        }).then(postDocRef => {
+            db.collection('posts').doc(parentID).update({
+                children: firebase.firestore.FieldValue.arrayUnion(postDocRef.id)
+            }).then(() => {
+                console.log("Added Post: ", postDocRef.id);
+                resolve(postDocRef.id);
+            });
         });
-        return postDocRef.id;
     });
 }
 
-function deletePost(postID) {
-    console.log("Delete Post:", postID);
+async function deletePost(postID) {
+    console.log("-> Delete Post:", postID);
 
-    db.collection("posts").doc(postID).get().then((doc) => {
+    let doc = await db.collection("posts").doc(postID).get();
+
+    return new Promise((resolve, reject) => {
         if (doc.data().parent) {
+            console.log("-- Removed ",postID," as child from parent: ",doc.data().parent);
             db.collection('posts').doc(doc.data().parent).update({
                 children: firebase.firestore.FieldValue.arrayRemove(postID)
-            }).then(() => {
-                console.log("Removed ",postID," as child from parent: ",doc.data().parent);
-                console.log("Children of ",postID," : ",doc.data().children);
-                
-                doc.data().children.forEach(childID => {
-                    deletePost(childID)
-                });
-                db.collection('posts').doc(postID).delete();
             });
-        } else {
-            doc.data().children.forEach(childID => {
-                deletePost(childID)
-            });
-            db.collection('posts').doc(postID).delete();
         }
+
+        const promises = doc.data().children.map(childID => {
+            return deletePost(childID);
+        });
+        resolve(Promise.all(promises));
+    }).then(() => {
+        console.log("<- Deleted Post:", postID);
+        db.collection('posts').doc(postID).delete();
     });
 }
