@@ -2,6 +2,8 @@
 // Save and unsave icon change (will be similar to like and unlike)
 // Change account info to use update instead of set/merge
 // Box shadow margin/padding change on threaded comments
+// Save/display posts with newline characters
+// Don't allow clicking on anonymous profiles
 // ************************************************************** \\
 
 'use strict';
@@ -23,12 +25,13 @@ class Post extends React.Component {
         this.repliesHTML = [];
 
         db.collection('posts').doc(this.postID).get().then((doc) => {
-            this.authorUID = doc.data().authoruid;
+            this.authorUID = doc.data().authorUID;
             this.createdText = jQuery.timeago(doc.data().created.toDate());
             this.contentText = doc.data().content;
+            this.topic = doc.data().topic;
 
             if (this.type == "post") {
-                this.topicText = ((doc.data().topic != "") ? "[" + doc.data().topic + "] ": "")
+                this.topicText = ((this.topic != "") ? "[" + this.topic + "] ": "")
                 this.titleText = doc.data().title;
                 this.imageURL = (doc.data().image != null) ? doc.data().image : null;
             } else if (this.type == "comment") {
@@ -83,27 +86,26 @@ class Post extends React.Component {
     }
 
     saveClick = () => {
-        // DO NOT LET A USER EDIT IF NOT LOGGED IN!!
-
-        console.log("Save Post:", this.postID)
+        if (UID) {
+            console.log("Save Post:", this.postID)
+        }
     }
 
     editClick = () => {
-        // DO NOT LET A USER EDIT IF NOT THE AUTHOR OR NOT LOGGED IN!!
-
-        console.log("Edit Post:", this.postID)
+        if (this.authorUID == UID) {
+            console.log("Edit Post:", this.postID)
+        }
     }
 
     deleteClick = () => {
-        // DO NOT LET A USER DELETE IF NOT THE AUTHOR OR NOT LOGGED IN!!
-
-        deletePost(this.postID);
+        if (this.authorUID == UID) {
+            deletePost(this.postID);
         
-        
-        if (this.type == "comment") {
-            this.props.onDelete(this.postID);
+            if (this.type == "comment") {
+                this.props.onDelete(this.postID);
+            }
+            this.setState({ deleted: true });
         }
-        this.setState({ deleted: true });
     }
 
     expandClick = (event) => {
@@ -210,12 +212,13 @@ class Post extends React.Component {
                     {this.type == "post" && <div className="ui divider"></div>}
                 </div>
 
-                <a className="avatar" href="/common/profile.html">
+                <a className="avatar" href={"/user/"+this.authorUsername}>
                     <img src={this.authorImageURL}></img>
                 </a>
 
                 <div className="content">
-                    <a className="author" href="/common/profile.html">{this.authorUsername}</a>
+                    <a className="author" href={"/user/"+this.authorUsername}>{this.authorUsername}</a>
+
                     <div className="metadata">
                         <span className="date">{this.createdText}</span>
                     </div>
@@ -223,29 +226,65 @@ class Post extends React.Component {
                     <div className="ui simple dropdown" style={{ float: "right", display: (UID ? "" : "none") }}>
                         <i className="ellipsis vertical icon"></i>
                         <div className="left menu">
-                            <div className="item" onClick={this.saveClick}><i className="save icon"></i> Save</div>
-                            <div className="item" onClick={this.editClick} style={{ display: (this.authorUID == UID ? "" : "none") }}><i className="edit icon"></i> Edit</div>
-                            <div className="item" onClick={this.deleteClick} style={{ display: (this.authorUID == UID ? "" : "none") }}><i className="delete icon"></i> Delete</div>
+                            <div className="item" onClick={this.saveClick}>
+                                <i className="save icon"></i>
+                                Save
+                            </div>
+
+                            <div className="item" onClick={this.editClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
+                                <i className="edit icon"></i>
+                                Edit
+                            </div>
+
+                            <div className="item" onClick={this.deleteClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
+                                <i className="delete icon"></i>
+                                Delete
+                            </div>
                         </div>
                     </div>
 
                     <div className="text">
-                        <a className="ui violet medium header" href="/common/profile.html">{this.topicText}</a>
+                        <a className="ui violet medium header" href={"/topic/"+this.topic}>{this.topicText}</a>
                         <span className="ui violet medium header">{this.titleText}</span>
                         <div>{this.contentText}</div>
                         {this.imageURL != null && <img className="ui small image" src={this.imageURL}/>}
                     </div>
 
                     <div className="actions">
-                        <span style={{ display: (UID ? "" : "none") }}>
-                            <a className="reply" onClick={this.replyClick}><i className="reply icon"></i>Reply</a>
-                            &nbsp;&nbsp;&nbsp;
+                        <span>
+                            <a className="like" onClick={this.likeClick}>
+                                0
+                                &nbsp;&nbsp;
+                                <i className="thumbs up outline icon"></i>
+                                Like
+                            </a>
                         </span>
+
+                        <span>
+                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                            <a className="dislike" onClick={this.likeClick}>
+                                0
+                                &nbsp;&nbsp;
+                                <i className="thumbs down outline icon"></i>
+                                Dislike
+                            </a>
+                        </span>
+
+                        <span style={{ display: (UID ? "" : "none") }}>
+                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                            <a className="reply" onClick={this.replyClick}>
+                                <i className="reply icon"></i>
+                                Reply
+                            </a>
+                        </span>
+
                         <span style={{ display: (this.state.retrievedPost && this.repliesID.length ? "" : "none") }}>
+                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
                                 <i className="chevron down icon"></i>
                                 Expand
                             </a>
+
                             <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
                                 <i className="chevron up icon"></i>
                                 Collapse
@@ -295,8 +334,8 @@ function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
             title: title,
             content: body,
             image: imageURL,
-            upvotes: [],
-            downvotes: []
+            likes: [],
+            dislikes: []
         }).then(postDocRef => {
             db.collection('posts').doc(parentID).update({
                 children: firebase.firestore.FieldValue.arrayUnion(postDocRef.id)

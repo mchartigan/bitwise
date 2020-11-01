@@ -59,3 +59,18 @@ function loadPosts() {
             }
         });
 }
+
+function test() {
+    console.log("Running: test()");
+    console.log("--loop through all posts--");
+
+    db.collection('posts').get().then(function (querySnapshot) {
+        if (querySnapshot.empty) {
+            console.log('No snapshots in query!')
+        } else {
+            querySnapshot.forEach(doc => {
+                console.log('Post:',doc.id)
+            });
+        }
+    });
+}

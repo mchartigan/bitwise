@@ -69,7 +69,6 @@ function submitPost() {
     if (anon || !UID) {
         addPost(
             true,
-            auth=null,
             uid=UID,
             title=titleField.value,
             body=bodyField.value,
@@ -81,7 +80,6 @@ function submitPost() {
         db.collection('users').doc(UID).get().then(user => {
             addPost(
                 false,
-                auth=user.data().username,
                 uid=UID,
                 title=titleField.value,
                 body=bodyField.value,
@@ -92,21 +90,19 @@ function submitPost() {
 }
 
 // function to generate post s.t. posting with username agrees with promise
-function addPost(anonymous, auth, uid, title, body, subject) {
+function addPost(anonymous, uid, title, body, subject) {
     db.collection('posts').add({
         anon: anonymous,
-        author: auth,
-        authoruid: uid,
+        authorUID: uid,
         title: title,
         content: body,
         image: null,
-        embed: null,
         created: new Date(),
         parent: null,
         children: [],
         topic: subject,
-        upvotes: [],
-        downvotes: []
+        likes: [],
+        dislikes: []
     }).then(reference => {
         if(reference) {
             if (imageField.files.length != 0) {
