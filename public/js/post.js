@@ -4,6 +4,8 @@
 // Box shadow margin/padding change on threaded comments
 // Save/display posts with newline characters
 // Don't allow clicking on anonymous profiles
+// If a username is taken AFTER accountInfo loads, unique wont work
+// Add generic upload image function (return URL) for account/post
 // ************************************************************** \\
 
 'use strict';
@@ -15,7 +17,10 @@ class Post extends React.Component {
             retrievedPost: false,
             retrievedReplies: false,
             collapsedReplies: true,
-            deleted: false
+            deleted: false,
+            liked: false,
+            disliked: false,
+            saved: false
         };
 
         this.postID = this.props.postID;
@@ -27,22 +32,18 @@ class Post extends React.Component {
         db.collection('posts').doc(this.postID).get().then((doc) => {
             this.authorUID = doc.data().authorUID;
             this.createdText = jQuery.timeago(doc.data().created.toDate());
-            this.contentText = doc.data().content;
             this.topic = doc.data().topic;
-
-            if (this.type == "post") {
-                this.topicText = ((this.topic != "") ? "[" + this.topic + "] ": "")
-                this.titleText = doc.data().title;
-                this.imageURL = (doc.data().image != null) ? doc.data().image : null;
-            } else if (this.type == "comment") {
-                this.topicText = "";
-                this.titleText = "";
-                this.imageURL = null;
-            } else {
-                console.log("Error: unknown post type {",this.type,"} for post {",this.postID,"}");
-            }
+            this.topicText = ((this.topic != "") ? "[" + this.topic + "] ": "")
+            this.titleText = doc.data().title ? doc.data().title : "";
+            this.contentText = doc.data().content;
+            this.imageURL = doc.data().image;
 
             this.repliesID = doc.data().children;
+
+            this.numLikes = doc.data().likedUsers.length;
+            this.numDislikes = doc.data().dislikedUsers.length;
+            this.state.liked = doc.data().likedUsers.includes(UID);
+            this.state.disliked = doc.data().dislikedUsers.includes(UID);
 
             if (doc.data().anon) {
                 this.authorUsername = "Anonymous";
@@ -60,29 +61,6 @@ class Post extends React.Component {
                 });
             }
         });
-    }
-
-    replyClick = (event) => {
-        // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
-
-        // Remove form error messages
-        $('.ui.reply.form').form('reset');
-        $('.ui.reply.form').form('remove errors');
-
-        // Toggle reply form
-        const replyForm = event.target.parentNode.parentNode.parentNode.parentNode.children[4];
-
-        if (replyForm.style.display === "none") {
-            $(".ui.reply.form").hide();
-            $(".reply.text.area").val("");
-            replyForm.style.display = "";
-            replyForm.scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
-        } else {
-            $(".ui.reply.form").hide();
-            $(".reply.text.area").val("");
-            replyForm.style.display = "none";
-        }
     }
 
     saveClick = () => {
@@ -108,6 +86,156 @@ class Post extends React.Component {
         }
     }
 
+    likeClick = (event) => {
+        // Prevent highlighting on double click
+        event.target.onselectstart = function() { return false; };
+
+        if (UID) {
+            console.log("Like Post:", this.postID);
+
+            if (this.state.liked) {
+                // Un-like
+                db.collection('posts').doc(this.postID).update({
+                    likedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsLiked: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                    });
+                });
+    
+                this.numLikes -= 1;
+    
+                this.setState({
+                    liked: false
+                });
+            } else {
+                // Like
+                db.collection('posts').doc(this.postID).update({
+                    likedUsers: firebase.firestore.FieldValue.arrayUnion(UID),
+                    dislikedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsLiked: firebase.firestore.FieldValue.arrayUnion(this.postID),
+                        postsDisliked: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                    });
+                });
+
+                this.numLikes += 1;
+                this.numDislikes -= this.state.disliked;
+
+                this.setState({
+                    liked: true,
+                    disliked: false
+                });
+            }
+        }
+    }
+
+    dislikeClick = (event) => {
+        // Prevent highlighting on double click
+        event.target.onselectstart = function() { return false; };
+
+        if (UID) {
+            console.log("Dislike Post:", this.postID);
+
+            if (this.state.disliked) {
+                // Un-dislike
+                db.collection('posts').doc(this.postID).update({
+                    dislikedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsDisliked: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                    });
+                });
+    
+                this.numDislikes -= 1;
+    
+                this.setState({
+                    disliked: false
+                });
+            } else {
+                // Dislike
+                db.collection('posts').doc(this.postID).update({
+                    likedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
+                    dislikedUsers: firebase.firestore.FieldValue.arrayUnion(UID),
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsLiked: firebase.firestore.FieldValue.arrayRemove(this.postID),
+                        postsDisliked: firebase.firestore.FieldValue.arrayUnion(this.postID)
+                    });
+                });
+    
+                this.numLikes -= this.state.liked;
+                this.numDislikes += 1;
+    
+                this.setState({
+                    liked: false,
+                    disliked: true
+                });
+            }
+        }
+    }
+
+    replyClick = (event) => {
+        // Prevent highlighting on double click
+        event.target.onselectstart = function() { return false; };
+
+        // Remove form error messages
+        $('.ui.reply.form').form('reset');
+        $('.ui.reply.form').form('remove errors');
+
+        // Toggle reply form
+        const replyForm = $('#reply-form-'+this.postID)[0];
+
+        if (replyForm.style.display === "none") {
+            $(".ui.reply.form").hide();
+            $(".reply.text.area").val("");
+            replyForm.style.display = "";
+            replyForm.scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
+        } else {
+            $(".ui.reply.form").hide();
+            $(".reply.text.area").val("");
+            replyForm.style.display = "none";
+        }
+    }
+
+    addReply = (parentPostID, replyText, anonFlag) => {
+        (async () => {
+            // Add post to database
+            const replyID = await addPost(anonFlag, parentPostID, UID, "", null, replyText, null);
+
+            // Update the feed
+            this.repliesID.push(replyID);
+            this.updateReplies();
+            this.setState({
+                retrievedReplies: true,
+                collapsedReplies: false
+            });
+        })();
+    }
+
+    updateReplies = () => {
+        // Re-calculate HTML for replies
+        this.repliesHTML = this.repliesID.map(replyID => (
+            <Post postID={replyID} type="comment" onDelete={this.deleteReply} key={replyID}/>
+        ));
+    }
+
+    deleteReply = (replyID) => {
+        let index = this.repliesID.indexOf(replyID);
+        if (index >= 0) {
+            this.repliesID.splice( index, 1 );
+        }
+        this.updateReplies();
+
+        if (this.repliesID.length) {
+            // Collapse if no replies
+            this.setState({ collapsedReplies: false });
+        } else {
+            this.setState({ collapsedReplies: true });
+        }
+    }
+
     expandClick = (event) => {
         // Prevent highlighting on double click
         event.target.onselectstart = function() { return false; };
@@ -130,46 +258,6 @@ class Post extends React.Component {
         this.setState({ collapsedReplies: true });
     }
 
-    updateReplies = () => {
-        this.repliesHTML = this.repliesID.map(replyID => (
-            <Post postID={replyID} type="comment" onDelete={this.deleteReply} key={replyID}/>
-        ));
-    }
-
-    addReply = (parentPostID, replyText, anonFlag) => {
-        (async () => {
-            // Add post to database
-            const replyID = await addPost(anonFlag, parentPostID, UID, null, null, replyText, null);
-
-            // Update the feed
-            this.repliesID.push(replyID);
-            this.updateReplies();
-            this.setState({
-                retrievedReplies: true,
-                collapsedReplies: false
-            });
-        })();
-    }
-
-    deleteReply = (replyID) => {
-        let index = this.repliesID.indexOf(replyID);
-        if (index >= 0) {
-            this.repliesID.splice( index, 1 );
-        }
-        this.updateReplies();
-
-        if (this.repliesID.length) {
-            // Collapse if no replies
-            this.setState({
-                collapsedReplies: false
-            });
-        } else {
-            this.setState({
-                collapsedReplies: true
-            });
-        }
-    }
-
     componentDidMount() {
         const post = this;
 
@@ -188,13 +276,15 @@ class Post extends React.Component {
                 return false;
             },
             onSuccess: function () {
+                // ********************** DEBUG ********************** \\
+                // console.log("Reply to post: ",post.postID);
+                // console.log("Text: ",replyText);
+                // console.log("Anonymous: ",anonFlag)
+                // *************************************************** \\
+
                 const replyText = $('#reply-form-'+post.postID).find('#reply-text-area').val();
                 const anonFlag = $('#reply-form-'+post.postID).find('#anonymous-reply-flag').checkbox('is checked');
                 post.addReply(post.postID,replyText,anonFlag);
-
-                console.log("Reply to post: ",post.postID);
-                console.log("Text: ",replyText);
-                console.log("Anonymous: ",anonFlag)
 
                 $(".ui.reply.form").hide();
                 $(".reply.text.area").val("");
@@ -227,17 +317,17 @@ class Post extends React.Component {
                         <i className="ellipsis vertical icon"></i>
                         <div className="left menu">
                             <div className="item" onClick={this.saveClick}>
-                                <i className="save icon"></i>
+                                <i className="bookmark outline icon"></i>
                                 Save
                             </div>
 
                             <div className="item" onClick={this.editClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
-                                <i className="edit icon"></i>
+                                <i className="edit outline icon"></i>
                                 Edit
                             </div>
 
                             <div className="item" onClick={this.deleteClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
-                                <i className="delete icon"></i>
+                                <i className="trash alternate outline icon"></i>
                                 Delete
                             </div>
                         </div>
@@ -252,20 +342,20 @@ class Post extends React.Component {
 
                     <div className="actions">
                         <span>
-                            <a className="like" onClick={this.likeClick}>
-                                0
+                            <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                {this.numLikes}
                                 &nbsp;&nbsp;
-                                <i className="thumbs up outline icon"></i>
+                                {this.state.liked ? <i className="thumbs up icon"></i>: <i className="thumbs up outline icon"></i>}
                                 Like
                             </a>
                         </span>
 
                         <span>
                             &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-                            <a className="dislike" onClick={this.likeClick}>
-                                0
+                            <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                {this.numDislikes}
                                 &nbsp;&nbsp;
-                                <i className="thumbs down outline icon"></i>
+                                {this.state.disliked ? <i className="thumbs down icon"></i>: <i className="thumbs down outline icon"></i>}
                                 Dislike
                             </a>
                         </span>
@@ -328,7 +418,7 @@ function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
             anon: anonymous,
             parent: parentID,
             children: [],
-            authoruid: UID,
+            authorUID: UID,
             created: new Date(),
             topic: topic,
             title: title,
@@ -337,10 +427,14 @@ function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
             likes: [],
             dislikes: []
         }).then(postDocRef => {
+            // CHECK IF PARENT EXISTS!! THIS IS CURRENTLY TAILORED TO REPLIES ONLY RN
             db.collection('posts').doc(parentID).update({
                 children: firebase.firestore.FieldValue.arrayUnion(postDocRef.id)
             }).then(() => {
-                console.log("Added Post: ", postDocRef.id);
+                // ********************** DEBUG ********************** \\
+                // console.log("Added Post: ", postDocRef.id);
+                // *************************************************** \\
+
                 resolve(postDocRef.id);
             });
         });
@@ -348,13 +442,18 @@ function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
 }
 
 async function deletePost(postID) {
-    console.log("-> Delete Post:", postID);
+    // ********************** DEBUG ********************** \\
+    // console.log("-> Delete Post:", postID);
+    // *************************************************** \\
 
     let doc = await db.collection("posts").doc(postID).get();
 
     return new Promise((resolve, reject) => {
         if (doc.data().parent) {
-            console.log("-- Removed ",postID," as child from parent: ",doc.data().parent);
+            // ********************** DEBUG ********************** \\
+            // console.log("-- Removed ",postID," as child from parent: ",doc.data().parent);
+            // *************************************************** \\
+
             db.collection('posts').doc(doc.data().parent).update({
                 children: firebase.firestore.FieldValue.arrayRemove(postID)
             });
@@ -365,7 +464,10 @@ async function deletePost(postID) {
         });
         resolve(Promise.all(promises));
     }).then(() => {
-        console.log("<- Deleted Post:", postID);
+        // ********************** DEBUG ********************** \\
+        // console.log("<- Deleted Post:", postID);
+        // *************************************************** \\
+
         db.collection('posts').doc(postID).delete();
     });
 }

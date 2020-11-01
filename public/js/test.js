@@ -15,8 +15,12 @@ firebase.auth().onAuthStateChanged(function (user) {
 
         loadPosts();
     } else {
+        docRef = null;
+
+        $("#login-button").show();
+        $("#user-dropdown").hide();
+
         loadPosts();
-        //location.replace("/common/login.html");
     }
 });
 
@@ -68,9 +72,17 @@ function test() {
         if (querySnapshot.empty) {
             console.log('No snapshots in query!')
         } else {
-            querySnapshot.forEach(doc => {
-                console.log('Post:',doc.id)
-            });
+            // querySnapshot.forEach(doc => {
+            //     db.collection('posts').doc(doc.id).update({
+            //         likes: firebase.firestore.FieldValue.delete(),
+            //         dislikes: firebase.firestore.FieldValue.delete()
+            //     });
+
+            //     db.collection('posts').doc(doc.id).set({
+            //         likedUsers: [],
+            //         dislikedUsers: [],
+            //     },{merge: true});
+            // });
         }
     });
 }
