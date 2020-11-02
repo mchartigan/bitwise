@@ -19,10 +19,11 @@ function renderPost(doc){
   } 
   title.textContent = doc.data().title;
   content.textContent = doc.data().content;
-  if (doc.data().author != null) {
-    author.textContent = "author: " + doc.data().author;
-  } else {
+  //Check anon flag
+  if (doc.data().anon == true) {
     author.textContent = "[anonymous]"
+  } else {
+    author.textContent = "author: " + doc.data().author;
   }
   created.textContent = doc.data().created.toDate();
   img.setAttribute('src', doc.data().image);
