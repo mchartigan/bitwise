@@ -97,12 +97,15 @@ var endless = {
                             querySnapshot.forEach(doc => {
                                 // Only display parent posts (no comments)
                                 if (doc.data().parent == null) {
-                                    const postProps = {
-                                        postID: doc.id,
-                                        type: "post"
-                                    };
-                
-                                    posts.push(<Post {...postProps} key={doc.id}/>);
+
+                                    if (!doc.data().anon || doc.data().authorUID == UID) {
+                                        const postProps = {
+                                            postID: doc.id,
+                                            type: "post"
+                                        };
+                    
+                                        posts.push(<Post {...postProps} key={doc.id}/>);
+                                    }
                                 }
                             });
             
@@ -168,7 +171,7 @@ var endless = {
 
         for (var i = 0; i < numQueries; i++) {
             endless.query[i] = db.collection('posts')
-                .where('authoruid', 'in', following.slice(i*10, (i+1)*10))
+                .where('authorUID', 'in', following.slice(i*10, (i+1)*10))
                 .orderBy('created', 'desc')
         }
 
