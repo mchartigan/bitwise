@@ -3,7 +3,7 @@
 // Change account info to use update instead of set/merge
 // Box shadow margin/padding change on threaded comments
 // Save/display posts with newline characters
-// Don't allow clicking on anonymous profiles
+// Make anonymous profile viewing not show the username in the HTML
 // If a username is taken AFTER accountInfo loads, unique wont work
 // Add generic upload image function (return URL) for account/post
 // ************************************************************** \\
@@ -33,7 +33,7 @@ class Post extends React.Component {
             this.authorUID = doc.data().authorUID;
             this.createdText = jQuery.timeago(doc.data().created.toDate());
             this.topic = doc.data().topic;
-            this.topicText = ((this.topic != "") ? "[" + this.topic + "] ": "")
+            this.topicText = ((this.topic != "") ? "["+this.topic+"] ": "")
             this.titleText = doc.data().title ? doc.data().title : "";
             this.contentText = doc.data().content;
             this.imageURL = doc.data().image;
@@ -45,21 +45,31 @@ class Post extends React.Component {
             this.state.liked = doc.data().likedUsers.includes(UID);
             this.state.disliked = doc.data().dislikedUsers.includes(UID);
 
-            if (doc.data().anon) {
-                this.authorUsername = "Anonymous";
-                this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+            this.anonymous = doc.data().anon;
+            
+            this.profileClickable = !this.anonymous;
+
+            db.collection("users").doc(this.authorUID).get().then((doc) => {
+                if (this.anonymous) {
+                    if (this.authorUID == UID) {
+                        this.profileClickable = true;
+
+                        this.authorUsername = "Anonymous ("+doc.data().username+")";
+                        this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+                    } else {
+                        this.authorUsername = "Anonymous";
+                        this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+                    }
+                } else {
+                    this.authorUsername = doc.data().username;
+                    this.authorImageURL = doc.data().profileImageURL;
+                }
+
+                this.profileLinkName = doc.data().username;
 
                 // Re-render post
                 this.setState({ retrievedPost: true });
-            } else {
-                db.collection("users").doc(this.authorUID).get().then((doc) => {
-                    this.authorUsername = doc.data().username;
-                    this.authorImageURL = doc.data().profileImageURL;
-    
-                    // Re-render post
-                    this.setState({ retrievedPost: true });
-                });
-            }
+            });
         });
     }
 
@@ -91,9 +101,9 @@ class Post extends React.Component {
         event.target.onselectstart = function() { return false; };
 
         if (UID) {
-            console.log("Like Post:", this.postID);
-
             if (this.state.liked) {
+                console.log("Un-Like Post:", this.postID);
+
                 // Un-like
                 db.collection('posts').doc(this.postID).update({
                     likedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
@@ -109,6 +119,8 @@ class Post extends React.Component {
                     liked: false
                 });
             } else {
+                console.log("Like Post:", this.postID);
+
                 // Like
                 db.collection('posts').doc(this.postID).update({
                     likedUsers: firebase.firestore.FieldValue.arrayUnion(UID),
@@ -136,9 +148,9 @@ class Post extends React.Component {
         event.target.onselectstart = function() { return false; };
 
         if (UID) {
-            console.log("Dislike Post:", this.postID);
-
             if (this.state.disliked) {
+                console.log("Un-Dislike Post:", this.postID);
+
                 // Un-dislike
                 db.collection('posts').doc(this.postID).update({
                     dislikedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
@@ -154,6 +166,8 @@ class Post extends React.Component {
                     disliked: false
                 });
             } else {
+                console.log("Dislike Post:", this.postID);
+
                 // Dislike
                 db.collection('posts').doc(this.postID).update({
                     likedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
@@ -302,12 +316,14 @@ class Post extends React.Component {
                     {this.type == "post" && <div className="ui divider"></div>}
                 </div>
 
-                <a className="avatar" href={"/user/"+this.authorUsername}>
+                <a className="avatar" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
                     <img src={this.authorImageURL}></img>
                 </a>
 
                 <div className="content">
-                    <a className="author" href={"/user/"+this.authorUsername}>{this.authorUsername}</a>
+                    <a className="author" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
+                        {this.authorUsername}
+                    </a>
 
                     <div className="metadata">
                         <span className="date">{this.createdText}</span>
