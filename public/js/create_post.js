@@ -101,8 +101,8 @@ function addPost(anonymous, uid, title, body, subject) {
         parent: null,
         children: [],
         topic: subject,
-        likes: [],
-        dislikes: []
+        likedUsers: [],
+        dislikedUsers: []
     }).then(reference => {
         if(reference) {
             if (imageField.files.length != 0) {
