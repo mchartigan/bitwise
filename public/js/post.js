@@ -440,8 +440,8 @@ function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
             title: title,
             content: body,
             image: imageURL,
-            likes: [],
-            dislikes: []
+            likedUsers: [],
+            dislikedUsers: []
         }).then(postDocRef => {
             // CHECK IF PARENT EXISTS!! THIS IS CURRENTLY TAILORED TO REPLIES ONLY RN
             db.collection('posts').doc(parentID).update({
