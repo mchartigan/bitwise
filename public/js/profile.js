@@ -92,6 +92,7 @@ var endless = {
                             ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
                         } else {
                             var posts = [];
+                            var first = true;
             
                             // Loop through each post to add formatted JSX element to list
                             querySnapshot.forEach(doc => {
@@ -99,12 +100,15 @@ var endless = {
                                 if (doc.data().parent == null) {
 
                                     if (!doc.data().anon || doc.data().authorUID == UID) {
-                                        const postProps = {
+                                        var postProps = {
                                             postID: doc.id,
-                                            type: "post"
+                                            type: "post",
+                                            divider: !first
                                         };
                     
                                         posts.push(<Post {...postProps} key={doc.id}/>);
+
+                                        first = false;
                                     }
                                 }
                             });
@@ -200,10 +204,6 @@ function loadProfile() {
     var viewUID;
     var following;
 
-    let tcontent = document.createElement('div');
-    let uname = document.createElement('h1');
-    let description = document.createElement('h2');
-
     db.collection('users')
     .where('username', '==', pagename)
     .get().then(querySnapshot => {
@@ -211,15 +211,9 @@ function loadProfile() {
 
         db.collection("users").doc(viewUID).get().then(doc => {
             $('#profile-picture').attr('src', doc.data().profileImageURL);
-
-            tcontent.setAttribute('data-id', doc.id);
-            uname.textContent = doc.data().username;
-            description.textContent = doc.data().bioText;
     
-            tcontent.appendChild(uname);
-            tcontent.appendChild(description);
-    
-            profile.append(tcontent);
+            $('#profile-username').html(doc.data().username);
+            $('#profile-bio').html(doc.data().bioText);
 
             following = [viewUID];
             endless.init(following);
@@ -255,3 +249,6 @@ firebase.auth().onAuthStateChanged(function (user) {
 document.addEventListener('DOMContentLoaded', function () {
     // on DOM content loaded
 });
+
+// Initialize dynamic tab groups
+$('.menu .item').tab();
