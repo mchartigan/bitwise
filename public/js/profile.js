@@ -10,6 +10,8 @@ var storageRef = storage.ref();
 var docRef = null;
 var followState = null;
 
+console.log("1")
+
 
 // navigate to user profile page when logged in
 function myProfile() {
