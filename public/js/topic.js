@@ -29,6 +29,7 @@ function loadDropdown() {
 
 // Loads all of the logged in users posts
 function loadPosts() {
+    loadTopic();
     var topicname = window.location.href.split('/')[4];
     db.collection('posts')
         .orderBy('created', 'desc')
@@ -60,4 +61,9 @@ function loadPosts() {
                                 document.querySelector('#feed'));
             }
         });
+}
+
+function loadTopic() {
+    var pagename = window.location.href.split('/')[4];
+    $("#topic-name").text(pagename);
 }
