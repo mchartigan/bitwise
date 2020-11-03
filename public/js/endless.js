@@ -35,7 +35,10 @@ class endless {
 
         //window.addEventListener("scroll", function () {});
         window.addEventListener("scroll", function () {
-            if ((window.innerHeight + document.body.scrollTop) >= (document.body.scrollHeight + 200)) {
+            var screen = window.innerHeight + document.body.scrollTop;
+            var scroll = document.body.scrollHeight - 100;
+            //console.log(screen + " " + scroll);
+            if (screen >= scroll) {
                 endlessObj.loadPosts();
             }
         })
@@ -88,7 +91,7 @@ class endless {
             if (this.first) {
                 // load some posts to start the query offset
                 this.query.forEach(q => {
-                    q.limit(15)
+                    q.limit(8)
                     .get().then(querySnapshot => this.processQuery(querySnapshot));
                 })
             }

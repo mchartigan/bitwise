@@ -5,12 +5,11 @@ const followButton = document.querySelector('#follow-button');
 let endlessObj = new endless();
 const pagename = window.location.href.split('/')[4];
 var UID = null;
+var viewUID;
 var storage = firebase.storage();
 var storageRef = storage.ref();
 var docRef = null;
 var followState = null;
-
-console.log("1")
 
 
 // navigate to user profile page when logged in
@@ -30,7 +29,6 @@ function loadDropdown() {
 }
 
 function loadProfile() {
-    var viewUID;
     var following;
 
     let tcontent = document.createElement('div');
@@ -53,6 +51,7 @@ function loadProfile() {
             tcontent.appendChild(description);
     
             profile.append(tcontent);
+            loadFollowButton();
 
             following = [viewUID];
             endlessObj.init(following);
@@ -63,24 +62,32 @@ function loadProfile() {
 function loadFollowButton() {
     // IN PROGRESS
 
-    $('#follow-button').attr('class','ui fluid inverted red button');
+    if (UID == viewUID) {
+        $('#follow-button').hide()
+    } else {
+        $('#follow-button').attr('class','ui fluid inverted red button');
 
-    db.collection('users').doc(UID).get().then(doc => {
-        var loc = doc.followingUsers.indexOf(viewUID);
-        if (loc > -1) {
-            // they are currently following
-            followState = true;
-        } else {
-            followState = false;
-            followButton.show();
-        }
-    });
+        db.collection('users').doc(UID).get().then(doc => {
+            var loc = doc.data().followingUsers.indexOf(viewUID);
+            if (loc > -1) {
+                // they are currently following
+                followState = true;
+                $('#follow-button').text("Unfollow")
+            } else {
+                followState = false;
+                $('#follow-button').text("Follow")
+            }
+            $('#follow-button').show();
+            //$('#follow-button').attr("onClick", changeFollowState());
+        });
+    }
 }
 
-function changeFollowState(viewUID) {
+function changeFollowState() {
     // check current user follow list
+    console.log("changing state");
     db.collection('users').doc(UID).get().then(doc => {
-        var loc = doc.followingUsers.indexOf(viewUID);
+        var loc = doc.data().followingUsers.indexOf(viewUID);
         if (loc > -1) {
             // they are currently following. unfollow.
             db.collection('users').doc(UID).update({
@@ -92,6 +99,8 @@ function changeFollowState(viewUID) {
             });
         }
     });
+
+    loadFollowButton();
 }
 
 
@@ -104,7 +113,6 @@ firebase.auth().onAuthStateChanged(function (user) {
         $("#user-dropdown").show();
 
         loadDropdown();
-        loadFollowButton();
     } else {
         docRef = null;
 
