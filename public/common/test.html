@@ -50,9 +50,17 @@
     </div>
 
     <br><br><br><br>
+
     <div class="ui main container">
+        <div class="content">
+            <a class='ui fluid inverted red button' onclick="test()" id="test-button">
+                <i class="keyboard icon"></i>
+                Test
+            </a>
+        </div>
+
         <div class="ui segment">
-            <div class="ui large header">User Posts</div>
+            <div class="ui large header">Timeline</div>
             <div id="feed"></div>
         </div>
         <style>
@@ -63,6 +71,10 @@
             .ui.comments .comment .avatar img,
             .ui.comments .comment img.avatar {
                 height: auto;
+            }
+
+            .ui.comments .comment a.author:hover {
+                color: #6435c9
             }
         </style>
     </div>

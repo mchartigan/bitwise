@@ -66,38 +66,20 @@ function submitPost() {
     UID = firebase.auth().currentUser.uid;
     // if user chose to post anonymously or isn't signed in, post anonymously
     let anon = $("input[name='anonymous']:checked").val();
-    if (anon) {
-        //If there is not a logged in user, do not save username and uid in database
-        if (!UID) {
-            addPost(
-                anonymous=true,
-                auth=null,
-                uid=null,
-                title=titleField.value,
-                body=bodyField.value,
-                subject=topic
-            );
-        }
-        //If there is someone logged in, save a username and uid in database
-        else {
-            db.collection('users').doc(UID).get().then(user => {
-                addPost(
-                    anonymous=true,
-                    auth=user.data().username,
-                    uid=UID,
-                    title=titleField.value,
-                    body=bodyField.value,
-                    subject=topic
-                );
-            });
-        }
+    if (anon || !UID) {
+        addPost(
+            true,
+            uid=UID,
+            title=titleField.value,
+            body=bodyField.value,
+            subject=topic
+        );
     }
     // otherwise post with username attached
     else {
         db.collection('users').doc(UID).get().then(user => {
             addPost(
-                anonymous=false,
-                auth=user.data().username,
+                false,
                 uid=UID,
                 title=titleField.value,
                 body=bodyField.value,
@@ -108,21 +90,19 @@ function submitPost() {
 }
 
 // function to generate post s.t. posting with username agrees with promise
-function addPost(anonymous, auth, uid, title, body, subject) {
+function addPost(anonymous, uid, title, body, subject) {
     db.collection('posts').add({
         anon: anonymous,
-        author: auth,
-        authoruid: uid,
+        authorUID: uid,
         title: title,
         content: body,
         image: null,
-        embed: null,
         created: new Date(),
         parent: null,
         children: [],
         topic: subject,
-        upvotes: [],
-        downvotes: []
+        likedUsers: [],
+        dislikedUsers: []
     }).then(reference => {
         if(reference) {
             if (imageField.files.length != 0) {
