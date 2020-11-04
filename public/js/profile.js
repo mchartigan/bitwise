@@ -7,6 +7,7 @@ var storage = firebase.storage();
 var storageRef = storage.ref();
 var docRef = null;
 var followState = null;
+var following = null;
 
 // function myprofile was obselete
 
@@ -23,9 +24,6 @@ function loadProfile(userDoc) {
 
     $('#profile-username').html(userDoc.data().username);
     $('#profile-bio').html(userDoc.data().bioText);
-
-    var following = [viewUID];
-    endlessObj.init(following);
 }
 
 function loadFollowButton() {
@@ -90,6 +88,10 @@ firebase.auth().onAuthStateChanged(function (user) {
 
             loadProfile(userDoc);
 
+            //following = [viewUID];
+            //endlessObj.init(following);
+            loadUserPosts(viewUID);
+
             if (user) {
                 UID = user.uid;
                 docRef = db.collection("users").doc(UID);
@@ -108,6 +110,7 @@ firebase.auth().onAuthStateChanged(function (user) {
                 loadSavedPosts(userDoc);
                 loadLikedPosts(userDoc);
                 loadDislikedPosts(userDoc);
+
             } else {
                 docRef = null;
         
@@ -128,6 +131,7 @@ function refreshTabs() {
     $('#refresh-loader').show();
 
     db.collection('users').doc(viewUID).get().then((userDoc) => {
+        loadUserPosts(viewUID)
         loadFollowedUsers(userDoc);
         loadFollowedTopics(userDoc);
         loadSavedPosts(userDoc);
@@ -137,6 +141,45 @@ function refreshTabs() {
         $('#refresh-button').show();
         $('#refresh-loader').hide();
     });
+}
+
+function loadUserPosts(viewUID) {
+    db.collection('posts')
+    .where('authorUID', '==', viewUID)
+    .orderBy('created', 'desc').get().then(querySnapshot => {
+        if (querySnapshot.empty) {
+            // Display error message
+            ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
+        } else {
+            var posts = [];
+            var first = true;
+    
+            // Loop through each post to add formatted JSX element to list
+            querySnapshot.forEach(doc => {
+                // Only display parent posts (no comments)
+                if (doc.data().parent == null) {
+    
+                    if (!doc.data().anon || doc.data().authorUID == UID) {
+                        var postProps = {
+                            postID: doc.id,
+                            type: "post",
+                            divider: !first
+                        };
+    
+                        posts.push(<Post {...postProps} key={Math.random()}/>);
+    
+                        first = false;
+                    }
+                }
+            });
+    
+            // Threaded post container
+            ReactDOM.render(<div className="ui threaded comments">
+                                {posts}
+                            </div>,
+                            document.querySelector('#all-posts-container'));
+        }
+    })
 }
 
 function loadFollowedUsers(userDoc) {

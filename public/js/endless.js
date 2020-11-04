@@ -46,6 +46,14 @@ class endless {
         this.loadPosts();
     }
 
+    refresh() {
+        // not used
+        this.first = true;
+        this.hasMore = true;
+        this.prevDoc = null;
+        this.loadPosts;
+    }
+
     processQuery(querySnapshot) {
         if (this.first && querySnapshot.empty) {
             // Display error message
@@ -91,7 +99,7 @@ class endless {
             if (this.first) {
                 // load some posts to start the query offset
                 this.query.forEach(q => {
-                    q.limit(8)
+                    q.limit(30)
                     .get().then(querySnapshot => this.processQuery(querySnapshot));
                 })
             }
