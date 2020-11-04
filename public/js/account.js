@@ -42,6 +42,7 @@ function getUserList() {
 
 function loadDropdown() {
     docRef.get().then(function(doc) {
+        $('#user-own-profile').attr('href', '/user/'+doc.data().username);
         $('#profile-icon').attr('src', doc.data().profileImageURL);
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
     });
