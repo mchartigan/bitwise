@@ -22,7 +22,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         loadDropdown();
         loadAccountInfo();
     } else {
-        location.replace("/common/login.html");
+        location.replace("/index.html");
     }
 });
 

@@ -8,6 +8,8 @@
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+
+        <title>Account Information</title>
     </head>
     <body>
         <div class="ui fixed violet inverted menu">
@@ -24,9 +26,9 @@
                     
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <a class="item" href="/user/" id="user-own-profile">Profile</a>                        
+                        <a class="item" href="/user/" id="user-own-profile">Profile</a>                    
                         <a class="item" href="/common/account.html">Account Information</a>
-                        <a class="item" href="/index.html" onclick="firebase.auth().signOut()">
+                        <a class="item" href="/index.html" onclick="firebase.auth().signOut();">
                             <h4 class="ui red header">Sign Out</h4>
                         </a>
                     </div>
@@ -108,5 +110,6 @@
         </script>
 
         <script src="/js/account.js"></script>
+        <script src="/js/login.js" type="text/babel"></script>
     </body>
 </html>

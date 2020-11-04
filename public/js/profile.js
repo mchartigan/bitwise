@@ -74,7 +74,6 @@ function changeFollowState() {
     loadFollowButton();
 }
 
-
 // Initialize dynamic tab groups
 $('.menu .item').tab();
 
@@ -91,6 +90,7 @@ firebase.auth().onAuthStateChanged(function (user) {
             //following = [viewUID];
             //endlessObj.init(following);
             loadUserPosts(viewUID);
+            loadUserPostsAndReplies(viewUID);
 
             if (user) {
                 UID = user.uid;
@@ -131,7 +131,8 @@ function refreshTabs() {
     $('#refresh-loader').show();
 
     db.collection('users').doc(viewUID).get().then((userDoc) => {
-        loadUserPosts(viewUID)
+        loadUserPosts(viewUID);
+        loadUserPostsAndReplies(viewUID);
         loadFollowedUsers(userDoc);
         loadFollowedTopics(userDoc);
         loadSavedPosts(userDoc);
@@ -149,7 +150,7 @@ function loadUserPosts(viewUID) {
     .orderBy('created', 'desc').get().then(querySnapshot => {
         if (querySnapshot.empty) {
             // Display error message
-            ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
+            ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#all-posts-container'));
         } else {
             var posts = [];
             var first = true;
@@ -178,6 +179,41 @@ function loadUserPosts(viewUID) {
                                 {posts}
                             </div>,
                             document.querySelector('#all-posts-container'));
+        }
+    })
+}
+
+function loadUserPostsAndReplies(viewUID) {
+    db.collection('posts')
+    .where('authorUID', '==', viewUID)
+    .orderBy('created', 'desc').get().then(querySnapshot => {
+        if (querySnapshot.empty) {
+            // Display error message
+            ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#all-posts-replies-container'));
+        } else {
+            var posts = [];
+            var first = true;
+    
+            // Loop through each post to add formatted JSX element to list
+            querySnapshot.forEach(doc => {
+                if (!doc.data().anon || doc.data().authorUID == UID) {
+                    var postProps = {
+                        postID: doc.id,
+                        type: "post",
+                        divider: !first
+                    };
+
+                    posts.push(<Post {...postProps} key={Math.random()}/>);
+
+                    first = false;
+                }
+            });
+    
+            // Threaded post container
+            ReactDOM.render(<div className="ui threaded comments">
+                                {posts}
+                            </div>,
+                            document.querySelector('#all-posts-replies-container'));
         }
     })
 }
