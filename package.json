@@ -1,0 +1,33 @@
+{
+  "name": "bitwise",
+  "version": "1.0.0",
+  "description": "<p align=\"center\"><img src=\"docs/bitwise.png\"></p>",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
+    "firebase": "^7.24.0",
+    "firebaseui": "^4.7.0",
+    "fomantic-ui": "^2.8.7",
+    "fomantic-ui-css": "^2.8.7",
+    "fomantic-ui-less": "^2.8.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mchartigan/bitwise.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mchartigan/bitwise/issues"
+  },
+  "homepage": "https://github.com/mchartigan/bitwise#readme"
+}
