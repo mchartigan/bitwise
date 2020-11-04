@@ -50,14 +50,24 @@
         <br><br><br><br>
 
         <div class="ui main container">
-            <div class="content">
-                <a class='ui fluid inverted red button' onclick="test()" id="test-button">
-                    <i class="keyboard icon"></i>
-                    Follow
-                </a>
+            <div class="ui segment">
+                <div class="ui items">
+                    <div class="item">
+                        <div class="ui huge header" id="topic-name">
+                            <p>loading...</p>
+                        </div>
+                        <div class="top aligned content">
+                            <div class="extra">
+                                <div class="ui basic violet right floated button">
+                                    <i class="user plus icon"></i>
+                                    Follow
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="ui segment">
-                <div class="ui large header" id="topic-name"></div>
                 <div id="feed"></div>
             </div>
             <style>
