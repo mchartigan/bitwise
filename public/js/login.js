@@ -50,7 +50,29 @@ var uiConfig = {
   privacyPolicyUrl: '<your-privacy-policy-url>'
 };
 
-// The start method will wait until the DOM is loaded.
-ui.start('#firebaseui-auth-container', uiConfig);
+class Login extends React.Component {
+  render() {
+    return (
+      <div className="ui modal">
+        <div className="content">
+          <div id="firebaseui-auth-container" className='ui basic fluid violet button'></div>
+          <div id="loader">Loading Google Authentication Widget...</div>
+        </div>
+        <div className="actions">
+          <a className='ui fluid violet right cancel button'>Continue Without Signing In</a>
+        </div>
+      </div>
+    )
+  }
+}
 
-function anonymousLogin() { location.replace('/index.html')}
+function loadLogin() {
+  console.log('trying to load');
+  ReactDOM.render(<Login/>, document.querySelector("#login-modal"));
+
+  // The start method will wait until the DOM is loaded.
+  ui.start('#firebaseui-auth-container', uiConfig);
+  $('.ui.modal').modal('show');
+}
+
+document.getElementById ("login-button").addEventListener ("click", loadLogin(), false);

@@ -2,6 +2,9 @@
 const postForm      = document.querySelector('#create-post-form');
 const postList      = document.querySelector('#timeline');
 
+$("#login-button").on("click", console.log('trying to load'));
+$("#login-button").hide();
+
 // create element & render cafe
 function renderPost(doc){
   let li = document.createElement('li');
