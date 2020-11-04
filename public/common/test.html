@@ -18,6 +18,7 @@
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
 
     <link rel="shortcut icon" href="/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
     <title>Test</title>
 </head>
 
@@ -39,7 +40,7 @@
                 <div class="menu">
                     <a class="item" href="/common/profile.html">Profile</a>
                     <a class="item" href="/common/account.html">Account Information</a>
-                    <a class="item" href="/common/login.html" onclick="firebase.auth().signOut()">
+                    <a class="item" onclick="completeSignOut()">
                         <h4 class="ui red header">Sign Out</h4>
                     </a>
                 </div>
