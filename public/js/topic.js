@@ -3,6 +3,7 @@ var topicname = null;
 var storage = firebase.storage();
 var storageRef = storage.ref();
 var docRef = null;
+var followState = null;
 
 firebase.auth().onAuthStateChanged(function (user) {
     loadTopic();
@@ -15,8 +16,12 @@ firebase.auth().onAuthStateChanged(function (user) {
         $("#login-button").hide();
         $("#user-dropdown").show();
 
+        setFollowState();
+        loadFollowButton();
         loadPosts();
     } else {
+        setFollowState();
+        loadFollowButton();
         loadPosts();
         //location.replace("/common/login.html");
     }
@@ -62,42 +67,57 @@ function loadPosts() {
             }
         });
 }
+function setFollowState() {
+    if (UID == null) {
+        followState = false;
+    } else {
+        db.collection('users').doc(UID).get().then(doc => {
+            var loc = doc.data().followingTopics.indexOf(topicname);
+            if (loc > -1) {
+                followState = true;
+            } else {
+                followState = false;
+            }
+        });
+    }
+}
+
 function loadFollowButton() {
     // IN PROGRESS
-    db.collection('users').doc(UID).get().then(doc => {
-        var loc = doc.data().followingTopics.indexOf(topicname);
-        if (loc > -1) {
-            // they are currently following
-            followState = true;
-            $('#follow-button').innerHTML("Unfollow")
-        } else {
-            followState = false;
-            $('#follow-button').innerHTML("Follow")
-        }
-        $('#follow-button').show();
-    });
+    if (UID == null) {
+        $('#follow-button').hide();
+        followState = false;
+    }
+    if (followState == true) {
+        // they are currently following
+        ReactDOM.render(<div> <i className="user minus icon"></i>
+                            Unfollow
+                            </div>, document.querySelector('#follow-button'));
+    } else {
+        ReactDOM.render(<div> <i className="user plus icon"></i>
+                            Follow
+                            </div>, document.querySelector('#follow-button'));
+    }
 }
 
 function changeFollowState() {
     // check current user follow list
-    console.log("changing state");
-    db.collection('users').doc(UID).get().then(doc => {
-        var loc = doc.data().followingUsers.indexOf(viewUID);
-        if (loc > -1) {
-            // they are currently following. unfollow.
-            db.collection('users').doc(UID).update({
-                followingUsers: firebase.firestore.FieldValue.arrayRemove(viewUID)
-            });
-        } else {
-            db.collection('users').doc(UID).update({
-                followingUsers: firebase.firestore.FieldValue.arrayUnion(viewUID)
-            });
-        }
-    });
+    if (followState == true) {
+        // they are currently following. unfollow.
+        db.collection('users').doc(UID).update({
+            followingTopics: firebase.firestore.FieldValue.arrayRemove(topicname)
+        });
+        followState = false;
+    } else {
+        db.collection('users').doc(UID).update({
+            followingTopics: firebase.firestore.FieldValue.arrayUnion(topicname)
+        });
+        followState = true;
+    };
     loadFollowButton();
 }
 
 function loadTopic() {
     topicname = window.location.href.split('/')[4];
-    $("#topic-name").html(topic);
+    $("#topic-name").html(topicname);
 }
