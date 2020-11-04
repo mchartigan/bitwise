@@ -18,6 +18,10 @@
     "rewrites": [ {
       "source": "/user/**",
       "function": "user"
+    },
+    {
+      "source": "/topic/**",
+      "function": "topic"
     }]
   },
   "storage": {
