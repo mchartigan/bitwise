@@ -87,6 +87,8 @@ class Post extends React.Component {
 
                         resolve();
                     });
+                } else {
+                    resolve();
                 }
             });
 

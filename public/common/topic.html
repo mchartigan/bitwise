@@ -15,10 +15,7 @@
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-        
-        <!--
-        <link rel="stylesheet" href="/css/styles.css">
-        -->
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
         <title>Topic</title>
     </head>
     <body>
@@ -38,12 +35,13 @@
                     <div class="menu">
                         <a class="item" href="/user/" id="user-own-profile">Profile</a>                    
                         <a class="item" href="/common/account.html">Account Information</a>
-                        <a class="item" href="/common/login.html" onclick="firebase.auth().signOut()">
+                        <a class="item" onclick="completeSignOut()">
                             <h4 class="ui red header">Sign Out</h4>
                         </a>
                     </div>
                 </div>
-                <a href="/common/login.html" class="right header item" id="login-button">Log In</a>
+                <a class="right header item" id="login-button">Log In</a>
+                <div id="login-modal"></div>
             </div>
         </div>
 
@@ -97,5 +95,6 @@
         </script>
     <script src="/js/topic.js" type="text/babel"></script>
     <script src="/js/post.js" type="text/babel"></script>
+    <script src="/js/login.js" type="text/babel"></script>
     </body>
 </html>
