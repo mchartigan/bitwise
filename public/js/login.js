@@ -16,7 +16,7 @@ var uiConfig = {
       
       db.collection("users").doc(UID).get().then(function(doc) {
         if (doc.data()) {
-          // Redirect to homepage
+          // Hide popup
           $("#login-modal").modal('hide');
         } else {
           // Force new user to fill out username
