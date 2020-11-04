@@ -68,8 +68,8 @@ function submitPost() {
     let anon = $("input[name='anonymous']:checked").val();
     if (anon || !UID) {
         addPost(
-            auth=null,
-            uid=null,
+            true,
+            uid=UID,
             title=titleField.value,
             body=bodyField.value,
             subject=topic
@@ -79,7 +79,7 @@ function submitPost() {
     else {
         db.collection('users').doc(UID).get().then(user => {
             addPost(
-                auth=user.data().username,
+                false,
                 uid=UID,
                 title=titleField.value,
                 body=bodyField.value,
@@ -90,20 +90,19 @@ function submitPost() {
 }
 
 // function to generate post s.t. posting with username agrees with promise
-function addPost(auth, uid, title, body, subject) {
+function addPost(anonymous, uid, title, body, subject) {
     db.collection('posts').add({
-        author: auth,
-        authoruid: uid,
+        anon: anonymous,
+        authorUID: uid,
         title: title,
         content: body,
         image: null,
-        embed: null,
         created: new Date(),
         parent: null,
-        children: [null],
+        children: [],
         topic: subject,
-        upvotes: [null],
-        downvotes: [null]
+        likedUsers: [],
+        dislikedUsers: []
     }).then(reference => {
         if(reference) {
             if (imageField.files.length != 0) {

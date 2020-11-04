@@ -6,6 +6,12 @@
 // Make anonymous profile viewing not show the username in the HTML
 // If a username is taken AFTER accountInfo loads, unique wont work
 // Add generic upload image function (return URL) for account/post
+// Modify header profile URL to go to the right profile
+// Add dimmer with confirm delete buttont to post
+// Add loader to posts that havent loaded yet
+// Ensure all HTML pages use fomantic ui instead of semantic ui
+// Add custome onInteract callback to post to live update on profile
+// --Refresh button does not refresh 'Overview' tab
 // ************************************************************** \\
 
 'use strict';
@@ -25,47 +31,50 @@ class Post extends React.Component {
 
         this.postID = this.props.postID;
         this.type = this.props.type;
+        this.divider = this.props.divider;
 
         this.repliesID = [];
         this.repliesHTML = [];
 
-        db.collection('posts').doc(this.postID).get().then((doc) => {
-            this.authorUID = doc.data().authorUID;
-            this.createdText = jQuery.timeago(doc.data().created.toDate());
-            this.topic = doc.data().topic;
+        db.collection('posts').doc(this.postID).get().then((postDoc) => {
+            this.authorUID = postDoc.data().authorUID;
+            this.createdText = jQuery.timeago(postDoc.data().created.toDate());
+            this.topic = postDoc.data().topic;
             this.topicText = ((this.topic != "") ? "["+this.topic+"] ": "")
-            this.titleText = doc.data().title ? doc.data().title : "";
-            this.contentText = doc.data().content;
-            this.imageURL = doc.data().image;
+            this.titleText = postDoc.data().title ? postDoc.data().title : "";
+            this.contentText = postDoc.data().content;
+            this.imageURL = postDoc.data().image;
 
-            this.repliesID = doc.data().children;
+            this.repliesID = postDoc.data().children;
 
-            this.numLikes = doc.data().likedUsers.length;
-            this.numDislikes = doc.data().dislikedUsers.length;
-            this.state.liked = doc.data().likedUsers.includes(UID);
-            this.state.disliked = doc.data().dislikedUsers.includes(UID);
+            this.numLikes = postDoc.data().likedUsers.length;
+            this.numDislikes = postDoc.data().dislikedUsers.length;
 
-            this.anonymous = doc.data().anon;
+            this.anonymous = postDoc.data().anon;
             
             this.profileClickable = !this.anonymous;
 
-            db.collection("users").doc(this.authorUID).get().then((doc) => {
+            db.collection("users").doc(this.authorUID).get().then((userDoc) => {
                 if (this.anonymous) {
                     if (this.authorUID == UID) {
                         this.profileClickable = true;
 
-                        this.authorUsername = "Anonymous ("+doc.data().username+")";
+                        this.authorText = "Anonymous ("+userDoc.data().username+")";
                         this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
                     } else {
-                        this.authorUsername = "Anonymous";
+                        this.authorText = "Anonymous";
                         this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
                     }
                 } else {
-                    this.authorUsername = doc.data().username;
-                    this.authorImageURL = doc.data().profileImageURL;
+                    this.authorText = userDoc.data().username;
+                    this.authorImageURL = userDoc.data().profileImageURL;
                 }
 
-                this.profileLinkName = doc.data().username;
+                this.profileLinkName = userDoc.data().username;
+
+                this.state.liked = userDoc.data().postsLiked.includes(this.postID);
+                this.state.disliked = userDoc.data().postsDisliked.includes(this.postID);
+                this.state.saved = userDoc.data().postsSaved.includes(this.postID);
 
                 // Re-render post
                 this.setState({ retrievedPost: true });
@@ -75,7 +84,25 @@ class Post extends React.Component {
 
     saveClick = () => {
         if (UID) {
-            console.log("Save Post:", this.postID)
+            if (this.state.saved) {
+                console.log("Un-Save Post:", this.postID)
+
+                // Un-save
+                db.collection('users').doc(UID).update({
+                    postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                });
+    
+                this.setState({ saved: false });
+            } else {
+                console.log("Save Post:", this.postID);
+
+                // Save
+                db.collection('users').doc(UID).update({
+                    postsSaved: firebase.firestore.FieldValue.arrayUnion(this.postID),
+                });
+
+                this.setState({ saved: true });
+            }
         }
     }
 
@@ -115,9 +142,7 @@ class Post extends React.Component {
     
                 this.numLikes -= 1;
     
-                this.setState({
-                    liked: false
-                });
+                this.setState({ liked: false });
             } else {
                 console.log("Like Post:", this.postID);
 
@@ -162,9 +187,7 @@ class Post extends React.Component {
     
                 this.numDislikes -= 1;
     
-                this.setState({
-                    disliked: false
-                });
+                this.setState({ disliked: false });
             } else {
                 console.log("Dislike Post:", this.postID);
 
@@ -231,7 +254,7 @@ class Post extends React.Component {
     updateReplies = () => {
         // Re-calculate HTML for replies
         this.repliesHTML = this.repliesID.map(replyID => (
-            <Post postID={replyID} type="comment" onDelete={this.deleteReply} key={replyID}/>
+            <Post postID={replyID} type="comment" divider={true} onDelete={this.deleteReply} key={replyID}/>
         ));
     }
 
@@ -313,7 +336,7 @@ class Post extends React.Component {
         return (
             <div className="comment" id={"post-"+this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
                 <div>
-                    {this.type == "post" && <div className="ui divider"></div>}
+                    {this.divider && <div className="ui divider"></div>}
                 </div>
 
                 <a className="avatar" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
@@ -322,7 +345,7 @@ class Post extends React.Component {
 
                 <div className="content">
                     <a className="author" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
-                        {this.authorUsername}
+                        {this.authorText}
                     </a>
 
                     <div className="metadata">
@@ -333,7 +356,7 @@ class Post extends React.Component {
                         <i className="ellipsis vertical icon"></i>
                         <div className="left menu">
                             <div className="item" onClick={this.saveClick}>
-                                <i className="bookmark outline icon"></i>
+                                {this.state.saved ? <i className="bookmark icon"></i> : <i className="bookmark outline icon"></i>}
                                 Save
                             </div>
 
@@ -361,7 +384,7 @@ class Post extends React.Component {
                             <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
                                 {this.numLikes}
                                 &nbsp;&nbsp;
-                                {this.state.liked ? <i className="thumbs up icon"></i>: <i className="thumbs up outline icon"></i>}
+                                {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
                                 Like
                             </a>
                         </span>
@@ -371,7 +394,7 @@ class Post extends React.Component {
                             <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
                                 {this.numDislikes}
                                 &nbsp;&nbsp;
-                                {this.state.disliked ? <i className="thumbs down icon"></i>: <i className="thumbs down outline icon"></i>}
+                                {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
                                 Dislike
                             </a>
                         </span>

@@ -41,6 +41,7 @@ function loadPosts() {
                 ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
             } else {
                 var posts = [];
+                var first = true;
 
                 // Loop through each post to add formatted JSX element to list
                 querySnapshot.forEach(doc => {
@@ -48,10 +49,13 @@ function loadPosts() {
                     if (doc.data().parent == null) {
                         const postProps = {
                             postID: doc.id,
-                            type: "post"
+                            type: "post",
+                            divider: !first
                         };
     
                         posts.push(<Post {...postProps} key={doc.id}/>);
+
+                        first = false;
                     }
                 });
 
