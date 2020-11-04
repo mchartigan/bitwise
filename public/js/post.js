@@ -12,6 +12,7 @@
 // Ensure all HTML pages use fomantic ui instead of semantic ui
 // Add custome onInteract callback to post to live update on profile
 // --Refresh button does not refresh 'Overview' tab
+// Prevent topics/usernames with spaces (or other weird characters)
 // ************************************************************** \\
 
 'use strict';
@@ -54,28 +55,42 @@ class Post extends React.Component {
             
             this.profileClickable = !this.anonymous;
 
-            db.collection("users").doc(this.authorUID).get().then((userDoc) => {
-                if (this.anonymous) {
-                    if (this.authorUID == UID) {
-                        this.profileClickable = true;
-
-                        this.authorText = "Anonymous ("+userDoc.data().username+")";
-                        this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+            let authorInfoPromise = new Promise(resolve => {
+                db.collection("users").doc(this.authorUID).get().then(userDoc => {
+                    if (this.anonymous) {
+                        if (this.authorUID == UID) {
+                            this.profileClickable = true;
+    
+                            this.authorText = "Anonymous ("+userDoc.data().username+")";
+                            this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+                        } else {
+                            this.authorText = "Anonymous";
+                            this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+                        }
                     } else {
-                        this.authorText = "Anonymous";
-                        this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+                        this.authorText = userDoc.data().username;
+                        this.authorImageURL = userDoc.data().profileImageURL;
                     }
-                } else {
-                    this.authorText = userDoc.data().username;
-                    this.authorImageURL = userDoc.data().profileImageURL;
+    
+                    this.profileLinkName = userDoc.data().username;
+
+                    resolve();
+                });
+            });
+
+            let viewerStatePromise = new Promise(resolve => {
+                if (UID) {
+                    db.collection("users").doc(UID).get().then(userDoc => {
+                        this.state.liked = userDoc.data().postsLiked.includes(this.postID);
+                        this.state.disliked = userDoc.data().postsDisliked.includes(this.postID);
+                        this.state.saved = userDoc.data().postsSaved.includes(this.postID);
+
+                        resolve();
+                    });
                 }
+            });
 
-                this.profileLinkName = userDoc.data().username;
-
-                this.state.liked = userDoc.data().postsLiked.includes(this.postID);
-                this.state.disliked = userDoc.data().postsDisliked.includes(this.postID);
-                this.state.saved = userDoc.data().postsSaved.includes(this.postID);
-
+            Promise.all([authorInfoPromise,viewerStatePromise]).then(() => {
                 // Re-render post
                 this.setState({ retrievedPost: true });
             });
@@ -88,8 +103,12 @@ class Post extends React.Component {
                 console.log("Un-Save Post:", this.postID)
 
                 // Un-save
-                db.collection('users').doc(UID).update({
-                    postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                db.collection('posts').doc(this.postID).update({
+                    savedUsers: firebase.firestore.FieldValue.arrayRemove(UID)
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                    });
                 });
     
                 this.setState({ saved: false });
@@ -97,8 +116,12 @@ class Post extends React.Component {
                 console.log("Save Post:", this.postID);
 
                 // Save
-                db.collection('users').doc(UID).update({
-                    postsSaved: firebase.firestore.FieldValue.arrayUnion(this.postID),
+                db.collection('posts').doc(this.postID).update({
+                    savedUsers: firebase.firestore.FieldValue.arrayUnion(UID)
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsSaved: firebase.firestore.FieldValue.arrayUnion(this.postID)
+                    });
                 });
 
                 this.setState({ saved: true });
@@ -133,7 +156,7 @@ class Post extends React.Component {
 
                 // Un-like
                 db.collection('posts').doc(this.postID).update({
-                    likedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
+                    likedUsers: firebase.firestore.FieldValue.arrayRemove(UID)
                 }).then(() => {
                     db.collection('users').doc(UID).update({
                         postsLiked: firebase.firestore.FieldValue.arrayRemove(this.postID)
@@ -149,7 +172,7 @@ class Post extends React.Component {
                 // Like
                 db.collection('posts').doc(this.postID).update({
                     likedUsers: firebase.firestore.FieldValue.arrayUnion(UID),
-                    dislikedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
+                    dislikedUsers: firebase.firestore.FieldValue.arrayRemove(UID)
                 }).then(() => {
                     db.collection('users').doc(UID).update({
                         postsLiked: firebase.firestore.FieldValue.arrayUnion(this.postID),
@@ -178,7 +201,7 @@ class Post extends React.Component {
 
                 // Un-dislike
                 db.collection('posts').doc(this.postID).update({
-                    dislikedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
+                    dislikedUsers: firebase.firestore.FieldValue.arrayRemove(UID)
                 }).then(() => {
                     db.collection('users').doc(UID).update({
                         postsDisliked: firebase.firestore.FieldValue.arrayRemove(this.postID)
@@ -194,7 +217,7 @@ class Post extends React.Component {
                 // Dislike
                 db.collection('posts').doc(this.postID).update({
                     likedUsers: firebase.firestore.FieldValue.arrayRemove(UID),
-                    dislikedUsers: firebase.firestore.FieldValue.arrayUnion(UID),
+                    dislikedUsers: firebase.firestore.FieldValue.arrayUnion(UID)
                 }).then(() => {
                     db.collection('users').doc(UID).update({
                         postsLiked: firebase.firestore.FieldValue.arrayRemove(this.postID),
@@ -411,12 +434,12 @@ class Post extends React.Component {
                             &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
                                 <i className="chevron down icon"></i>
-                                Expand
+                                Expand ({this.repliesID.length})
                             </a>
 
                             <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
                                 <i className="chevron up icon"></i>
-                                Collapse
+                                Collapse ({this.repliesID.length})
                             </a>
                         </span>
                     </div>
@@ -464,7 +487,8 @@ function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
             content: body,
             image: imageURL,
             likedUsers: [],
-            dislikedUsers: []
+            dislikedUsers: [],
+            savedUsers: []
         }).then(postDocRef => {
             // CHECK IF PARENT EXISTS!! THIS IS CURRENTLY TAILORED TO REPLIES ONLY RN
             db.collection('posts').doc(parentID).update({
@@ -486,6 +510,27 @@ async function deletePost(postID) {
     // *************************************************** \\
 
     let doc = await db.collection("posts").doc(postID).get();
+
+    // Remove post from any users with it in their liked list
+    doc.data().likedUsers.forEach(userID => {
+        db.collection('users').doc(userID).update({
+            postsLiked: firebase.firestore.FieldValue.arrayRemove(postID)
+        });
+    });
+
+    // Remove post from any users with it in their disliked list
+    doc.data().dislikedUsers.forEach(userID => {
+        db.collection('users').doc(userID).update({
+            postsDisliked: firebase.firestore.FieldValue.arrayRemove(postID)
+        });
+    });
+
+    // Remove post from any users with it in their saved list
+    doc.data().savedUsers.forEach(userID => {
+        db.collection('users').doc(userID).update({
+            postsSaved: firebase.firestore.FieldValue.arrayRemove(postID)
+        });
+    });
 
     return new Promise((resolve, reject) => {
         if (doc.data().parent) {

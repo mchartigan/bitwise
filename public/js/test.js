@@ -71,23 +71,28 @@ function loadPosts() {
 
 function test() {
     console.log("Running: test()");
-    console.log("--loop through all posts--");
+    console.log("--loop through all users--");
 
-    db.collection('posts').get().then(function (querySnapshot) {
+    db.collection('users').get().then(function (querySnapshot) {
         if (querySnapshot.empty) {
             console.log('No snapshots in query!')
         } else {
-            // querySnapshot.forEach(doc => {
-            //     db.collection('posts').doc(doc.id).update({
-            //         likes: firebase.firestore.FieldValue.delete(),
-            //         dislikes: firebase.firestore.FieldValue.delete()
-            //     });
+            querySnapshot.forEach(doc => {
+                // doc.data().postsSaved.forEach(postID => {
+                //     db.collection('posts').doc(postID).update({
+                //         savedUsers: firebase.firestore.FieldValue.arrayUnion(doc.id)
+                //     });
+                // });
 
-            //     db.collection('posts').doc(doc.id).set({
-            //         likedUsers: [],
-            //         dislikedUsers: [],
-            //     },{merge: true});
-            // });
+                // db.collection('posts').doc(doc.id).update({
+                //     likes: firebase.firestore.FieldValue.delete(),
+                //     dislikes: firebase.firestore.FieldValue.delete()
+                // });
+
+                // db.collection('posts').doc(doc.id).set({
+                //     savedUsers: []
+                // },{merge: true});
+            });
         }
     });
 }
