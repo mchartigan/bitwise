@@ -8,16 +8,8 @@ var storageRef = storage.ref();
 var docRef = null;
 var followState = null;
 
+// function myprofile was obselete
 
-// navigate to user profile page when logged in
-function myProfile() {
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            location.replace("account.html");
-        }
-    });
-}
-  
 function loadDropdown() {
     docRef.get().then(function(doc) {
         $('#profile-icon').attr('src', doc.data().profileImageURL);
@@ -37,16 +29,20 @@ function loadProfile(userDoc) {
 
 function loadFollowButton() {
     if (UID == null || UID == viewUID) {
+        // if user is not logged in
+        // or user is viewing their own page
+        // do not show the follow button
+
         $('#follow-button').hide();
         followState = false;
     } else {
-        //  onclick="changeFollowState()"
         db.collection('users').doc(UID).get().then(doc => {
             var loc = doc.data().followingUsers.indexOf(viewUID);
 
             if (followState == null) {
+                // if this is the first time loading the page,
+                // set the attribute
                 $('#follow-button').attr('onclick', "changeFollowState()");
-                $('#follow-button').show();
             }
 
             if (loc > -1) {
@@ -62,11 +58,10 @@ function loadFollowButton() {
 }
 
 function changeFollowState() {
-    // check current user follow list
-    console.log("changing state");
     if (followState) {
         // they are currently following. unfollow.
         followState = false;
+        // update database
         db.collection('users').doc(UID).update({
             followingUsers: firebase.firestore.FieldValue.arrayRemove(viewUID)
         });
@@ -76,6 +71,7 @@ function changeFollowState() {
             followingUsers: firebase.firestore.FieldValue.arrayUnion(viewUID)
         });
     }
+    // reload the follow button to change the icon
     loadFollowButton();
 }
 
@@ -143,7 +139,8 @@ function refreshTabs() {
 }
 
 function loadFollowedUsers(userDoc) {
-    if (userDoc.data().followingUsers.length == 0) {
+    var numFollowing = userDoc.data().followingUsers.length;
+    if (numFollowing == 0) {
         // Display error message
         ReactDOM.render(<div className="ui red message">No Followed Users Found!</div>, document.querySelector('#followed-users-container'));
     } else {
@@ -151,17 +148,25 @@ function loadFollowedUsers(userDoc) {
 
         // Reverse loop through each user to add formatted JSX element to list
         userDoc.data().followingUsers.slice().reverse().forEach(userID => {
-            users.push( <div className="item" key={userID}>
-                            <a className="ui small violet header">{userID}</a>
+            db.collection('users').doc(userID).get().then(doc => {
+                var usernamehere = doc.data().username;
+                users.push(<div className="item" key={userID}>
+                        <a className="ui small violet header" href={"/user/"+usernamehere}>{usernamehere}</a>
                         </div>);
+            }).then(function() {
+                // Followed users container
+                // there has got to be a better way to do this than 
+                // rendering it again EVERY TIME
+                // but i need it to be a .then function so i can 
+                // wait for the database queries to be done
+                ReactDOM.render(<div className="ui relaxed divided list">
+                {users}
+                </div>,
+                document.querySelector('#followed-users-container'));
+            });
         });
-
-        // Followed users container
-        ReactDOM.render(<div className="ui relaxed divided list">
-                            {users}
-                        </div>,
-                        document.querySelector('#followed-users-container'));
-    }
+        
+        }
 }
 
 function loadFollowedTopics(userDoc) {
@@ -172,12 +177,11 @@ function loadFollowedTopics(userDoc) {
         var topics = [];
 
         // Reverse loop through each topic to add formatted JSX element to list
-        userDoc.data().followingTopics.slice().reverse().forEach(userID => {
-            topics.push( <div className="item" key={userID}>
-                            <a className="ui small violet header">{userID}</a>
+        userDoc.data().followingTopics.slice().reverse().forEach(topicname => {
+            topics.push( <div className="item" key={topicname}>
+                            <a className="ui small violet header" href={"/topic/"+topicname}>{topicname}</a>
                         </div>);
         });
-
         // Followed topics container
         ReactDOM.render(<div className="ui relaxed divided list">
                             {topics}
