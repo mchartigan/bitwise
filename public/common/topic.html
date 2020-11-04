@@ -1,19 +1,25 @@
 <html>
     <head>
         <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-        
-
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+    
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.7/jquery.timeago.min.js"></script>
+    
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
         <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
         
+        <!--
         <link rel="stylesheet" href="/css/styles.css">
-        <link rel="shortcut icon" href="favicon.ico">
-        <title>Bitwise Home</title>
+        -->
+        <title>Topic</title>
     </head>
     <body>
         <div class="ui fixed violet inverted menu">
@@ -30,31 +36,48 @@
                     
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <a class="item" href="/user/" id="user-own-profile">Profile</a>                        
+                        <a class="item" href="/common/profile.html">Profile</a>
                         <a class="item" href="/common/account.html">Account Information</a>
                         <a class="item" href="/common/login.html" onclick="firebase.auth().signOut()">
                             <h4 class="ui red header">Sign Out</h4>
                         </a>
                     </div>
                 </div>
-                <a class="right header item" id="login-button">Log In</a>
-                <div id="login-modal"></div>
+                <a href="/common/login.html" class="right header item" id="login-button">Log In</a>
             </div>
         </div>
 
         <br><br><br><br>
-        <div class="content">
-            <a id="test-button" href="/common/test.html" class='ui fluid inverted red button'>
-                <i class="keyboard icon"></i>Test Page
-            </a>
-        </div>
 
-        <div class="content">
-            <a id="create-post-button" href="/common/create_post.html" class='ui fluid inverted violet button'>
-                <i class="pencil alternate icon"></i>Create Post
-            </a>
-            <br>
-            <ul id="timeline"></ul>
+        <div class="ui main container">
+            <div class="ui segment">
+                <div class="ui items">
+                    <div class="item">
+                        <div class="ui huge header" id="topic-name">
+                            <p>loading...</p>
+                        </div>
+                        <div class="top aligned content">
+                            <div class="ui basic violet right floated button" id="follow-button" onclick="changeFollowState()">
+                                <i class="user plus icon"></i>
+                                <p>loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div id="feed"></div>
+            </div>
+            <style>
+                .ui.comments {
+                    max-width: 100%;
+                }
+    
+                .ui.comments .comment .avatar img,
+                .ui.comments .comment img.avatar {
+                    height: auto;
+                }
+            </style>
         </div>
 
         <script>
@@ -72,8 +95,7 @@
             firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
         </script>
-        
-        <script src="js/login.js" type="text/babel"></script>
-        <script src="js/index.js"></script>
+    <script src="/js/topic.js" type="text/babel"></script>
+    <script src="/js/post.js" type="text/babel"></script>
     </body>
 </html>

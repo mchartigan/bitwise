@@ -38,7 +38,7 @@
 
                 <i class="dropdown icon"></i>
                 <div class="menu">
-                    <a class="item" href="/common/profile.html">Profile</a>
+                    <a class="item" href="/user/" id="user-own-profile">Profile</a>                    
                     <a class="item" href="/common/account.html">Account Information</a>
                     <a class="item" onclick="completeSignOut()">
                         <h4 class="ui red header">Sign Out</h4>
@@ -96,6 +96,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
+    <script src="/js/endless.js" type="text/babel"></script>
     <script src="/js/test.js" type="text/babel"></script>
     <script src="/js/post.js" type="text/babel"></script>
     <script src="/js/login.js" type="text/babel"></script>

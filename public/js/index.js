@@ -2,9 +2,6 @@
 const postForm      = document.querySelector('#create-post-form');
 const postList      = document.querySelector('#timeline');
 
-$("#login-button").on("click", console.log('trying to load'));
-$("#login-button").hide();
-
 // create element & render cafe
 function renderPost(doc){
   let li = document.createElement('li');
@@ -156,8 +153,9 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 function loadDropdown() {
-    docRef.get().then(function(doc) {
-        $('#profile-icon').attr('src', doc.data().profileImageURL);
-        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-    });
+  docRef.get().then(function(doc) {
+      $('#user-own-profile').attr('href', '/user/'+doc.data().username);
+      $('#profile-icon').attr('src', doc.data().profileImageURL);
+      document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
+  });
 }
