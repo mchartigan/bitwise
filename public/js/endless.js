@@ -76,7 +76,7 @@ class endless {
             ReactDOM.render(<div className="ui threaded comments">
                                 {this.posts}
                             </div>,
-                            document.querySelector('#feed'));
+                            document.querySelector('#all-posts-container'));
 
             
         }

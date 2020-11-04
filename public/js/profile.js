@@ -39,7 +39,7 @@ function loadFollowButton() {
     // IN PROGRESS
 
     if (UID == viewUID) {
-        $('#follow-button').hide()
+        $('#follow-container').remove()
     } else {
         db.collection('users').doc(UID).get().then(doc => {
             var loc = doc.data().followingUsers.indexOf(viewUID);
