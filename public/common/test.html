@@ -18,6 +18,7 @@
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
 
     <link rel="shortcut icon" href="/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
     <title>Test</title>
 </head>
 
@@ -39,12 +40,13 @@
                 <div class="menu">
                     <a class="item" href="/user/" id="user-own-profile">Profile</a>                    
                     <a class="item" href="/common/account.html">Account Information</a>
-                    <a class="item" href="/common/login.html" onclick="firebase.auth().signOut()">
+                    <a class="item" onclick="completeSignOut()">
                         <h4 class="ui red header">Sign Out</h4>
                     </a>
                 </div>
             </div>
-            <a href="/common/login.html" class="right header item" id="login-button">Log In</a>
+            <a class="right header item" id="login-button">Log In</a>
+            <div id="login-modal"></div>
         </div>
     </div>
 
@@ -97,6 +99,7 @@
     <script src="/js/endless.js" type="text/babel"></script>
     <script src="/js/test.js" type="text/babel"></script>
     <script src="/js/post.js" type="text/babel"></script>
+    <script src="/js/login.js" type="text/babel"></script>
 </body>
 
 </html>

@@ -17,7 +17,7 @@ var uiConfig = {
       db.collection("users").doc(UID).get().then(function(doc) {
         if (doc.data()) {
           // Redirect to homepage
-          location.replace("/index.html");
+          $("#login-modal").modal('hide');
         } else {
           // Force new user to fill out username
           return db.collection("users").doc(UID).set({
@@ -50,7 +50,47 @@ var uiConfig = {
   privacyPolicyUrl: '<your-privacy-policy-url>'
 };
 
-// The start method will wait until the DOM is loaded.
-ui.start('#firebaseui-auth-container', uiConfig);
+const inlineStyle = {
+  modal : {
+    position: 'relative',
+    textAlign: 'center',
+  }
+};
 
-function anonymousLogin() { location.replace('/index.html')}
+class Login extends React.Component {
+  render() {
+    return (
+      <div className="active ui tiny modal" style={inlineStyle.modal}>
+        <div className="content">
+          <div id="firebaseui-auth-container"></div>
+          <div id="loader">Loading Google Authentication Widget...</div>
+        </div>
+        <div className="actions">
+          <a className='ui fluid violet cancel button'>Continue Without Signing In</a>
+        </div>
+      </div>
+    )
+  }
+
+  componentDidMount() {
+    console.log('mounted');
+    // The start method will wait until the DOM is loaded.
+    ui.start('#firebaseui-auth-container', uiConfig);
+    $('#login-modal').modal({
+      onVisible: function () {
+        console.log('visible');
+      },
+      onApprove: function () {
+        console.log('approved');
+      }
+    }).modal('attach events', '#login-button', 'show');
+  }
+}
+
+function completeSignOut() {
+  firebase.auth().signOut();
+  window.location.reload();
+}
+
+console.log('trying to load');
+ReactDOM.render(<Login/>, document.querySelector("#login-modal"));

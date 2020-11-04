@@ -37,7 +37,8 @@
                         </a>
                     </div>
                 </div>
-                <a href="/common/login.html" class="right header item" id="login-button">Log In</a>
+                <a class="right header item" id="login-button">Log In</a>
+                <div id="login-modal"></div>
             </div>
         </div>
 
@@ -71,6 +72,8 @@
             firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
         </script>
+        
+        <script src="js/login.js" type="text/babel"></script>
         <script src="js/index.js"></script>
     </body>
 </html>
