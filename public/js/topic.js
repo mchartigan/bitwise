@@ -87,16 +87,17 @@ function loadFollowButton() {
     if (UID == null) {
         $('#follow-button').hide();
         followState = false;
-    }
-    if (followState == true) {
-        // they are currently following
-        ReactDOM.render(<div> <i className="user minus icon"></i>
-                            Unfollow
-                            </div>, document.querySelector('#follow-button'));
     } else {
-        ReactDOM.render(<div> <i className="user plus icon"></i>
-                            Follow
-                            </div>, document.querySelector('#follow-button'));
+        if (followState == true) {
+            // they are currently following
+            ReactDOM.render(<div> <i className="user minus icon"></i>
+                                Unfollow
+                                </div>, document.querySelector('#follow-button'));
+        } else {
+            ReactDOM.render(<div> <i className="user plus icon"></i>
+                                Follow
+                                </div>, document.querySelector('#follow-button'));
+        }
     }
 }
 
