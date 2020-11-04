@@ -12,6 +12,7 @@
 // Ensure all HTML pages use fomantic ui instead of semantic ui
 // Add custome onInteract callback to post to live update on profile
 // --Refresh button does not refresh 'Overview' tab
+// Prevent topics/usernames with spaces (or other weird characters)
 // ************************************************************** \\
 
 'use strict';
