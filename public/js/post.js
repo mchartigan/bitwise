@@ -10,6 +10,8 @@
 // Add dimmer with confirm delete buttont to post
 // Add loader to posts that havent loaded yet
 // Ensure all HTML pages use fomantic ui instead of semantic ui
+// Add custome onInteract callback to post to live update on profile
+// --Refresh button does not refresh 'Overview' tab
 // ************************************************************** \\
 
 'use strict';
@@ -82,8 +84,25 @@ class Post extends React.Component {
 
     saveClick = () => {
         if (UID) {
-            console.log("Save Post:", this.postID)
-            this.setState({ saved: true });
+            if (this.state.saved) {
+                console.log("Un-Save Post:", this.postID)
+
+                // Un-save
+                db.collection('users').doc(UID).update({
+                    postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                });
+    
+                this.setState({ saved: false });
+            } else {
+                console.log("Save Post:", this.postID);
+
+                // Save
+                db.collection('users').doc(UID).update({
+                    postsSaved: firebase.firestore.FieldValue.arrayUnion(this.postID),
+                });
+
+                this.setState({ saved: true });
+            }
         }
     }
 
@@ -365,7 +384,7 @@ class Post extends React.Component {
                             <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
                                 {this.numLikes}
                                 &nbsp;&nbsp;
-                                {this.state.liked ? <i className="thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
+                                {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
                                 Like
                             </a>
                         </span>
@@ -375,7 +394,7 @@ class Post extends React.Component {
                             <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
                                 {this.numDislikes}
                                 &nbsp;&nbsp;
-                                {this.state.disliked ? <i className="thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
+                                {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
                                 Dislike
                             </a>
                         </span>

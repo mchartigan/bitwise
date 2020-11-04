@@ -117,7 +117,7 @@ var endless = {
                             ReactDOM.render(<div className="ui threaded comments">
                                                 {posts}
                                             </div>,
-                                            document.querySelector('#feed'));
+                                            document.querySelector('#all-posts-container'));
                         }
 
 
@@ -199,26 +199,13 @@ function loadDropdown() {
     });
 }
 
-function loadProfile() {
-    var pagename = window.location.href.split('/')[4];
-    var viewUID;
-    var following;
+function loadProfile(userDoc) {
+    $('#profile-picture').attr('src', userDoc.data().profileImageURL);
 
-    db.collection('users')
-    .where('username', '==', pagename)
-    .get().then(querySnapshot => {
-        viewUID = querySnapshot.docs[0].id;
+    $('#profile-username').html(userDoc.data().username);
+    $('#profile-bio').html(userDoc.data().bioText);
 
-        db.collection("users").doc(viewUID).get().then(doc => {
-            $('#profile-picture').attr('src', doc.data().profileImageURL);
-    
-            $('#profile-username').html(doc.data().username);
-            $('#profile-bio').html(doc.data().bioText);
-
-            following = [viewUID];
-            endless.init(following);
-        });
-    });
+    endless.init([viewUID]);
 }
 
 // load the profile data
@@ -227,28 +214,196 @@ var storage = firebase.storage();
 var storageRef = storage.ref();
 var docRef = null;
 
-firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-        UID = user.uid;
-        docRef = db.collection("users").doc(UID);
-
-        $("#login-button").hide();
-        $("#user-dropdown").show();
-
-        loadDropdown();
-    } else {
-        docRef = null;
-
-        $("#login-button").show();
-        $("#user-dropdown").hide();
-    }
-    loadProfile();
-});
-
-// run after page initialization
-document.addEventListener('DOMContentLoaded', function () {
-    // on DOM content loaded
-});
+var pagename = window.location.href.split('/')[4];
+var viewUID;
 
 // Initialize dynamic tab groups
 $('.menu .item').tab();
+
+firebase.auth().onAuthStateChanged(function (user) {
+    db.collection('users')
+        .where('username', '==', pagename)
+        .get().then(querySnapshot => {
+            let userDoc = querySnapshot.docs[0];
+
+            viewUID = userDoc.id;
+
+            loadProfile(userDoc);
+
+            if (user) {
+                UID = user.uid;
+                docRef = db.collection("users").doc(UID);
+        
+                $("#login-button").hide();
+                $("#user-dropdown").show();
+        
+                loadDropdown();
+        
+                $("#following-tab").show();
+                $("#interactions-tab").show();
+                $('#refresh-tab').show();
+
+                loadFollowedUsers(userDoc);
+                loadFollowedTopics(userDoc);
+                loadSavedPosts(userDoc);
+                loadLikedPosts(userDoc);
+                loadDislikedPosts(userDoc);
+            } else {
+                docRef = null;
+        
+                $("#login-button").show();
+                $("#user-dropdown").hide();
+        
+                $("#following-tab").hide();
+                $("#interactions-tab").hide();
+                $('#refresh-tab').hide();
+            }
+        });
+});
+
+function refreshTabs() {
+    $('#refresh-button').hide();
+    $('#refresh-loader').show();
+
+    db.collection('users').doc(viewUID).get().then((userDoc) => {
+        loadFollowedUsers(userDoc);
+        loadFollowedTopics(userDoc);
+        loadSavedPosts(userDoc);
+        loadLikedPosts(userDoc);
+        loadDislikedPosts(userDoc);
+
+        $('#refresh-button').show();
+        $('#refresh-loader').hide();
+    });
+}
+
+function loadFollowedUsers(userDoc) {
+    if (userDoc.data().followingUsers.length == 0) {
+        // Display error message
+        ReactDOM.render(<div className="ui red message">No Followed Users Found!</div>, document.querySelector('#followed-users-container'));
+    } else {
+        var users = [];
+
+        // Reverse loop through each user to add formatted JSX element to list
+        userDoc.data().followingUsers.slice().reverse().forEach(userID => {
+            users.push( <div className="item" key={userID}>
+                            <a className="ui small violet header">{userID}</a>
+                        </div>);
+        });
+
+        // Followed users container
+        ReactDOM.render(<div className="ui relaxed divided list">
+                            {users}
+                        </div>,
+                        document.querySelector('#followed-users-container'));
+    }
+}
+
+function loadFollowedTopics(userDoc) {
+    if (userDoc.data().followingTopics.length == 0) {
+        // Display error message
+        ReactDOM.render(<div className="ui red message">No Followed Topics Found!</div>, document.querySelector('#followed-topics-container'));
+    } else {
+        var topics = [];
+
+        // Reverse loop through each topic to add formatted JSX element to list
+        userDoc.data().followingTopics.slice().reverse().forEach(userID => {
+            topics.push( <div className="item" key={userID}>
+                            <a className="ui small violet header">{userID}</a>
+                        </div>);
+        });
+
+        // Followed topics container
+        ReactDOM.render(<div className="ui relaxed divided list">
+                            {topics}
+                        </div>,
+                        document.querySelector('#followed-topics-container'));
+    }
+}
+
+function loadSavedPosts(userDoc) {
+    if (userDoc.data().postsSaved.length == 0) {
+        // Display error message
+        ReactDOM.render(<div className="ui red message">No Saved Posts Found!</div>, document.querySelector('#saved-posts-container'));
+    } else {
+        var posts = [];
+        var first = true;
+
+        // Reverse loop through each post to add formatted JSX element to list
+        userDoc.data().postsSaved.slice().reverse().forEach(postID => {
+            const postProps = {
+                postID: postID,
+                type: "post",
+                divider: !first
+            };
+
+            posts.push(<Post {...postProps} key={Math.random()}/>);
+
+            first = false;
+        });
+
+        // Saved posts container
+        ReactDOM.render(<div className="ui threaded comments">
+                            {posts}
+                        </div>,
+                        document.querySelector('#saved-posts-container'));
+    }
+}
+
+function loadLikedPosts(userDoc) {
+    if (userDoc.data().postsLiked.length == 0) {
+        // Display error message
+        ReactDOM.render(<div className="ui red message">No Liked Posts Found!</div>, document.querySelector('#liked-posts-container'));
+    } else {
+        var posts = [];
+        var first = true;
+
+        // Reverse loop through each post to add formatted JSX element to list
+        userDoc.data().postsLiked.slice().reverse().forEach(postID => {
+            const postProps = {
+                postID: postID,
+                type: "post",
+                divider: !first
+            };
+
+            posts.push(<Post {...postProps} key={Math.random()}/>);
+
+            first = false;
+        });
+
+        // Liked posts container
+        ReactDOM.render(<div className="ui threaded comments">
+                            {posts}
+                        </div>,
+                        document.querySelector('#liked-posts-container'));
+    }
+}
+
+function loadDislikedPosts(userDoc) {
+    if (userDoc.data().postsDisliked.length == 0) {
+        // Display error message
+        ReactDOM.render(<div className="ui red message">No Disliked Posts Found!</div>, document.querySelector('#disliked-posts-container'));
+    } else {
+        var posts = [];
+        var first = true;
+
+        // Reverse loop through each post to add formatted JSX element to list
+        userDoc.data().postsDisliked.slice().reverse().forEach(postID => {
+            const postProps = {
+                postID: postID,
+                type: "post",
+                divider: !first
+            };
+
+            posts.push(<Post {...postProps} key={Math.random()}/>);
+
+            first = false;
+        });
+
+        // Disliked posts container
+        ReactDOM.render(<div className="ui threaded comments">
+                            {posts}
+                        </div>,
+                        document.querySelector('#disliked-posts-container'));
+    }
+}

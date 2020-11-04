@@ -53,12 +53,11 @@
         <div class="ui segment">
             <div class="ui items">
                 <div class="item">
-                    <div class="image">
-                        <img class="ui medium image" id="profile-picture"
-                            src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"></img>
+                    <div class="ui small image">
+                        <img id="profile-picture" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"></img>
                     </div>
         
-                    <div class="content">
+                    <div class="top aligned content">
                         <div class="ui huge header" id="profile-username">
                             <p>loading...</p>
                         </div>
@@ -71,13 +70,12 @@
                             <p>loading...</p>
                         </div>
 
-                        <!-- <div class="extra">
-                            Last login:
+                        <div class="extra">
+                            <div class="ui basic violet right floated button">
+                                <i class="user plus icon"></i>
+                                Follow
+                            </div>
                         </div>
-
-                        <div class="last-login">
-                            <p>loading...</p>
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -85,8 +83,15 @@
         
         <div class="ui top attached tabular menu">
             <a class="item active" data-tab="overview">Overview</a>
-            <a class="item" data-tab="following">Following</a>
-            <a class="item" data-tab="interactions">Interactions</a>
+            <a class="item" data-tab="following" id="following-tab" style="display:none;">Following</a>
+            <a class="item" data-tab="interactions" id="interactions-tab" style="display:none;">Interactions</a>
+
+            <div class="right menu">
+                <a class="item" id="refresh-tab" style="display:none;" onclick="refreshTabs()">
+                    <i class="redo alternate icon" id="refresh-button"></i>
+                    <div class="ui mini active inline loader" id="refresh-loader" style="display:none;"></div>
+                </a>
+            </div>
         </div>
         
         <div class="ui bottom attached tab segment active" data-tab="overview">
@@ -95,12 +100,12 @@
                 <a class="item" data-tab="posts-replies">Posts & Replies</a>
             </div>
         
-            <div class="ui bottom attached tab active" data-tab="posts">
-                <div id="feed"></div>
+            <div class="ui bottom attached tab active" data-tab="posts" id="all-posts-container">
+                <div class="ui inline centered active slow violet double loader"></div>
             </div>
         
-            <div class="ui bottom attached tab" data-tab="posts-replies">
-                <div class="ui red message">No 'Posts & Replies' Available!</div>
+            <div class="ui bottom attached tab" data-tab="posts-replies" id="all-posts-replies-container">
+                <div class="ui inline centered active slow violet double loader"></div>
             </div>
         </div>
         
@@ -110,12 +115,12 @@
                 <a class="item" data-tab="topics">Topics</a>
             </div>
         
-            <div class="ui bottom attached tab active" data-tab="users">
-                <div class="ui red message">No 'Followed Users' Available!</div>
+            <div class="ui bottom attached tab active" data-tab="users" id="followed-users-container">
+                <div class="ui inline centered active slow violet double loader"></div>
             </div>
         
-            <div class="ui bottom attached tab" data-tab="topics">
-                <div class="ui red message">No 'Followed Topics' Available!</div>
+            <div class="ui bottom attached tab" data-tab="topics" id="followed-topics-container">
+                <div class="ui inline centered active slow violet double loader"></div>
             </div>
         </div>
         
@@ -126,16 +131,16 @@
                 <a class="item" data-tab="disliked">Disliked</a>
             </div>
         
-            <div class="ui bottom attached tab active" data-tab="saved">
-                <div class="ui red message">No 'Saved Posts' Available!</div>
+            <div class="ui bottom attached tab active" data-tab="saved" id="saved-posts-container">
+                <div class="ui inline centered active slow violet double loader"></div>
             </div>
         
-            <div class="ui bottom attached tab" data-tab="liked">
-                <div class="ui red message">No 'Liked Posts' Available!</div>
+            <div class="ui bottom attached tab" data-tab="liked" id="liked-posts-container">
+                <div class="ui inline centered active slow violet double loader"></div>
             </div>
         
-            <div class="ui bottom attached tab" data-tab="disliked">
-                <div class="ui red message">No 'Disliked Posts' Available!</div>
+            <div class="ui bottom attached tab" data-tab="disliked" id="disliked-posts-container">
+                <div class="ui inline centered active slow violet double loader"></div>
             </div>
         </div>
 
