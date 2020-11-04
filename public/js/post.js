@@ -13,6 +13,8 @@
 // Add custome onInteract callback to post to live update on profile
 // --Refresh button does not refresh 'Overview' tab
 // Prevent topics/usernames with spaces (or other weird characters)
+// --even on new account creation!
+// Fix deleteing top post border issue
 // ************************************************************** \\
 
 'use strict';

@@ -35,7 +35,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         $("#login-button").hide();
         $("#user-dropdown").show();
     } else {
-        location.replace("/common/login.html");
+        location.replace("/index.html");
     }
 });
   
