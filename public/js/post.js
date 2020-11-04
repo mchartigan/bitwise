@@ -433,12 +433,12 @@ class Post extends React.Component {
                             &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
                                 <i className="chevron down icon"></i>
-                                Expand
+                                Expand ({this.repliesID.length})
                             </a>
 
                             <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
                                 <i className="chevron up icon"></i>
-                                Collapse
+                                Collapse ({this.repliesID.length})
                             </a>
                         </span>
                     </div>
