@@ -1,7 +1,4 @@
 // DOM elements
-const loginButton = document.querySelector('#login-button');
-const profile = document.querySelector('#profile-data');
-const followButton = document.querySelector('#follow-button');
 let endlessObj = new endless();
 const pagename = window.location.href.split('/')[4];
 var UID = null;
@@ -27,36 +24,15 @@ function loadDropdown() {
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
     });
 }
-   
+
 function loadProfile(userDoc) {
-    var following;
     $('#profile-picture').attr('src', userDoc.data().profileImageURL);
 
     $('#profile-username').html(userDoc.data().username);
     $('#profile-bio').html(userDoc.data().bioText);
 
-    db.collection('users')
-    .where('username', '==', pagename)
-    .get().then(querySnapshot => {
-        viewUID = querySnapshot.docs[0].id;
-
-        db.collection("users").doc(viewUID).get().then(doc => {
-            $('#profile-picture').attr('src', doc.data().profileImageURL);
-
-            tcontent.setAttribute('data-id', doc.id);
-            uname.textContent = doc.data().username;
-            description.textContent = doc.data().bioText;
-    
-            tcontent.appendChild(uname);
-            tcontent.appendChild(description);
-    
-            profile.append(tcontent);
-            loadFollowButton();
-
-            following = [viewUID];
-            endlessObj.init(following);
-        });
-    });
+    var following = [viewUID];
+    endlessObj.init(following);
 }
 
 function loadFollowButton() {
@@ -65,17 +41,15 @@ function loadFollowButton() {
     if (UID == viewUID) {
         $('#follow-button').hide()
     } else {
-        $('#follow-button').attr('class','ui fluid inverted red button');
-
         db.collection('users').doc(UID).get().then(doc => {
             var loc = doc.data().followingUsers.indexOf(viewUID);
             if (loc > -1) {
                 // they are currently following
                 followState = true;
-                $('#follow-button').text("Unfollow")
+                $('#follow-button').innerHTML("Unfollow")
             } else {
                 followState = false;
-                $('#follow-button').text("Follow")
+                $('#follow-button').innerHTML("Follow")
             }
             $('#follow-button').show();
             //$('#follow-button').attr("onClick", changeFollowState());
@@ -99,13 +73,9 @@ function changeFollowState() {
             });
         }
     });
-
     loadFollowButton();
 }
 
-
-var pagename = window.location.href.split('/')[4];
-var viewUID;
 
 // Initialize dynamic tab groups
 $('.menu .item').tab();
