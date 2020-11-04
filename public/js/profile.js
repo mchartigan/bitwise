@@ -36,23 +36,27 @@ function loadProfile(userDoc) {
 }
 
 function loadFollowButton() {
-    // IN PROGRESS
-
-    if (UID == viewUID) {
-        $('#follow-container').remove()
+    if (UID == null || UID == viewUID) {
+        $('#follow-button').hide();
+        followState = false;
     } else {
+        //  onclick="changeFollowState()"
         db.collection('users').doc(UID).get().then(doc => {
             var loc = doc.data().followingUsers.indexOf(viewUID);
+
+            if (followState == null) {
+                $('#follow-button').attr('onclick', "changeFollowState()");
+                $('#follow-button').show();
+            }
+
             if (loc > -1) {
                 // they are currently following
                 followState = true;
-                $('#follow-button').innerHTML("Unfollow")
+                ReactDOM.render(<div><i className="user minus icon"></i>Unfollow</div>, document.querySelector('#follow-button'));
             } else {
                 followState = false;
-                $('#follow-button').innerHTML("Follow")
+                ReactDOM.render(<div><i className="user plus icon"></i>Follow</div>, document.querySelector('#follow-button'));
             }
-            $('#follow-button').show();
-            //$('#follow-button').attr("onClick", changeFollowState());
         });
     }
 }
@@ -60,19 +64,18 @@ function loadFollowButton() {
 function changeFollowState() {
     // check current user follow list
     console.log("changing state");
-    db.collection('users').doc(UID).get().then(doc => {
-        var loc = doc.data().followingUsers.indexOf(viewUID);
-        if (loc > -1) {
-            // they are currently following. unfollow.
-            db.collection('users').doc(UID).update({
-                followingUsers: firebase.firestore.FieldValue.arrayRemove(viewUID)
-            });
-        } else {
-            db.collection('users').doc(UID).update({
-                followingUsers: firebase.firestore.FieldValue.arrayUnion(viewUID)
-            });
-        }
-    });
+    if (followState) {
+        // they are currently following. unfollow.
+        followState = false;
+        db.collection('users').doc(UID).update({
+            followingUsers: firebase.firestore.FieldValue.arrayRemove(viewUID)
+        });
+    } else {
+        followState = true;
+        db.collection('users').doc(UID).update({
+            followingUsers: firebase.firestore.FieldValue.arrayUnion(viewUID)
+        });
+    }
     loadFollowButton();
 }
 
@@ -118,6 +121,8 @@ firebase.auth().onAuthStateChanged(function (user) {
                 $("#interactions-tab").hide();
                 $('#refresh-tab').hide();
             }
+
+            loadFollowButton();
         });
 });
 
