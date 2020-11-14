@@ -1,22 +1,3 @@
-// **************************** TODO **************************** \\
-// Save and unsave icon change (will be similar to like and unlike)
-// Change account info to use update instead of set/merge
-// Box shadow margin/padding change on threaded comments
-// Save/display posts with newline characters
-// Make anonymous profile viewing not show the username in the HTML
-// If a username is taken AFTER accountInfo loads, unique wont work
-// Add generic upload image function (return URL) for account/post
-// Modify header profile URL to go to the right profile
-// Add dimmer with confirm delete buttont to post
-// Add loader to posts that havent loaded yet
-// Ensure all HTML pages use fomantic ui instead of semantic ui
-// Add custome onInteract callback to post to live update on profile
-// --Refresh button does not refresh 'Overview' tab
-// Prevent topics/usernames with spaces (or other weird characters)
-// --even on new account creation!
-// Fix deleteing top post border issue
-// ************************************************************** \\
-
 'use strict';
 
 class Post extends React.Component {
