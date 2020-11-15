@@ -15,7 +15,8 @@ class Post extends React.Component {
 
         this.postID = this.props.postID;
         this.type = this.props.type;
-        this.divider = this.props.divider;
+        this.topDivider = this.props.topDivider;
+        this.botDivider = this.props.botDivider;
 
         this.repliesID = [];
         this.repliesHTML = [];
@@ -24,7 +25,7 @@ class Post extends React.Component {
             this.authorUID = postDoc.data().authorUID;
             this.createdText = jQuery.timeago(postDoc.data().created.toDate());
             this.topic = postDoc.data().topic;
-            this.topicText = ((this.topic != "") ? "["+this.topic+"] ": "")
+            this.topicText = ((this.topic != "") ? "[" + this.topic + "] " : "")
             this.titleText = postDoc.data().title ? postDoc.data().title : "";
             this.contentText = postDoc.data().content;
             this.imageURL = postDoc.data().image;
@@ -35,7 +36,7 @@ class Post extends React.Component {
             this.numDislikes = postDoc.data().dislikedUsers.length;
 
             this.anonymous = postDoc.data().anon;
-            
+
             this.profileClickable = !this.anonymous;
 
             let authorInfoPromise = new Promise(resolve => {
@@ -43,8 +44,8 @@ class Post extends React.Component {
                     if (this.anonymous) {
                         if (this.authorUID == UID) {
                             this.profileClickable = true;
-    
-                            this.authorText = "Anonymous ("+userDoc.data().username+")";
+
+                            this.authorText = "Anonymous (" + userDoc.data().username + ")";
                             this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
                         } else {
                             this.authorText = "Anonymous";
@@ -54,7 +55,7 @@ class Post extends React.Component {
                         this.authorText = userDoc.data().username;
                         this.authorImageURL = userDoc.data().profileImageURL;
                     }
-    
+
                     this.profileLinkName = userDoc.data().username;
 
                     resolve();
@@ -75,7 +76,7 @@ class Post extends React.Component {
                 }
             });
 
-            Promise.all([authorInfoPromise,viewerStatePromise]).then(() => {
+            Promise.all([authorInfoPromise, viewerStatePromise]).then(() => {
                 // Re-render post
                 this.setState({ retrievedPost: true });
             });
@@ -95,7 +96,7 @@ class Post extends React.Component {
                         postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
                     });
                 });
-    
+
                 this.setState({ saved: false });
             } else {
                 console.log("Save Post:", this.postID);
@@ -123,7 +124,7 @@ class Post extends React.Component {
     deleteClick = () => {
         if (this.authorUID == UID) {
             deletePost(this.postID);
-        
+
             if (this.type == "comment") {
                 this.props.onDelete(this.postID);
             }
@@ -133,7 +134,7 @@ class Post extends React.Component {
 
     likeClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         if (UID) {
             if (this.state.liked) {
@@ -147,9 +148,9 @@ class Post extends React.Component {
                         postsLiked: firebase.firestore.FieldValue.arrayRemove(this.postID)
                     });
                 });
-    
+
                 this.numLikes -= 1;
-    
+
                 this.setState({ liked: false });
             } else {
                 console.log("Like Post:", this.postID);
@@ -178,7 +179,7 @@ class Post extends React.Component {
 
     dislikeClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         if (UID) {
             if (this.state.disliked) {
@@ -192,9 +193,9 @@ class Post extends React.Component {
                         postsDisliked: firebase.firestore.FieldValue.arrayRemove(this.postID)
                     });
                 });
-    
+
                 this.numDislikes -= 1;
-    
+
                 this.setState({ disliked: false });
             } else {
                 console.log("Dislike Post:", this.postID);
@@ -209,10 +210,10 @@ class Post extends React.Component {
                         postsDisliked: firebase.firestore.FieldValue.arrayUnion(this.postID)
                     });
                 });
-    
+
                 this.numLikes -= this.state.liked;
                 this.numDislikes += 1;
-    
+
                 this.setState({
                     liked: false,
                     disliked: true
@@ -223,20 +224,20 @@ class Post extends React.Component {
 
     replyClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         // Remove form error messages
         $('.ui.reply.form').form('reset');
         $('.ui.reply.form').form('remove errors');
 
         // Toggle reply form
-        const replyForm = $('#reply-form-'+this.postID)[0];
+        const replyForm = $('#reply-form-' + this.postID)[0];
 
         if (replyForm.style.display === "none") {
             $(".ui.reply.form").hide();
             $(".reply.text.area").val("");
             replyForm.style.display = "";
-            replyForm.scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
+            replyForm.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
         } else {
             $(".ui.reply.form").hide();
             $(".reply.text.area").val("");
@@ -262,14 +263,14 @@ class Post extends React.Component {
     updateReplies = () => {
         // Re-calculate HTML for replies
         this.repliesHTML = this.repliesID.map(replyID => (
-            <Post postID={replyID} type="comment" divider={true} onDelete={this.deleteReply} key={replyID}/>
+            <Post postID={replyID} type="comment" topDivider={true} botDivider={false} onDelete={this.deleteReply} key={replyID} />
         ));
     }
 
     deleteReply = (replyID) => {
         let index = this.repliesID.indexOf(replyID);
         if (index >= 0) {
-            this.repliesID.splice( index, 1 );
+            this.repliesID.splice(index, 1);
         }
         this.updateReplies();
 
@@ -283,7 +284,7 @@ class Post extends React.Component {
 
     expandClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         if (!this.state.retrievedReplies) {
             this.updateReplies();
@@ -298,7 +299,7 @@ class Post extends React.Component {
 
     collapseClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         this.setState({ collapsedReplies: true });
     }
@@ -307,7 +308,7 @@ class Post extends React.Component {
         const post = this;
 
         // Form validation listener
-        $('#post-'+post.postID).find('.ui.reply.form').form({
+        $('#post-' + post.postID).find('.ui.reply.form').form({
             fields: {
                 title: {
                     identifier: 'reply-text-area',
@@ -327,9 +328,9 @@ class Post extends React.Component {
                 // console.log("Anonymous: ",anonFlag)
                 // *************************************************** \\
 
-                const replyText = $('#reply-form-'+post.postID).find('#reply-text-area').val();
-                const anonFlag = $('#reply-form-'+post.postID).find('#anonymous-reply-flag').checkbox('is checked');
-                post.addReply(post.postID,replyText,anonFlag);
+                const replyText = $('#reply-form-' + post.postID).find('#reply-text-area').val();
+                const anonFlag = $('#reply-form-' + post.postID).find('#anonymous-reply-flag').checkbox('is checked');
+                post.addReply(post.postID, replyText, anonFlag);
 
                 $(".ui.reply.form").hide();
                 $(".reply.text.area").val("");
@@ -342,17 +343,19 @@ class Post extends React.Component {
     // Render post
     render() {
         return (
-            <div className="comment" id={"post-"+this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
+            <div className="comment" id={"post-" + this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
                 <div>
-                    {this.divider && <div className="ui divider"></div>}
+                    {this.topDivider && <div className="ui divider"></div>}
                 </div>
 
-                <a className="avatar" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
+                <div className="ui inline centered active slow violet double loader" style={{ display: (this.state.retrievedPost ? "none" : "") }}></div>
+
+                <a className="avatar" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
                     <img src={this.authorImageURL}></img>
                 </a>
 
                 <div className="content">
-                    <a className="author" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
+                    <a className="author" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
                         {this.authorText}
                     </a>
 
@@ -381,10 +384,10 @@ class Post extends React.Component {
                     </div>
 
                     <div className="text">
-                        <a className="ui violet medium header" href={"/topic/"+this.topic}>{this.topicText}</a>
+                        <a className="ui violet medium header" href={"/topic/" + this.topic}>{this.topicText}</a>
                         <span className="ui violet medium header">{this.titleText}</span>
                         <div>{this.contentText}</div>
-                        {this.imageURL != null && <img className="ui small image" src={this.imageURL}/>}
+                        {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
                     </div>
 
                     <div className="actions">
@@ -433,8 +436,8 @@ class Post extends React.Component {
                 <div className={(this.state.collapsedReplies ? "collapsed " : "") + "comments"}>
                     {this.repliesHTML}
                 </div>
-                
-                <form className="ui reply form" id={"reply-form-"+this.postID} style={{ display: "none" }}>
+
+                <form className="ui reply form" id={"reply-form-" + this.postID} style={{ display: "none" }}>
                     <div className="field">
                         <textarea className="reply text area" id="reply-text-area"></textarea>
                     </div>
@@ -449,6 +452,10 @@ class Post extends React.Component {
                         <i className="icon edit"></i> Add Reply
                     </div>
                 </form>
+
+                <div>
+                    {this.botDivider && <div className="ui divider"></div>}
+                </div>
             </div>
         );
     }

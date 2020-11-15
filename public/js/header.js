@@ -14,7 +14,6 @@ firebase.auth().onAuthStateChanged(function (user) {
 // ========================================== Header ========================================== \\
 
 function Header(props) {
-
     return (
         <div>
             <div className="ui fixed violet inverted compact grid menu">
@@ -30,14 +29,13 @@ function Header(props) {
 
                 <div className="ui simple dropdown right item" id="user-dropdown" style={{ display: "none" }}>
                     <img id="profile-icon" className="logo"></img>
-
-                    &nbsp;
+                    &nbsp;&nbsp;&nbsp;
                     <div id="account-dropdown-text"></div>
 
                     <i className="dropdown icon"></i>
                     <div className="menu">
                         <a className="item" href="/user/" id="user-own-profile">Profile</a>
-                        <a className="item" href="/common/account.html">Account Information</a>
+                        <a className="item" href="/common/account.html">Account</a>
                         <a className="item" onClick={completeSignOut}>
                             <h4 className="ui red header">Sign Out</h4>
                         </a>
@@ -60,8 +58,8 @@ function refreshHeader() {
             $('#user-own-profile').attr('href', '/user/' + doc.data().username);
             scrambleLoad($("#account-dropdown-text"), doc.data().username, 50, 6).then(() => {
                 $('#profile-icon').attr('src', doc.data().profileImageURL);
-                $("#profile-icon").hide();
-                $('#profile-icon').transition('swing left', '1000ms');
+                $('#profile-icon').hide();
+                $('#profile-icon').transition('swing left in', '1000ms');
             });
         });
     } else {
@@ -155,11 +153,12 @@ var uiConfig = {
             // or whether we leave that to developer to handle.
 
             UID = firebase.auth().currentUser.uid;
+            $("#login-modal").modal('hide');
 
             db.collection("users").doc(UID).get().then(function (doc) {
                 if (doc.data()) {
                     // Hide popup
-                    $("#login-modal").modal('hide');
+
                 } else {
                     // Set default account information
                     db.collection("users").doc(UID).set({
@@ -186,9 +185,9 @@ var uiConfig = {
         firebase.auth.GoogleAuthProvider.PROVIDER_ID
     ],
     // Terms of service url.
-    tosUrl: '<your-tos-url>',
+    tosUrl: 'https://policies.google.com/terms?hl=en-US',
     // Privacy policy url.
-    privacyPolicyUrl: '<your-privacy-policy-url>'
+    privacyPolicyUrl: 'https://policies.google.com/privacy?hl=en-US'
 };
 
 class Login extends React.Component {
@@ -213,14 +212,7 @@ class Login extends React.Component {
     componentDidMount() {
         // The start method will wait until the DOM is loaded.
         ui.start('#firebaseui-auth-container', uiConfig);
-        $('#login-modal').modal({
-            onVisible: function () {
-                // console.log('visible');
-            },
-            onApprove: function () {
-                // console.log('approved');
-            }
-        }).modal('attach events', '#login-button', 'show');
+        $('#login-modal').modal('setting', 'closable', false).modal('attach events', '#login-button', 'show');
     }
 }
 

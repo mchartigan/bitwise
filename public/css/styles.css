@@ -1,121 +1,93 @@
-body{
-    background: #000000;
-    color: #fff;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 12;
+.ui.comments {
+    max-width: 100%;
 }
 
-h1{
-    color: #fff;
-    font-size: 45px;
-    letter-spacing: 2px;
-    margin-top: 10px;
-    text-align: left;
+.ui.comments .comment .avatar img,
+.ui.comments .comment img.avatar {
+    height: auto;
 }
 
-h2{
-    color: #fff;
-    font-size: 25px;
-    letter-spacing: 2px;
-    margin-top: 10px;
-    text-align: left;
+.ui.comments .comment a.author:hover {
+    color: #6435c9;
 }
 
-.parent {
-    background: #000;
-    padding: 10px;
-    height: 150px;
-    width: 100%;
-    margin: 10px 10px;
-    display: inline-flex;
-    align-content: center;
+#create-post-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1;
 }
 
-.child {
-    background: rgb(78, 0, 131);
-    padding: 10px;
-    height: 150px;
-    max-width: 810px;
-    margin: 0 auto;
-}
-
-.content{
-    background: #fff;
-    max-width: 960px;
-    margin: 30px auto;
-    padding:  20px 30px;
-    border-radius: 5px 5px 5px 5px;
-}
-
-ul{
-    list-style-type: none;
-    padding: 0;
-    border: 2px solid #fff;
-    background: #000;
-}
-
-li{
-    padding: 20px;
-    background: #000000;
-    font-size: 20px;
-    color: #555;
+.vload-container {
+    width: auto;
+    height: 8em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
-    border-bottom: 1px solid #e6e6e6;
-    min-height: 100px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-
-li span{
-    display: block;
+.vloader,
+.vloader:before,
+.vloader:after {
+  background: #6435c9;
+  -webkit-animation: load1 1s infinite ease-in-out;
+  animation: load1 1s infinite ease-in-out;
+  width: 1em;
+  height: 4em;
 }
-
-li span:nth-child(1){
-    /* title */
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 6px;
-    color: rgb(140, 0, 255);
+.vloader {
+  color: #6435c9;
+  text-indent: -9999em;
+  margin: 88px auto;
+  position: relative;
+  font-size: 11px;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
 }
-
-li span:nth-child(2){
-    /* topic */
-    font-size: 20px;
-    margin-top: 6px;
-    color: #fff;
+.vloader:before,
+.vloader:after {
+  position: absolute;
+  top: 0;
+  content: '';
 }
-
-li span:nth-child(3){
-    font-size: 16px;
-    margin-top: 6px;
-    color: rgb(153, 153, 153);
+.vloader:before {
+  left: -1.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
 }
-
-li span:nth-child(4){
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 6px;
-    color: #999;
+.vloader:after {
+  left: 1.5em;
 }
-
-li span:nth-child(5){
-    font-size: 12px;
-    margin-top: 6px;
-    color: #999;
+@-webkit-keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 2em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 3em;
+  }
 }
-
-li img{
-    max-height: 150px;
-    margin-top: 6px;
-}
-
-li div{
-    position: absolute;
-    top: 0;
-    right: 0px;
-    background: rgba(255,255,255,0.6);
-    width: 80px;
-    text-align: center;
-    padding: 10px 0;
-    font-weight:  bold;
-    cursor:  pointer;
+@keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 2em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 3em;
+  }
 }

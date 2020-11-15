@@ -2,9 +2,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     loadAllPosts();
 
     if (user) {
-        UID = user.uid;
-
-        $('#create-post-button').show();
+        $('#create-post-button').transition('zoom');
         $("#timeline-tab").show();
 
         loadMyTimeline(UID);
@@ -25,7 +23,6 @@ function loadAllPosts() {
                 ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#all-posts-container'));
             } else {
                 var posts = [];
-                var first = true;
 
                 // Loop through each post to add formatted JSX element to list
                 querySnapshot.forEach(doc => {
@@ -34,19 +31,20 @@ function loadAllPosts() {
                         var postProps = {
                             postID: doc.id,
                             type: "post",
-                            divider: !first
+                            topDivider: false,
+                            botDivider: true
                         };
 
                         posts.push(<Post {...postProps} key={doc.id} />);
-
-                        first = false;
                     }
                 });
 
                 // Threaded post container
-                ReactDOM.render(<div className="ui threaded comments">
-                    {posts}
-                </div>,
+                ReactDOM.render(
+                    <div className="ui threaded comments">
+                        {posts}
+                        <div className="ui inline centered active slow violet double loader"></div>
+                    </div>,
                     document.querySelector('#all-posts-container'));
             }
         })
@@ -66,7 +64,6 @@ function loadMyTimeline(myUID) {
                     ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#timeline-container'));
                 } else {
                     var posts = [];
-                    var first = true;
 
                     // Loop through each post to add formatted JSX element to list
                     querySnapshot.forEach(doc => {
@@ -77,20 +74,21 @@ function loadMyTimeline(myUID) {
                                 var postProps = {
                                     postID: doc.id,
                                     type: "post",
-                                    divider: !first
+                                    topDivider: false,
+                                    botDivider: true
                                 };
 
                                 posts.push(<Post {...postProps} key={doc.id} />);
-
-                                first = false;
                             }
                         }
                     });
 
                     // Threaded post container
-                    ReactDOM.render(<div className="ui threaded comments">
-                        {posts}
-                    </div>,
+                    ReactDOM.render(
+                        <div className="ui threaded comments">
+                            {posts}
+                            <div className="ui inline centered active slow violet double loader"></div>
+                        </div>,
                         document.querySelector('#timeline-container'));
                 }
             });

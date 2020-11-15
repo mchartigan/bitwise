@@ -1,115 +1,112 @@
 <html>
-    <head>
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-        
-        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
 
-        <title>Account Information</title>
-    </head>
-    <body>
-        <div class="ui fixed violet inverted menu">
-            <div class="ui fluid container">
-                <a href="/index.html" class="header item">
-                    <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5">
-                    &nbsp; Bitwise
-                </a>
-                <div class="ui simple right dropdown item">
-                    <img id="profile-icon" class="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551">
-                    <div id="account-dropdown">
-                        &nbsp; retrieving...
-                    </div>
-                    
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <a class="item" href="/user/" id="user-own-profile">Profile</a>                    
-                        <a class="item" href="/common/account.html">Account Information</a>
-                        <a class="item" href="/index.html" onclick="firebase.auth().signOut();">
-                            <h4 class="ui red header">Sign Out</h4>
-                        </a>
-                    </div>
-                </div>
+<head>
+    <title>Account</title>
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.7/jquery.timeago.min.js"></script>
+</head>
+
+<body>
+    <div id="header"></div>
+    <br><br><br><br>
+
+    <div class='ui main text container'>
+        <h1 class="ui header">Account Information</h1>
+
+        <form class='ui form' id='account-info'>
+            <div class='field'>
+                <label>Profile Picture</label>
             </div>
-        </div>
+            <img class='ui medium image' id='profile-image'
+                src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551">
+            <style>
+                img {
+                    image-rendering: -moz-crisp-edges;
+                    image-rendering: -webkit-crisp-edges;
+                    image-rendering: pixelated;
+                    image-rendering: crisp-edges;
+                }
+            </style>
+            <br>
 
-        <div class='ui main text container'>
+            <label class="ui basic button" for="image-file-field">
+                <i class="file icon"></i>
+                Upload
+            </label>
+            <input type="file" accept=".png, .jpg, .jpeg" id="image-file-field" style="display: none"
+                onchange='uploadImage(event)' />
+            <div class="ui basic button" onclick="removeImage()">
+                <i class="trash icon"></i>
+                Remove
+            </div>
             <br><br>
-            <h1 class="ui header">Account Information</h1>
-            
-            <form class='ui form' id='account-info'>
-                <div class='field'>
-                    <label>Profile Picture</label>
-                </div>
-                <img class='ui medium image' id='profile-image' src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551">
-                <style>
-                    img {
-                        image-rendering: -moz-crisp-edges;
-                        image-rendering: -webkit-crisp-edges;
-                        image-rendering: pixelated;
-                        image-rendering: crisp-edges;
-                    }
-                </style>
-                <br>
 
-                <label class="ui basic button" for="image-file-field">
-                    <i class="file icon"></i>
-                    Upload
-                </label>
-                <input type="file" accept=".png, .jpg, .jpeg" id="image-file-field" style="display: none" onchange='uploadImage(event)'/>
-                <div class="ui basic button" onclick="removeImage()">
-                    <i class="trash icon"></i>
-                    Remove
-                </div>
-                <br><br>
+            <div class='field'>
+                <label>Username</label>
+                <input type="text" id="username-field" required />
+            </div>
 
-                <div class='field'>
-                    <label>Username</label>
-                    <input type="text" id="username-field" required/>
-                </div>
+            <div class='field'>
+                <label>Short Bio</label>
+                <textarea rows="2" type="text" id="bio-txt-field"></textarea>
+            </div>
 
-                <div class='field'>
-                    <label>Short Bio</label>
-                    <textarea rows="2" type="text" id="bio-txt-field" ></textarea>
-                </div>
+            <div class='disabled field'>
+                <label>Email</label>
+                <input type="text" placeholder="retrieving email..." id="email-field" />
+            </div>
+            <br>
 
-                <div class='disabled field'>
-                    <label>Email</label>
-                    <input type="text" placeholder="retrieving email..." id="email-field"/>
-                </div>
-                <br>
+            <div class='ui violet submit button'>Save</div>
+            <div class='ui basic button' onclick="cancelForm()">Cancel</div>
+            <div class="ui error message"></div>
+        </form>
+    </div>
 
-                <div class='ui violet submit button'>Save</div>
-                <div class='ui basic button' onclick="cancelForm()">Cancel</div>
-                <div class="ui error message"></div>
-            </form>
-        </div>
+    <script>
+        // Initialize Firebase
+        var firebaseConfig = {
 
-        <script>
-            // Initialize Firebase
-            var firebaseConfig = {
+            apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
+            authDomain: "bitwise-a3c2d.firebaseapp.com",
+            databaseURL: "https://bitwise-a3c2d.firebaseio.com",
+            projectId: "bitwise-a3c2d",
+            storageBucket: "bitwise-a3c2d.appspot.com",
+            messagingSenderId: "1025486551841",
+            appId: "1:1025486551841:web:24f84a09e2f70631625c60",
+            measurementId: "G-9DCMV9YV2N"
+        };
 
-                apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
-                authDomain: "bitwise-a3c2d.firebaseapp.com",
-                databaseURL: "https://bitwise-a3c2d.firebaseio.com",
-                projectId: "bitwise-a3c2d",
-                storageBucket: "bitwise-a3c2d.appspot.com",
-                messagingSenderId: "1025486551841",
-                appId: "1:1025486551841:web:24f84a09e2f70631625c60",
-                measurementId: "G-9DCMV9YV2N"
-            };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
 
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            
-            const db = firebase.firestore();
-        </script>
+        const db = firebase.firestore();
+    </script>
 
-        <script src="/js/account.js"></script>
-        <script src="/js/login.js" type="text/babel"></script>
-    </body>
+    <script src="/js/header.js" type="text/babel"></script>
+    <script src="/js/account.js" type="text/babel"></script>
+</body>
+
 </html>

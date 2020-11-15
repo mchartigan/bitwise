@@ -15,12 +15,14 @@
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+    <link rel="stylesheet" href="/css/styles.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.7/jquery.timeago.min.js"></script>
 </head>
@@ -47,28 +49,6 @@
         <div class="ui bottom attached tab segment" data-tab="timeline" id="timeline-container">
             <div class="ui inline centered active slow violet double loader"></div>
         </div>
-
-        <style>
-            .ui.comments {
-                max-width: 100%;
-            }
-
-            .ui.comments .comment .avatar img,
-            .ui.comments .comment img.avatar {
-                height: auto;
-            }
-
-            .ui.comments .comment a.author:hover {
-                color: #6435c9;
-            }
-
-            #create-post-button {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                z-index: 1;
-            }
-        </style>
     </div>
 
     <script>
@@ -86,10 +66,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
+
     <script src="/js/header.js" type="text/babel"></script>
+    <script src="/js/post.js" type="text/babel"></script>
     <script src="/js/endless.js" type="text/babel"></script>
     <script src="/js/index.js" type="text/babel"></script>
-    <script src="/js/post.js" type="text/babel"></script>
 </body>
 
 </html>
