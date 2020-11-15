@@ -10,10 +10,10 @@ firebase.auth().onAuthStateChanged(function (user) {
         .where('username', '==', pagename)
         .get().then(querySnapshot => {
             let userDoc = querySnapshot.docs[0];
-
             viewUID = userDoc.id;
 
             loadProfile(userDoc);
+            loadFollowButton();
 
             //following = [viewUID];
             //endlessObj.init(following);
@@ -26,8 +26,6 @@ firebase.auth().onAuthStateChanged(function (user) {
             loadDislikedPosts(userDoc);
 
             if (user) {
-                UID = user.uid;
-
                 if (UID == viewUID) {
                     loadSavedPosts(userDoc);
                     $("#saved-tab").show();
@@ -40,8 +38,6 @@ firebase.auth().onAuthStateChanged(function (user) {
                 $('#create-post-button').hide();
                 $("#saved-tab").hide();
             }
-
-            loadFollowButton();
         });
 });
 
@@ -101,21 +97,46 @@ function changeFollowState() {
     loadFollowButton();
 }
 
-function refreshTabs() {
-    $('#refresh-button').hide();
-    $('#refresh-loader').show();
-
+function refreshTab(tabName) {
     db.collection('users').doc(viewUID).get().then((userDoc) => {
-        loadUserPosts(viewUID);
-        loadUserReplies(viewUID);
-        loadFollowedUsers(userDoc);
-        loadFollowedTopics(userDoc);
-        loadSavedPosts(userDoc);
-        loadLikedPosts(userDoc);
-        loadDislikedPosts(userDoc);
-
-        $('#refresh-button').show();
-        $('#refresh-loader').hide();
+        switch (tabName) {
+            case "overview":
+                loadUserPosts(viewUID);
+                loadUserReplies(viewUID);
+                break;
+            case "posts":
+                loadUserPosts(viewUID);
+                break;
+            case "replies":
+                loadUserReplies(viewUID);
+                break;
+            case "following":
+                loadFollowedUsers(userDoc);
+                loadFollowedTopics(userDoc);
+                break;
+            case "users":
+                loadFollowedUsers(userDoc);
+                break;
+            case "topics":
+                loadFollowedTopics(userDoc);
+                break;
+            case "interactions":
+                loadLikedPosts(userDoc);
+                loadDislikedPosts(userDoc);
+                loadSavedPosts(userDoc);
+                break;
+            case "liked":
+                loadLikedPosts(userDoc);
+                break;
+            case "disliked":
+                loadDislikedPosts(userDoc);
+                break;
+            case "saved":
+                loadSavedPosts(userDoc);
+                break;
+            default:
+                console.log("Error - Attempting to refresh unknown tab");
+        }
     });
 }
 
@@ -125,7 +146,7 @@ function loadUserPosts(viewUID) {
         .orderBy('created', 'desc').get().then(querySnapshot => {
             if (querySnapshot.empty) {
                 // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#all-posts-container'));
+                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#posts-container'));
             } else {
                 var posts = [];
 
@@ -153,7 +174,7 @@ function loadUserPosts(viewUID) {
                         {posts}
                         <div className="ui inline centered active slow violet double loader"></div>
                     </div>,
-                    document.querySelector('#all-posts-container'));
+                    document.querySelector('#posts-container'));
             }
         })
 }
@@ -164,7 +185,7 @@ function loadUserReplies(viewUID) {
         .orderBy('created', 'desc').get().then(querySnapshot => {
             if (querySnapshot.empty) {
                 // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#all-posts-replies-container'));
+                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#replies-container'));
             } else {
                 var posts = [];
 
@@ -191,7 +212,7 @@ function loadUserReplies(viewUID) {
                         {posts}
                         <div className="ui inline centered active slow violet double loader"></div>
                     </div>,
-                    document.querySelector('#all-posts-replies-container'));
+                    document.querySelector('#replies-container'));
             }
         })
 }

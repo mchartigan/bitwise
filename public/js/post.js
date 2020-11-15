@@ -15,8 +15,8 @@ class Post extends React.Component {
 
         this.postID = this.props.postID;
         this.type = this.props.type;
-        this.topDivider = this.props.topDivider;
-        this.botDivider = this.props.botDivider;
+        this.topDivider = false;
+        this.botDivider = true;
 
         this.repliesID = [];
         this.repliesHTML = [];
@@ -77,6 +77,9 @@ class Post extends React.Component {
             });
 
             Promise.all([authorInfoPromise, viewerStatePromise]).then(() => {
+                this.topDivider = this.props.topDivider;
+                this.botDivider = this.props.botDivider;
+
                 // Re-render post
                 this.setState({ retrievedPost: true });
             });
@@ -263,7 +266,7 @@ class Post extends React.Component {
     updateReplies = () => {
         // Re-calculate HTML for replies
         this.repliesHTML = this.repliesID.map(replyID => (
-            <Post postID={replyID} type="comment" topDivider={true} botDivider={false} onDelete={this.deleteReply} key={replyID} />
+            <Post postID={replyID} type="comment" topDivider={false} botDivider={false} onDelete={this.deleteReply} key={replyID} />
         ));
     }
 
@@ -343,119 +346,119 @@ class Post extends React.Component {
     // Render post
     render() {
         return (
-            <div className="comment" id={"post-" + this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
-                <div>
-                    {this.topDivider && <div className="ui divider"></div>}
-                </div>
+            <div className="container">
+                <div className="ui divider" style={{ display: (this.topDivider ? "" : "none") }}></div>
 
                 <div className="ui inline centered active slow violet double loader" style={{ display: (this.state.retrievedPost ? "none" : "") }}></div>
 
-                <a className="avatar" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
-                    <img src={this.authorImageURL}></img>
-                </a>
-
-                <div className="content">
-                    <a className="author" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
-                        {this.authorText}
+                <div className="comment" id={"post-" + this.postID} style={{ display: ((!this.state.retrievedPost || this.state.deleted) ? "none" : "") }}>
+                    <a className="avatar" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
+                        <img src={this.authorImageURL}></img>
                     </a>
 
-                    <div className="metadata">
-                        <span className="date">{this.createdText}</span>
-                    </div>
+                    <div className="content">
+                        <a className="author" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
+                            {this.authorText}
+                        </a>
 
-                    <div className="ui simple dropdown" style={{ float: "right", display: (UID ? "" : "none") }}>
-                        <i className="ellipsis vertical icon"></i>
-                        <div className="left menu">
-                            <div className="item" onClick={this.saveClick}>
-                                {this.state.saved ? <i className="bookmark icon"></i> : <i className="bookmark outline icon"></i>}
+                        <div className="metadata">
+                            <span className="date">{this.createdText}</span>
+                        </div>
+
+                        <div className="ui simple dropdown" style={{ float: "right", display: (UID ? "" : "none") }}>
+                            <i className="ellipsis vertical icon"></i>
+                            <div className="left menu">
+                                <div className="item" onClick={this.saveClick}>
+                                    {this.state.saved ? <i className="bookmark icon"></i> : <i className="bookmark outline icon"></i>}
                                 Save
                             </div>
 
-                            <div className="item" onClick={this.editClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
-                                <i className="edit outline icon"></i>
+                                <div className="item" onClick={this.editClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
+                                    <i className="edit outline icon"></i>
                                 Edit
                             </div>
 
-                            <div className="item" onClick={this.deleteClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
-                                <i className="trash alternate outline icon"></i>
+                                <div className="item" onClick={this.deleteClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
+                                    <i className="trash alternate outline icon"></i>
                                 Delete
                             </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="text">
-                        <a className="ui violet medium header" href={"/topic/" + this.topic}>{this.topicText}</a>
-                        <span className="ui violet medium header">{this.titleText}</span>
-                        <div>{this.contentText}</div>
-                        {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
-                    </div>
+                        <div className="thread">
+                            <div className="text">
+                                <a className="ui violet medium header" href={"/topic/" + this.topic}>{this.topicText}</a>
+                                <span className="ui violet medium header">{this.titleText}</span>
+                                <div>{this.contentText}</div>
+                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
+                            </div>
 
-                    <div className="actions">
-                        <span>
-                            <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
-                                {this.numLikes}
+                            <div className="actions">
+                                <span>
+                                    <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                        {this.numLikes}
                                 &nbsp;&nbsp;
                                 {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
                                 Like
                             </a>
-                        </span>
+                                </span>
 
-                        <span>
-                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                                <span>
+                                    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
-                                {this.numDislikes}
+                                        {this.numDislikes}
                                 &nbsp;&nbsp;
                                 {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
                                 Dislike
                             </a>
-                        </span>
+                                </span>
 
-                        <span style={{ display: (UID ? "" : "none") }}>
-                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                                <span style={{ display: (UID ? "" : "none") }}>
+                                    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="reply" onClick={this.replyClick}>
-                                <i className="reply icon"></i>
+                                        <i className="reply icon"></i>
                                 Reply
                             </a>
-                        </span>
+                                </span>
 
-                        <span style={{ display: (this.state.retrievedPost && this.repliesID.length ? "" : "none") }}>
-                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                                <span style={{ display: (this.state.retrievedPost && this.repliesID.length ? "" : "none") }}>
+                                    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
-                                <i className="chevron down icon"></i>
+                                        <i className="chevron down icon"></i>
                                 Expand ({this.repliesID.length})
                             </a>
 
-                            <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
-                                <i className="chevron up icon"></i>
+                                    <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
+                                        <i className="chevron up icon"></i>
                                 Collapse ({this.repliesID.length})
                             </a>
-                        </span>
-                    </div>
-                </div>
-
-                <div className={(this.state.collapsedReplies ? "collapsed " : "") + "comments"}>
-                    {this.repliesHTML}
-                </div>
-
-                <form className="ui reply form" id={"reply-form-" + this.postID} style={{ display: "none" }}>
-                    <div className="field">
-                        <textarea className="reply text area" id="reply-text-area"></textarea>
-                    </div>
-                    <div className="ui error message"></div>
-                    <div className="field">
-                        <div className="ui checkbox" id="anonymous-reply-flag">
-                            <input type="checkbox"></input>
-                            <label>Anonymous</label>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div className="ui violet submit labeled icon button">
-                        <i className="icon edit"></i> Add Reply
-                    </div>
-                </form>
 
-                <div>
-                    {this.botDivider && <div className="ui divider"></div>}
+                    <div className={(this.state.collapsedReplies ? "collapsed " : "") + "comments"}>
+                        {this.repliesHTML}
+                    </div>
+
+                    <form className="ui reply form" id={"reply-form-" + this.postID} style={{ display: "none" }}>
+                        <div className="field">
+                            <textarea className="reply text area" id="reply-text-area"></textarea>
+                        </div>
+                        <div className="ui error message"></div>
+                        <div className="field">
+                            <div className="ui checkbox" id="anonymous-reply-flag">
+                                <input type="checkbox"></input>
+                                <label>Anonymous</label>
+                            </div>
+                        </div>
+                        <div className="ui violet submit labeled icon button">
+                            <i className="icon edit"></i> Add Reply
+                    </div>
+                    </form>
                 </div>
+
+                <div className="ui divider" style={{ display: (this.botDivider ? "" : "none") }}></div>
             </div>
         );
     }

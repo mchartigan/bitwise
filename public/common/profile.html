@@ -70,26 +70,19 @@
             <a class="violet item active" data-tab="overview">Overview</a>
             <a class="violet item" data-tab="following">Following</a>
             <a class="violet item" data-tab="interactions">Interactions</a>
-
-            <div class="right menu">
-                <a class="item" id="refresh-tab" style="display:none;" onclick="refreshTabs()">
-                    <i class="redo alternate icon" id="refresh-button"></i>
-                    <div class="ui mini active inline loader" id="refresh-loader" style="display:none;"></div>
-                </a>
-            </div>
         </div>
 
         <div class="ui bottom attached tab segment active" data-tab="overview">
             <div class="ui secondary pointing tabular menu">
                 <a class="violet item active" data-tab="posts">Posts</a>
-                <a class="violet item" data-tab="posts-replies">Replies</a>
+                <a class="violet item" data-tab="replies">Replies</a>
             </div>
 
-            <div class="ui bottom attached tab active" data-tab="posts" id="all-posts-container">
+            <div class="ui bottom attached tab active" data-tab="posts" id="posts-container">
                 <div class="ui inline centered active slow violet double loader"></div>
             </div>
 
-            <div class="ui bottom attached tab" data-tab="posts-replies" id="all-posts-replies-container">
+            <div class="ui bottom attached tab" data-tab="replies" id="replies-container">
                 <div class="ui inline centered active slow violet double loader"></div>
             </div>
         </div>

@@ -20,6 +20,7 @@ function loadFollowButton() {
         $('#follow-button').hide();
         followState = false;
     } else {
+        $('#follow-button').show();
         db.collection('users').doc(UID).get().then(doc => {
             var loc = doc.data().followingTopics.indexOf(topicname);
 
