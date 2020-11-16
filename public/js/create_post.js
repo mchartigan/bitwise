@@ -35,12 +35,13 @@ firebase.auth().onAuthStateChanged(function(user) {
         $("#login-button").hide();
         $("#user-dropdown").show();
     } else {
-        location.replace("/common/login.html");
+        location.replace("/index.html");
     }
 });
   
 function loadDropdown() {
     docRef.get().then(function(doc) {
+        $('#user-own-profile').attr('href', '/user/'+doc.data().username);
         $('#profile-icon').attr('src', doc.data().profileImageURL);
         document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
     });
@@ -102,7 +103,8 @@ function addPost(anonymous, uid, title, body, subject) {
         children: [],
         topic: subject,
         likedUsers: [],
-        dislikedUsers: []
+        dislikedUsers: [],
+        savedUsers: []
     }).then(reference => {
         if(reference) {
             if (imageField.files.length != 0) {

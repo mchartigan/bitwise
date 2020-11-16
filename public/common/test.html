@@ -1,9 +1,9 @@
 <html>
 
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
-    <script src="/dist/semantic.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -18,15 +18,15 @@
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
 
     <link rel="shortcut icon" href="/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
     <title>Test</title>
 </head>
 
 <body>
-    <div class="ui fixed inverted menu">
+    <div class="ui fixed violet inverted menu">
         <div class="ui fluid container">
             <a href="/index.html" class="header item">
-                <img class="logo"
-                    src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5">
+                <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5">
                 &nbsp; Bitwise
             </a>
             <div class="ui simple right dropdown item" id="user-dropdown">
@@ -38,14 +38,15 @@
 
                 <i class="dropdown icon"></i>
                 <div class="menu">
-                    <a class="item" href="/common/profile.html">Profile</a>
+                    <a class="item" href="/user/" id="user-own-profile">Profile</a>                    
                     <a class="item" href="/common/account.html">Account Information</a>
-                    <a class="item" href="/common/login.html" onclick="firebase.auth().signOut()">
+                    <a class="item" onclick="completeSignOut()">
                         <h4 class="ui red header">Sign Out</h4>
                     </a>
                 </div>
             </div>
-            <a href="/common/login.html" class="right header item" id="login-button">Log In</a>
+            <a class="right header item" id="login-button">Log In</a>
+            <div id="login-modal"></div>
         </div>
     </div>
 
@@ -61,6 +62,7 @@
 
         <div class="ui segment">
             <div class="ui large header">Timeline</div>
+            <div class="ui divider"></div>
             <div id="feed"></div>
         </div>
         <style>
@@ -74,7 +76,7 @@
             }
 
             .ui.comments .comment a.author:hover {
-                color: #6435c9
+                color: #6435c9;
             }
         </style>
     </div>
@@ -94,8 +96,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
+    <script src="/js/endless.js" type="text/babel"></script>
     <script src="/js/test.js" type="text/babel"></script>
     <script src="/js/post.js" type="text/babel"></script>
+    <script src="/js/login.js" type="text/babel"></script>
 </body>
 
 </html>
