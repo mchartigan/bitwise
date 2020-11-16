@@ -318,7 +318,7 @@
 }
 .ui.cards > .card .meta > a:not(.ui):hover,
 .ui.card .meta > a:not(.ui):hover {
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /*--------------
@@ -898,14 +898,14 @@ a.ui.card:hover,
 .ui.black.cards > .card,
 .ui.cards > .black.card,
 .ui.black.card {
-  -webkit-box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #1B1C1D, 0 1px 3px 0 #D4D4D5;
-          box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #1B1C1D, 0 1px 3px 0 #D4D4D5;
+  -webkit-box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #000000, 0 1px 3px 0 #D4D4D5;
+          box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #000000, 0 1px 3px 0 #D4D4D5;
 }
 .ui.black.cards > .card:hover,
 .ui.cards > .black.card:hover,
 .ui.black.card:hover {
-  -webkit-box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #222425, 0 1px 3px 0 #BEBEBF;
-          box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #222425, 0 1px 3px 0 #BEBEBF;
+  -webkit-box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #080808, 0 1px 3px 0 #BEBEBF;
+          box-shadow: 0 0 0 1px #D4D4D5, 0 2px 0 0 #080808, 0 1px 3px 0 #BEBEBF;
 }
 .ui.inverted.black.cards > .card,
 .ui.inverted.cards > .black.card,
@@ -1245,7 +1245,7 @@ a.ui.card:hover,
 
 .ui.inverted.cards > .card,
 .ui.inverted.card {
-  background: #1B1C1D;
+  background: #000000;
   -webkit-box-shadow: 0 1px 3px 0 #555555, 0 0 0 1px #555555;
           box-shadow: 0 1px 3px 0 #555555, 0 0 0 1px #555555;
 }
@@ -1302,7 +1302,7 @@ a.ui.card:hover,
 .ui.inverted.link.cards .card:not(.icon):hover,
 a.inverted.ui.card:hover,
 .ui.inverted.link.card:hover {
-  background: #1B1C1D;
+  background: #000000;
 }
 
 

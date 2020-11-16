@@ -1416,7 +1416,7 @@
 .ui.grid > .black.row,
 .ui.grid > .black.column,
 .ui.grid > .row > .black.column {
-  background-color: #1B1C1D;
+  background-color: #000000;
   color: #FFFFFF;
 }
 

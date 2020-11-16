@@ -105,7 +105,7 @@
 
 /* White Dimmer (Inverted) */
 .ui.inverted.dimmer > .ui.loader {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.inverted.dimmer > .ui.loader:not(.elastic):before {
   border-color: rgba(0, 0, 0, 0.1);
@@ -600,7 +600,7 @@
 .ui.black.loading.loading.loading.loading .input > i.icon:after,
 .ui.black.loading.loading.loading.loading > i.icon:after,
 .ui.black.loader.loader.loader:after {
-  color: #1B1C1D;
+  color: #000000;
 }
 .ui.inverted.black.elastic.loader:before,
 .ui.inverted.black.elastic.loading.loading.loading:not(.segment):before,

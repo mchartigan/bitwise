@@ -82,7 +82,7 @@
 .ui.rating .icon.selected.active,
 .ui.rating .icon.selected.partial.active {
   background: transparent;
-  color: #FFFFFF;
+  color: #000000;
   background-clip: unset;
 }
 
@@ -414,14 +414,14 @@
 }
 .ui.black.rating .active.icon {
   color: #333333;
-  text-shadow: 0px -1px 0px #1B1C1D, -1px 0px 0px #1B1C1D, 0px 1px 0px #1B1C1D, 1px 0px 0px #1B1C1D;
+  text-shadow: 0px -1px 0px #000000, -1px 0px 0px #000000, 0px 1px 0px #000000, 1px 0px 0px #000000;
 }
 .ui.black.rating .icon.selected,
 .ui.black.rating .icon.selected.active,
 .ui.black.rating .icon.selected.partial.active {
   background: inherit;
   color: #3b3b3b;
-  text-shadow: 0px -1px 0px #222425, -1px 0px 0px #222425, 0px 1px 0px #222425, 1px 0px 0px #222425;
+  text-shadow: 0px -1px 0px #080808, -1px 0px 0px #080808, 0px 1px 0px #080808, 1px 0px 0px #080808;
   -webkit-text-stroke: unset;
   background-clip: unset;
 }
@@ -430,7 +430,7 @@
   background: -webkit-linear-gradient(left, #333333 0% var(--full), rgba(0, 0, 0, 0.15) var(--full) 100%);
   background: linear-gradient(to right, #333333 0% var(--full), rgba(0, 0, 0, 0.15) var(--full) 100%);
   text-shadow: none;
-  -webkit-text-stroke: #1B1C1D 0.78px;
+  -webkit-text-stroke: #000000 0.78px;
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;

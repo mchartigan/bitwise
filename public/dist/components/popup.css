@@ -31,7 +31,7 @@
   padding: 0.833em 1em;
   font-weight: normal;
   font-style: normal;
-  color: #FFFFFF;
+  color: #000000;
   border-radius: 0.2857rem;
   -webkit-box-shadow: 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15);
           box-shadow: 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15);
@@ -108,7 +108,7 @@
   padding: 0.833em 1em;
   font-weight: normal;
   font-style: normal;
-  color: #FFFFFF;
+  color: #000000;
   border-radius: 0.2857rem;
   -webkit-box-shadow: 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15);
           box-shadow: 0 2px 4px 0 rgba(34, 36, 38, 0.12), 0 2px 10px 0 rgba(34, 36, 38, 0.15);
@@ -231,12 +231,12 @@
 
 /* Arrow Position */
 [data-tooltip][data-inverted]:before {
-  background: #1B1C1D;
+  background: #000000;
 }
 
 /* Popup  */
 [data-tooltip][data-inverted]:after {
-  background: #1B1C1D;
+  background: #000000;
   color: #FFFFFF;
   border: none;
   -webkit-box-shadow: none;
@@ -401,22 +401,22 @@
 
 /* Inverted Arrow Color */
 [data-inverted][data-position~="bottom"][data-tooltip]:before {
-  background: #1B1C1D;
+  background: #000000;
   -webkit-box-shadow: -1px -1px 0 0 #bababc;
           box-shadow: -1px -1px 0 0 #bababc;
 }
 [data-inverted][data-position="left center"][data-tooltip]:before {
-  background: #1B1C1D;
+  background: #000000;
   -webkit-box-shadow: 1px -1px 0 0 #bababc;
           box-shadow: 1px -1px 0 0 #bababc;
 }
 [data-inverted][data-position="right center"][data-tooltip]:before {
-  background: #1B1C1D;
+  background: #000000;
   -webkit-box-shadow: -1px 1px 0 0 #bababc;
           box-shadow: -1px 1px 0 0 #bababc;
 }
 [data-inverted][data-position~="top"][data-tooltip]:before {
-  background: #1B1C1D;
+  background: #000000;
 }
 [data-position~="bottom"][data-tooltip]:before {
   -webkit-transform-origin: center bottom;
@@ -620,14 +620,14 @@
 
 /* Inverted Arrow Color */
 .ui.inverted.bottom.popup:before {
-  background: #1B1C1D;
+  background: #000000;
 }
 .ui.inverted.right.center.popup:before,
 .ui.inverted.left.center.popup:before {
-  background: #1B1C1D;
+  background: #000000;
 }
 .ui.inverted.top.popup:before {
-  background: #1B1C1D;
+  background: #000000;
 }
 
 
@@ -723,7 +723,7 @@
 
 /* Inverted colors  */
 .ui.inverted.popup {
-  background: #1B1C1D;
+  background: #000000;
   color: #FFFFFF;
   border: none;
   -webkit-box-shadow: none;
@@ -734,7 +734,7 @@
   color: #FFFFFF;
 }
 .ui.inverted.popup:before {
-  background-color: #1B1C1D;
+  background-color: #000000;
   -webkit-box-shadow: none !important;
           box-shadow: none !important;
 }

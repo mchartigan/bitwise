@@ -56,7 +56,7 @@
   background: transparent;
 }
 .ui.progress[data-percent="0"] .bar .progress {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.inverted.progress[data-percent="0"] .bar .progress {
   color: #ffffff;
@@ -88,7 +88,7 @@
   right: auto;
   left: 0;
   bottom: auto;
-  color: #FFFFFF;
+  color: #000000;
   font-weight: bold;
   text-shadow: none;
   margin-top: 0.2em;
@@ -130,25 +130,25 @@
 /* Indicating Label */
 .ui.indicating.progress[data-percent^="1"] .label,
 .ui.indicating.progress[data-percent^="2"] .label {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.indicating.progress[data-percent^="3"] .label {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.indicating.progress[data-percent^="4"] .label,
 .ui.indicating.progress[data-percent^="5"] .label {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.indicating.progress[data-percent^="6"] .label {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.indicating.progress[data-percent^="7"] .label,
 .ui.indicating.progress[data-percent^="8"] .label {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.indicating.progress[data-percent^="9"] .label,
 .ui.indicating.progress[data-percent^="100"] .label {
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /* Inverted Indicating Label */
@@ -216,7 +216,7 @@
 .ui.indicating.progress[data-percent^="8."] .label,
 .ui.indicating.progress[data-percent="9"] .label,
 .ui.indicating.progress[data-percent^="9."] .label {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.inverted.indicating.progress[data-percent="0"] .label,
 .ui.inverted.indicating.progress[data-percent^="0."] .label,
@@ -386,7 +386,7 @@
   background: #888888;
 }
 .ui.inverted.progress .bar > .progress {
-  color: #1B1C1D;
+  color: #000000;
 }
 .ui.inverted.progress > .label {
   color: #FFFFFF;
@@ -597,7 +597,7 @@
 .ui.indeterminate.black.progress .bar::before,
 .ui.black.progress .bar,
 .ui.progress .black.bar {
-  background-color: #1B1C1D;
+  background-color: #000000;
 }
 .ui.inverted.indeterminate.black.progress .bar::before,
 .ui.black.inverted.progress .bar,
@@ -716,7 +716,7 @@
 }
 .ui.sliding.indeterminate.progress .bar .progress,
 .ui.swinging.indeterminate.progress .bar .progress {
-  color: #1B1C1D;
+  color: #000000;
 }
 .ui.inverted.sliding.indeterminate.progress .bar,
 .ui.inverted.swinging.indeterminate.progress .bar,

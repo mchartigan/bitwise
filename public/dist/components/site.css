@@ -26,11 +26,11 @@ body {
   padding: 0;
   overflow-x: hidden;
   min-width: 278px;
-  background: #000000;
+  background: #FFFFFF;
   font-family: 'Ubuntu Mono', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-size: 14px;
   line-height: 1.33;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 
@@ -124,36 +124,36 @@ a:hover {
 /* Site */
 ::-webkit-selection {
   background-color: rgba(255, 255, 160, 0.4);
-  color: #FFFFFF;
+  color: #000000;
 }
 ::-moz-selection {
   background-color: rgba(255, 255, 160, 0.4);
-  color: #FFFFFF;
+  color: #000000;
 }
 ::selection {
   background-color: rgba(255, 255, 160, 0.4);
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /* Form */
 textarea::-webkit-selection,
 input::-webkit-selection {
   background-color: rgba(100, 100, 100, 0.4);
-  color: #FFFFFF;
+  color: #000000;
 }
 textarea::-moz-selection,
 input::-moz-selection {
   background-color: rgba(100, 100, 100, 0.4);
-  color: #FFFFFF;
+  color: #000000;
 }
 textarea::-moz-selection, input::-moz-selection {
   background-color: rgba(100, 100, 100, 0.4);
-  color: #FFFFFF;
+  color: #000000;
 }
 textarea::selection,
 input::selection {
   background-color: rgba(100, 100, 100, 0.4);
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /* Force Simple Scrollbars */

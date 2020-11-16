@@ -33,7 +33,7 @@
   padding: 0.5em 0;
   font-family: 'Ubuntu Mono', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-size: 1em;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /* Default Styling */
@@ -156,12 +156,12 @@
 .ui.styled.accordion .accordion .title:hover,
 .ui.styled.accordion .accordion .active.title {
   background: transparent;
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.styled.accordion .accordion .title:hover,
 .ui.styled.accordion .accordion .active.title {
   background: transparent;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /* Active */

@@ -29,7 +29,7 @@
 @teal             : #00B5AD;
 @yellow           : #F2C61F;
 
-@black            : #1B1C1D;
+@black            : #000000;
 @grey             : #CCCCCC;
 @white            : #FFFFFF;
 
@@ -54,12 +54,12 @@
       Page
 --------------------*/
 
-@pageBackground      : #000000;
+@pageBackground      : #FFFFFF;
 @pageOverflowX       : hidden;
 
 @fontSize            : 14px;
 @lineHeight          : 1.33;
-@textColor           : #FFFFFF;
+@textColor           : #000000;
 
 @headerMargin        : 1em 0em 1rem;
 @paragraphMargin     : 0em 0em 1em;

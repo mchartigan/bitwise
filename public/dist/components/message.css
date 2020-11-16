@@ -20,7 +20,7 @@
   background: #F8F8F9;
   padding: 1em 1.5em;
   line-height: 1.33;
-  color: #FFFFFF;
+  color: #000000;
   -webkit-transition: opacity 0.1s ease, color 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
   transition: opacity 0.1s ease, color 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
   transition: opacity 0.1s ease, color 0.1s ease, background 0.1s ease, box-shadow 0.1s ease;
@@ -590,14 +590,14 @@
   color: #bfbfbf;
 }
 .ui.black.message {
-  background-color: #1B1C1D;
+  background-color: #000000;
   color: #ffffff;
 }
 .ui.black.message .header {
   color: #ffffff;
 }
 .ui.inverted.message {
-  background-color: #1B1C1D;
+  background-color: #000000;
   color: #ffffff;
 }
 

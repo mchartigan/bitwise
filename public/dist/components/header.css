@@ -23,7 +23,7 @@
   font-weight: bold;
   line-height: 1.28571429em;
   text-transform: none;
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.header:first-child {
   margin-top: -0.14285714em;
@@ -328,7 +328,7 @@ h6.ui.header .sub.header {
   color: rgba(255, 255, 255, 0.8);
 }
 .ui.inverted.attached.header {
-  background: #1B1C1D;
+  background: #000000;
   -webkit-box-shadow: none;
           box-shadow: none;
   border-color: transparent;
@@ -599,13 +599,13 @@ a.ui.inverted.grey.header.header.header:hover {
   border-bottom: 2px solid #DCDDDE;
 }
 .ui.black.header {
-  color: #1B1C1D;
+  color: #000000;
 }
 a.ui.black.header:hover {
-  color: #222425;
+  color: #080808;
 }
 .ui.black.dividing.header {
-  border-bottom: 2px solid #1B1C1D;
+  border-bottom: 2px solid #000000;
 }
 .ui.inverted.black.header.header.header {
   color: #333333;

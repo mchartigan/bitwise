@@ -29,7 +29,7 @@
   font-size: 1em;
   background: #FFFFFF;
   border: 1px solid rgba(39, 41, 43, 0.15);
-  color: #FFFFFF;
+  color: #000000;
   -webkit-box-shadow: 0 0 0 0 transparent inset;
           box-shadow: 0 0 0 0 transparent inset;
   -webkit-transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease, -webkit-box-shadow 0.1s ease;
@@ -89,7 +89,7 @@
   overflow: hidden;
   font-size: 1em;
   padding: 0.85714286em 1.14285714em;
-  color: #FFFFFF;
+  color: #000000;
   line-height: 1.33;
   border-bottom: 1px solid rgba(34, 36, 38, 0.1);
 }
@@ -147,12 +147,12 @@
   font-family: 'Ubuntu Mono', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-size: 1rem;
   font-weight: bold;
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.search > .results > .message .description {
   margin-top: 0.25rem;
   font-size: 1em;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /* View All Results */
@@ -161,7 +161,7 @@
   border-top: none;
   background: #F0F0F0;
   padding: 0.92857143em 1em;
-  color: #FFFFFF;
+  color: #000000;
   font-weight: bold;
   text-align: center;
 }
@@ -233,7 +233,7 @@
   background: #F0F0F0;
 }
 .ui.category.search > .results .category.active > .name {
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.search > .results .result.active,
 .ui.category.search > .results .category .result.active {

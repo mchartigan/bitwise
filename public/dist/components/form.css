@@ -56,7 +56,7 @@
 .ui.form .field > label {
   display: block;
   margin: 0 0 0.28571429rem 0;
-  color: #FFFFFF;
+  color: #000000;
   font-size: 0.92857143em;
   font-weight: bold;
   text-transform: none;
@@ -110,7 +110,7 @@
   font-size: 1em;
   background: #FFFFFF;
   border: 1px solid rgba(39, 41, 43, 0.15);
-  color: #FFFFFF;
+  color: #000000;
   border-radius: 0.2857rem;
   -webkit-box-shadow: 0 0 0 0 transparent inset;
           box-shadow: 0 0 0 0 transparent inset;
@@ -128,7 +128,7 @@
   background: #FFFFFF;
   border: 1px solid rgba(39, 41, 43, 0.15);
   outline: none;
-  color: #FFFFFF;
+  color: #000000;
   border-radius: 0.2857rem;
   -webkit-box-shadow: 0 0 0 0 transparent inset;
           box-shadow: 0 0 0 0 transparent inset;
@@ -214,7 +214,7 @@
   -webkit-box-shadow: 0 0 0 0 transparent inset;
           box-shadow: 0 0 0 0 transparent inset;
   padding: 0.62em 1em;
-  color: #FFFFFF;
+  color: #000000;
   -webkit-transition: color 0.1s ease, border-color 0.1s ease;
   transition: color 0.1s ease, border-color 0.1s ease;
 }
@@ -365,22 +365,22 @@
 
 /* browsers require these rules separate */
 .ui.form ::-webkit-input-placeholder {
-  color: #ffffff;
+  color: #bfbfbf;
 }
 .ui.form :-ms-input-placeholder {
-  color: #ffffff !important;
+  color: #bfbfbf !important;
 }
 .ui.form ::-moz-placeholder {
-  color: #ffffff;
+  color: #bfbfbf;
 }
 .ui.form :focus::-webkit-input-placeholder {
-  color: #ffffff;
+  color: #737373;
 }
 .ui.form :focus:-ms-input-placeholder {
-  color: #ffffff !important;
+  color: #737373 !important;
 }
 .ui.form :focus::-moz-placeholder {
-  color: #ffffff;
+  color: #737373;
 }
 
 /*--------------------
@@ -1440,7 +1440,7 @@
 .ui.inverted.form input[type="url"] {
   background: #FFFFFF;
   border-color: rgba(255, 255, 255, 0.2);
-  color: #FFFFFF;
+  color: #000000;
   -webkit-box-shadow: none;
           box-shadow: none;
 }
@@ -1460,7 +1460,7 @@
 }
 .ui.form .grouped.fields > label {
   margin: 0 0 0.28571429rem 0;
-  color: #FFFFFF;
+  color: #000000;
   font-size: 0.92857143em;
   font-weight: bold;
   text-transform: none;
@@ -1651,7 +1651,7 @@
   vertical-align: baseline;
   font-size: 0.92857143em;
   font-weight: bold;
-  color: #FFFFFF;
+  color: #000000;
   text-transform: none;
 }
 

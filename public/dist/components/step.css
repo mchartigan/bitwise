@@ -76,7 +76,7 @@
   margin: 0 0;
   padding: 1.14285714em 2em;
   background: #FFFFFF;
-  color: #FFFFFF;
+  color: #000000;
   -webkit-box-shadow: none;
           box-shadow: none;
   border-radius: 0;
@@ -148,7 +148,7 @@
 .ui.steps .step .description {
   font-weight: normal;
   font-size: 0.92857143em;
-  color: #FFFFFF;
+  color: #000000;
 }
 .ui.steps .step > .description {
   width: 100%;
@@ -397,7 +397,7 @@
 .ui.steps a.active.step:hover {
   cursor: pointer;
   background: #DCDDDE;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 /* Completed */
@@ -626,11 +626,11 @@
 }
 .ui.inverted.steps .step {
   color: #ffffff;
-  background: #1B1C1D;
+  background: #000000;
   border-color: #555555;
 }
 .ui.inverted.steps .step:after {
-  background-color: #1B1C1D;
+  background-color: #000000;
   border-color: #555555;
 }
 .ui.inverted.steps .step .description {
