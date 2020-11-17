@@ -1,22 +1,3 @@
-// **************************** TODO **************************** \\
-// Save and unsave icon change (will be similar to like and unlike)
-// Change account info to use update instead of set/merge
-// Box shadow margin/padding change on threaded comments
-// Save/display posts with newline characters
-// Make anonymous profile viewing not show the username in the HTML
-// If a username is taken AFTER accountInfo loads, unique wont work
-// Add generic upload image function (return URL) for account/post
-// Modify header profile URL to go to the right profile
-// Add dimmer with confirm delete buttont to post
-// Add loader to posts that havent loaded yet
-// Ensure all HTML pages use fomantic ui instead of semantic ui
-// Add custome onInteract callback to post to live update on profile
-// --Refresh button does not refresh 'Overview' tab
-// Prevent topics/usernames with spaces (or other weird characters)
-// --even on new account creation!
-// Fix deleteing top post border issue
-// ************************************************************** \\
-
 'use strict';
 
 class Post extends React.Component {
@@ -34,7 +15,8 @@ class Post extends React.Component {
 
         this.postID = this.props.postID;
         this.type = this.props.type;
-        this.divider = this.props.divider;
+        this.topDivider = false;
+        this.botDivider = true;
 
         this.repliesID = [];
         this.repliesHTML = [];
@@ -43,7 +25,7 @@ class Post extends React.Component {
             this.authorUID = postDoc.data().authorUID;
             this.createdText = jQuery.timeago(postDoc.data().created.toDate());
             this.topic = postDoc.data().topic;
-            this.topicText = ((this.topic != "") ? "["+this.topic+"] ": "")
+            this.topicText = ((this.topic != "") ? "[" + this.topic + "] " : "")
             this.titleText = postDoc.data().title ? postDoc.data().title : "";
             this.contentText = postDoc.data().content;
             this.imageURL = postDoc.data().image;
@@ -54,7 +36,7 @@ class Post extends React.Component {
             this.numDislikes = postDoc.data().dislikedUsers.length;
 
             this.anonymous = postDoc.data().anon;
-            
+
             this.profileClickable = !this.anonymous;
 
             let authorInfoPromise = new Promise(resolve => {
@@ -62,8 +44,8 @@ class Post extends React.Component {
                     if (this.anonymous) {
                         if (this.authorUID == UID) {
                             this.profileClickable = true;
-    
-                            this.authorText = "Anonymous ("+userDoc.data().username+")";
+
+                            this.authorText = "Anonymous (" + userDoc.data().username + ")";
                             this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
                         } else {
                             this.authorText = "Anonymous";
@@ -73,7 +55,7 @@ class Post extends React.Component {
                         this.authorText = userDoc.data().username;
                         this.authorImageURL = userDoc.data().profileImageURL;
                     }
-    
+
                     this.profileLinkName = userDoc.data().username;
 
                     resolve();
@@ -94,7 +76,10 @@ class Post extends React.Component {
                 }
             });
 
-            Promise.all([authorInfoPromise,viewerStatePromise]).then(() => {
+            Promise.all([authorInfoPromise, viewerStatePromise]).then(() => {
+                this.topDivider = this.props.topDivider;
+                this.botDivider = this.props.botDivider;
+
                 // Re-render post
                 this.setState({ retrievedPost: true });
             });
@@ -114,7 +99,7 @@ class Post extends React.Component {
                         postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
                     });
                 });
-    
+
                 this.setState({ saved: false });
             } else {
                 console.log("Save Post:", this.postID);
@@ -142,7 +127,7 @@ class Post extends React.Component {
     deleteClick = () => {
         if (this.authorUID == UID) {
             deletePost(this.postID);
-        
+
             if (this.type == "comment") {
                 this.props.onDelete(this.postID);
             }
@@ -152,7 +137,7 @@ class Post extends React.Component {
 
     likeClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         if (UID) {
             if (this.state.liked) {
@@ -166,9 +151,9 @@ class Post extends React.Component {
                         postsLiked: firebase.firestore.FieldValue.arrayRemove(this.postID)
                     });
                 });
-    
+
                 this.numLikes -= 1;
-    
+
                 this.setState({ liked: false });
             } else {
                 console.log("Like Post:", this.postID);
@@ -197,7 +182,7 @@ class Post extends React.Component {
 
     dislikeClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         if (UID) {
             if (this.state.disliked) {
@@ -211,9 +196,9 @@ class Post extends React.Component {
                         postsDisliked: firebase.firestore.FieldValue.arrayRemove(this.postID)
                     });
                 });
-    
+
                 this.numDislikes -= 1;
-    
+
                 this.setState({ disliked: false });
             } else {
                 console.log("Dislike Post:", this.postID);
@@ -228,10 +213,10 @@ class Post extends React.Component {
                         postsDisliked: firebase.firestore.FieldValue.arrayUnion(this.postID)
                     });
                 });
-    
+
                 this.numLikes -= this.state.liked;
                 this.numDislikes += 1;
-    
+
                 this.setState({
                     liked: false,
                     disliked: true
@@ -242,20 +227,20 @@ class Post extends React.Component {
 
     replyClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         // Remove form error messages
         $('.ui.reply.form').form('reset');
         $('.ui.reply.form').form('remove errors');
 
         // Toggle reply form
-        const replyForm = $('#reply-form-'+this.postID)[0];
+        const replyForm = $('#reply-form-' + this.postID)[0];
 
         if (replyForm.style.display === "none") {
             $(".ui.reply.form").hide();
             $(".reply.text.area").val("");
             replyForm.style.display = "";
-            replyForm.scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
+            replyForm.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
         } else {
             $(".ui.reply.form").hide();
             $(".reply.text.area").val("");
@@ -281,14 +266,14 @@ class Post extends React.Component {
     updateReplies = () => {
         // Re-calculate HTML for replies
         this.repliesHTML = this.repliesID.map(replyID => (
-            <Post postID={replyID} type="comment" divider={true} onDelete={this.deleteReply} key={replyID}/>
+            <Post postID={replyID} type="comment" topDivider={false} botDivider={false} onDelete={this.deleteReply} key={replyID} />
         ));
     }
 
     deleteReply = (replyID) => {
         let index = this.repliesID.indexOf(replyID);
         if (index >= 0) {
-            this.repliesID.splice( index, 1 );
+            this.repliesID.splice(index, 1);
         }
         this.updateReplies();
 
@@ -302,7 +287,7 @@ class Post extends React.Component {
 
     expandClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         if (!this.state.retrievedReplies) {
             this.updateReplies();
@@ -317,7 +302,7 @@ class Post extends React.Component {
 
     collapseClick = (event) => {
         // Prevent highlighting on double click
-        event.target.onselectstart = function() { return false; };
+        event.target.onselectstart = function () { return false; };
 
         this.setState({ collapsedReplies: true });
     }
@@ -326,7 +311,7 @@ class Post extends React.Component {
         const post = this;
 
         // Form validation listener
-        $('#post-'+post.postID).find('.ui.reply.form').form({
+        $('#post-' + post.postID).find('.ui.reply.form').form({
             fields: {
                 title: {
                     identifier: 'reply-text-area',
@@ -346,9 +331,9 @@ class Post extends React.Component {
                 // console.log("Anonymous: ",anonFlag)
                 // *************************************************** \\
 
-                const replyText = $('#reply-form-'+post.postID).find('#reply-text-area').val();
-                const anonFlag = $('#reply-form-'+post.postID).find('#anonymous-reply-flag').checkbox('is checked');
-                post.addReply(post.postID,replyText,anonFlag);
+                const replyText = $('#reply-form-' + post.postID).find('#reply-text-area').val();
+                const anonFlag = $('#reply-form-' + post.postID).find('#anonymous-reply-flag').checkbox('is checked');
+                post.addReply(post.postID, replyText, anonFlag);
 
                 $(".ui.reply.form").hide();
                 $(".reply.text.area").val("");
@@ -361,113 +346,119 @@ class Post extends React.Component {
     // Render post
     render() {
         return (
-            <div className="comment" id={"post-"+this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
-                <div>
-                    {this.divider && <div className="ui divider"></div>}
-                </div>
+            <div className="container">
+                <div className="ui divider" style={{ display: (this.topDivider ? "" : "none") }}></div>
 
-                <a className="avatar" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
-                    <img src={this.authorImageURL}></img>
-                </a>
+                <div className="ui inline centered active slow violet double loader" style={{ display: (this.state.retrievedPost ? "none" : "") }}></div>
 
-                <div className="content">
-                    <a className="author" href={"/user/"+this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
-                        {this.authorText}
+                <div className="comment" id={"post-" + this.postID} style={{ display: ((!this.state.retrievedPost || this.state.deleted) ? "none" : "") }}>
+                    <a className="avatar" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
+                        <img src={this.authorImageURL}></img>
                     </a>
 
-                    <div className="metadata">
-                        <span className="date">{this.createdText}</span>
-                    </div>
+                    <div className="content">
+                        <a className="author" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
+                            {this.authorText}
+                        </a>
 
-                    <div className="ui simple dropdown" style={{ float: "right", display: (UID ? "" : "none") }}>
-                        <i className="ellipsis vertical icon"></i>
-                        <div className="left menu">
-                            <div className="item" onClick={this.saveClick}>
-                                {this.state.saved ? <i className="bookmark icon"></i> : <i className="bookmark outline icon"></i>}
+                        <div className="metadata">
+                            <span className="date">{this.createdText}</span>
+                        </div>
+
+                        <div className="ui simple dropdown" style={{ float: "right", display: (UID ? "" : "none") }}>
+                            <i className="ellipsis vertical icon"></i>
+                            <div className="left menu">
+                                <div className="item" onClick={this.saveClick}>
+                                    {this.state.saved ? <i className="bookmark icon"></i> : <i className="bookmark outline icon"></i>}
                                 Save
                             </div>
 
-                            <div className="item" onClick={this.editClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
-                                <i className="edit outline icon"></i>
+                                <div className="item" onClick={this.editClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
+                                    <i className="edit outline icon"></i>
                                 Edit
                             </div>
 
-                            <div className="item" onClick={this.deleteClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
-                                <i className="trash alternate outline icon"></i>
+                                <div className="item" onClick={this.deleteClick} style={{ display: (this.authorUID == UID ? "" : "none") }}>
+                                    <i className="trash alternate outline icon"></i>
                                 Delete
                             </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="text">
-                        <a className="ui violet medium header" href={"/topic/"+this.topic}>{this.topicText}</a>
-                        <span className="ui violet medium header">{this.titleText}</span>
-                        <div>{this.contentText}</div>
-                        {this.imageURL != null && <img className="ui small image" src={this.imageURL}/>}
-                    </div>
+                        <div className="thread">
+                            <div className="text">
+                                <a className="ui violet medium header" href={"/topic/" + this.topic}>{this.topicText}</a>
+                                <span className="ui violet medium header">{this.titleText}</span>
+                                <div>{this.contentText}</div>
+                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
+                            </div>
 
-                    <div className="actions">
-                        <span>
-                            <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
-                                {this.numLikes}
+                            <div className="actions">
+                                <span>
+                                    <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                        {this.numLikes}
                                 &nbsp;&nbsp;
                                 {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
                                 Like
                             </a>
-                        </span>
+                                </span>
 
-                        <span>
-                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                                <span>
+                                    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
-                                {this.numDislikes}
+                                        {this.numDislikes}
                                 &nbsp;&nbsp;
                                 {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
                                 Dislike
                             </a>
-                        </span>
+                                </span>
 
-                        <span style={{ display: (UID ? "" : "none") }}>
-                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                                <span style={{ display: (UID ? "" : "none") }}>
+                                    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="reply" onClick={this.replyClick}>
-                                <i className="reply icon"></i>
+                                        <i className="reply icon"></i>
                                 Reply
                             </a>
-                        </span>
+                                </span>
 
-                        <span style={{ display: (this.state.retrievedPost && this.repliesID.length ? "" : "none") }}>
-                            &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+                                <span style={{ display: (this.state.retrievedPost && this.repliesID.length ? "" : "none") }}>
+                                    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
                             <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
-                                <i className="chevron down icon"></i>
+                                        <i className="chevron down icon"></i>
                                 Expand ({this.repliesID.length})
                             </a>
 
-                            <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
-                                <i className="chevron up icon"></i>
+                                    <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
+                                        <i className="chevron up icon"></i>
                                 Collapse ({this.repliesID.length})
                             </a>
-                        </span>
-                    </div>
-                </div>
-
-                <div className={(this.state.collapsedReplies ? "collapsed " : "") + "comments"}>
-                    {this.repliesHTML}
-                </div>
-                
-                <form className="ui reply form" id={"reply-form-"+this.postID} style={{ display: "none" }}>
-                    <div className="field">
-                        <textarea className="reply text area" id="reply-text-area"></textarea>
-                    </div>
-                    <div className="ui error message"></div>
-                    <div className="field">
-                        <div className="ui checkbox" id="anonymous-reply-flag">
-                            <input type="checkbox"></input>
-                            <label>Anonymous</label>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div className="ui violet submit labeled icon button">
-                        <i className="icon edit"></i> Add Reply
+
+                    <div className={(this.state.collapsedReplies ? "collapsed " : "") + "comments"}>
+                        {this.repliesHTML}
                     </div>
-                </form>
+
+                    <form className="ui reply form" id={"reply-form-" + this.postID} style={{ display: "none" }}>
+                        <div className="field">
+                            <textarea className="reply text area" id="reply-text-area"></textarea>
+                        </div>
+                        <div className="ui error message"></div>
+                        <div className="field">
+                            <div className="ui checkbox" id="anonymous-reply-flag">
+                                <input type="checkbox"></input>
+                                <label>Anonymous</label>
+                            </div>
+                        </div>
+                        <div className="ui violet submit labeled icon button">
+                            <i className="icon edit"></i> Add Reply
+                    </div>
+                    </form>
+                </div>
+
+                <div className="ui divider" style={{ display: (this.botDivider ? "" : "none") }}></div>
             </div>
         );
     }
