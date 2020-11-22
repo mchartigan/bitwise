@@ -6,6 +6,8 @@ var followState = null;
 var following = null;
 
 firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+
     db.collection('users')
         .where('username', '==', pagename)
         .get().then(querySnapshot => {
@@ -25,7 +27,7 @@ firebase.auth().onAuthStateChanged(function (user) {
             loadLikedPosts(userDoc);
             loadDislikedPosts(userDoc);
 
-            if (user) {
+            if (UID) {
                 if (UID == viewUID) {
                     loadSavedPosts(userDoc);
                     $("#saved-tab").show();
@@ -158,12 +160,13 @@ function loadUserPosts(viewUID) {
                         if (!doc.data().anon || doc.data().authorUID == UID) {
                             var postProps = {
                                 postID: doc.id,
+                                instance: Math.floor(Math.random() * Math.pow(10, 8)),
                                 type: "post",
                                 topDivider: false,
                                 botDivider: true
                             };
 
-                            posts.push(<Post {...postProps} key={Math.random()} />);
+                            posts.push(<Post {...postProps} key={doc.id} />);
                         }
                     }
                 });
@@ -196,12 +199,13 @@ function loadUserReplies(viewUID) {
                         if (!doc.data().anon || doc.data().authorUID == UID) {
                             var postProps = {
                                 postID: doc.id,
+                                instance: Math.floor(Math.random() * Math.pow(10, 8)),
                                 type: "post",
                                 topDivider: false,
                                 botDivider: true
                             };
 
-                            posts.push(<Post {...postProps} key={Math.random()} />);
+                            posts.push(<Post {...postProps} key={doc.id} />);
                         }
                     }
                 });
@@ -229,9 +233,11 @@ function loadFollowedUsers(userDoc) {
         userDoc.data().followingUsers.slice().reverse().forEach(userID => {
             db.collection('users').doc(userID).get().then(doc => {
                 var usernamehere = doc.data().username;
-                users.push(<div className="item" key={userID}>
-                    <a className="ui small violet header" href={"/user/" + usernamehere}>{usernamehere}</a>
-                </div>);
+                users.push(
+                    <div className="item" key={userID}>
+                        <a className="ui small violet header" href={"/user/" + usernamehere}>{usernamehere}</a>
+                    </div>
+                );
             }).then(function () {
                 // Followed users container
                 // there has got to be a better way to do this than 
@@ -258,9 +264,11 @@ function loadFollowedTopics(userDoc) {
 
         // Reverse loop through each topic to add formatted JSX element to list
         userDoc.data().followingTopics.slice().reverse().forEach(topicname => {
-            topics.push(<div className="item" key={topicname}>
-                <a className="ui small violet header" href={"/topic/" + topicname}>{topicname}</a>
-            </div>);
+            topics.push(
+                <div className="item" key={topicname}>
+                    <a className="ui small violet header" href={"/topic/" + topicname}>{topicname}</a>
+                </div>
+            );
         });
         // Followed topics container
         ReactDOM.render(
@@ -282,12 +290,13 @@ function loadSavedPosts(userDoc) {
         userDoc.data().postsSaved.slice().reverse().forEach((postID, index, array) => {
             const postProps = {
                 postID: postID,
+                instance: Math.floor(Math.random() * Math.pow(10, 8)),
                 type: "post",
                 topDivider: false,
                 botDivider: (index != (array.length - 1))
             };
 
-            posts.push(<Post {...postProps} key={Math.random()} />);
+            posts.push(<Post {...postProps} key={postID} />);
         });
 
         // Saved posts container
@@ -310,12 +319,13 @@ function loadLikedPosts(userDoc) {
         userDoc.data().postsLiked.slice().reverse().forEach((postID, index, array) => {
             const postProps = {
                 postID: postID,
+                instance: Math.floor(Math.random() * Math.pow(10, 8)),
                 type: "post",
                 topDivider: false,
                 botDivider: (index != (array.length - 1))
             };
 
-            posts.push(<Post {...postProps} key={Math.random()} />);
+            posts.push(<Post {...postProps} key={postID} />);
         });
 
         // Liked posts container
@@ -338,12 +348,13 @@ function loadDislikedPosts(userDoc) {
         userDoc.data().postsDisliked.slice().reverse().forEach((postID, index, array) => {
             const postProps = {
                 postID: postID,
+                instance: Math.floor(Math.random() * Math.pow(10, 8)),
                 type: "post",
                 topDivider: false,
                 botDivider: (index != (array.length - 1))
             };
 
-            posts.push(<Post {...postProps} key={Math.random()} />);
+            posts.push(<Post {...postProps} key={postID} />);
         });
 
         // Disliked posts container

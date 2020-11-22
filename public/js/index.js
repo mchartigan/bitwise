@@ -1,7 +1,9 @@
 firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+
     loadAllPosts();
 
-    if (user) {
+    if (UID) {
         $('#create-post-button').transition('zoom');
         $("#timeline-tab").show();
 
@@ -30,6 +32,7 @@ function loadAllPosts() {
                     if (doc.data().parent == null) {
                         var postProps = {
                             postID: doc.id,
+                            instance: Math.floor(Math.random() * Math.pow(10, 8)),
                             type: "post",
                             topDivider: false,
                             botDivider: true
@@ -73,6 +76,7 @@ function loadMyTimeline(myUID) {
                             if (doc.data().parent == null) {
                                 var postProps = {
                                     postID: doc.id,
+                                    instance: Math.floor(Math.random() * Math.pow(10, 8)),
                                     type: "post",
                                     topDivider: false,
                                     botDivider: true

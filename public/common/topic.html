@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <title>Topic</title>
 
@@ -27,6 +28,8 @@
 </head>
 
 <body>
+    <canvas id="background"></canvas>
+
     <div id="header"></div>
     <br><br><br><br>
 
@@ -35,16 +38,17 @@
         <i class="plus icon"></i>
     </a>
 
-    <div class="ui main container">
+    <div class="ui main text container">
         <div class="ui segment">
             <div class="ui items">
                 <div class="item">
-                    <div class="ui huge header" id="topic-name">
-                        <p>loading...</p>
-                    </div>
                     <div class="top aligned content">
                         <div class="ui basic violet right floated button" id="follow-button" style="display:none;"
                             onclick="changeFollowState()">
+                            <p>loading...</p>
+                        </div>
+
+                        <div class="ui huge header" id="topic-name">
                             <p>loading...</p>
                         </div>
                     </div>
@@ -74,8 +78,10 @@
     </script>
 
     <script src="/js/header.js" type="text/babel"></script>
+    <script src="/js/effects.js" type="text/babel"></script>
     <script src="/js/post.js" type="text/babel"></script>
     <script src="/js/endless.js" type="text/babel"></script>
     <script src="/js/topic.js" type="text/babel"></script>
 </body>
+
 </html>

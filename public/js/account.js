@@ -9,13 +9,18 @@ let usernameField = document.getElementById('username-field'),
     curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
 
 firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
+    UID = user ? user.uid : null;
+
+    if (UID) {
         getUserList();
         loadAccountInfo();
     } else {
         location.replace("/index.html");
     }
 });
+
+// Initialize dynamic tab groups
+$('.menu .item').tab();
 
 function getUserList() {
     db.collection('users').orderBy('username').get().then(function (querySnapshot) {
@@ -68,11 +73,11 @@ function removeImage() {
 
 function saveForm() {
     // Update firestore with new field values
-    db.collection("users").doc(UID).set({
+    db.collection("users").doc(UID).update({
         username: usernameField.value,
         bioText: bioTxtField.value,
         profileImageURL: curProfileImageURL
-    }, { merge: true }).then(() => {
+    }).then(() => {
         refreshHeader();
         loadAccountInfo();
     });

@@ -4,9 +4,7 @@ ReactDOM.render(<Header />, document.getElementById("header"));
 scrambleLoad($("#site-logo-text"), "Bitwise", 80, 10);
 
 firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-        UID = user.uid;
-    }
+    UID = user ? user.uid : null;
 
     refreshHeader();
 });
@@ -28,16 +26,27 @@ function Header(props) {
                 </a>
 
                 <div className="ui simple dropdown right item" id="user-dropdown" style={{ display: "none" }}>
-                    <img id="profile-icon" className="logo"></img>
-                    &nbsp;&nbsp;&nbsp;
+                    <img id="profile-icon"></img>
+                    &nbsp;&nbsp;
                     <div id="account-dropdown-text"></div>
 
                     <i className="dropdown icon"></i>
                     <div className="menu">
-                        <a className="item" href="/user/" id="user-own-profile">Profile</a>
-                        <a className="item" href="/common/account.html">Account</a>
+                        <a className="item" href="/user/" id="user-own-profile">
+                            <i className="violet user circle icon"></i>
+                            Profile
+                        </a>
+
+                        <a className="item" href="/common/account.html">
+                            <i className="violet cogs icon"></i>
+                            Settings
+                        </a>
+
                         <a className="item" onClick={completeSignOut}>
-                            <h4 className="ui red header">Sign Out</h4>
+                            <i className="red sign out alternate icon"></i>
+                            <span className="ui small red header">
+                                Sign Out
+                            </span>
                         </a>
                     </div>
                 </div>

@@ -2,12 +2,14 @@ const topicname = window.location.href.split('/')[4];
 var followState = null;
 
 firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+
     $("#topic-name").html(topicname);
     loadFollowButton();
 
     loadPosts();
 
-    if (user) {
+    if (UID) {
         $('#create-post-button').transition('zoom');
     } else {
         $('#create-post-button').hide();
@@ -15,11 +17,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 });
 
 function loadFollowButton() {
-    if (UID == null) {
-        // hide follow button if guest
-        $('#follow-button').hide();
-        followState = false;
-    } else {
+    if (UID) {
         $('#follow-button').show();
         db.collection('users').doc(UID).get().then(doc => {
             var loc = doc.data().followingTopics.indexOf(topicname);
@@ -39,6 +37,10 @@ function loadFollowButton() {
                 ReactDOM.render(<div><i className="user plus icon"></i>Follow</div>, document.querySelector('#follow-button'));
             }
         });
+    } else {
+        // hide follow button if guest
+        $('#follow-button').hide();
+        followState = false;
     }
 }
 
@@ -79,6 +81,7 @@ function loadPosts() {
                     if (doc.data().parent == null) {
                         var postProps = {
                             postID: doc.id,
+                            instance: Math.floor(Math.random() * Math.pow(10, 8)),
                             type: "post",
                             topDivider: false,
                             botDivider: (index != (querySnapshot.size - 1))
