@@ -68,6 +68,8 @@ function removeImage() {
 
 function saveForm() {
     // Update firestore with new field values
+    // But first, remove spaces if there are any (regex won't detect them sometimes for some reason)
+    usernameField.value = usernameField.value.replace(/ /g, '');
     db.collection("users").doc(UID).set({
         username: usernameField.value,
         bioText: bioTxtField.value,
@@ -98,6 +100,16 @@ function cancelForm() {
     $('.ui.form').form('reset');
 }
 
+function countChars(obj) {
+    var maxLength = 160;
+    var strLength = obj.value.length;
+    if (strLength > maxLength) {
+        document.getElementById("charNum").innerHTML = '<span style = "color: red;">' + strLength + '/' + maxLength + ' characters</span>';
+    } else {
+        document.getElementById("charNum").innerHTML = strLength + '/' + maxLength + ' characters';
+    }
+}
+
 $.fn.form.settings.rules.usernameExists = function (param) {
     return checkDuplicates(param);
 }
@@ -109,8 +121,10 @@ $('#account-info').form({
         username: {
             identifier: 'username-field',
             rules: [{
-                type: 'empty',
-                prompt: 'Please enter a username'
+                //Regex checks for any alphanumeric (including underscore and hyphen) string of three or more characters
+                //TODO: Does not properly check for whitespace at beginning and end of string
+                type: 'regExp[/^[A-Za-z0-9_-]{3,}$/]',
+                prompt: 'Username must be at least three character long and not contain spaces or special characters.'
             },
             {
                 type: 'usernameExists',
