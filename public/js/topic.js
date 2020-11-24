@@ -4,7 +4,7 @@ var followState = null;
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
-    $("#topic-name").html(topicname);
+    $("#topic-name").text("#" + topicname);
     loadFollowButton();
 
     loadPosts();
