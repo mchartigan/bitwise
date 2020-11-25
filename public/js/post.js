@@ -383,19 +383,19 @@ class Post extends React.Component {
                                     <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
                                         {this.numLikes}
                                         &nbsp;
-                                {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
-                                Like
-                            </a>
+                                        {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
+                                        Like
+                                    </a>
                                 </span>
 
                                 <span>
                                     &nbsp;&middot;&nbsp;
-                            <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                    <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
                                         {this.numDislikes}
                                         &nbsp;
-                                {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
-                                Dislike
-                            </a>
+                                        {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
+                                        Dislike
+                                    </a>
                                 </span>
 
                                 <span style={{ display: (UID ? "" : "none") }}>
@@ -408,23 +408,23 @@ class Post extends React.Component {
 
                                 <span style={{ display: (UID ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
-                            <a className="reply" onClick={this.replyClick}>
+                                    <a className="reply" onClick={this.replyClick}>
                                         <i className="reply icon"></i>
-                                Reply
-                            </a>
+                                        Reply
+                                    </a>
                                 </span>
 
                                 <span style={{ display: (this.state.retrievedPost && this.repliesID.length ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
-                            <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
+                                    <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
                                         <i className="chevron down icon"></i>
-                                Expand ({this.repliesID.length})
-                            </a>
+                                        Expand ({this.repliesID.length})
+                                    </a>
 
                                     <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
                                         <i className="chevron up icon"></i>
-                                Collapse ({this.repliesID.length})
-                            </a>
+                                        Collapse ({this.repliesID.length})
+                                    </a>
                                 </span>
 
                                 <span style={{ float: "right", display: (this.authorUID == UID ? "" : "none") }} >
@@ -441,7 +441,7 @@ class Post extends React.Component {
                                         onClick={(event) => {
                                             event.target.onselectstart = function () { return false; };
                                             this.setState({ confirmDelete: true });
-                                            setTimeout(() => {this.setState({ confirmDelete: false });}, 3000);
+                                            setTimeout(() => { this.setState({ confirmDelete: false }); }, 3000);
                                         }}>
                                         <i className="trash alternate outline icon" ></i>
                                     </a>

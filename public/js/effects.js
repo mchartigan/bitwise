@@ -25,8 +25,8 @@ c.addEventListener('mousedown', function (e) {
     const y = e.clientY - rect.top;
 
     // Cursor grid position
-    var col = Math.round(x / font_size);
-    var row = Math.round(y / font_size);
+    var col = Math.floor(x / font_size + 0.2);
+    var row = Math.ceil(y / font_size);
 
     drops[col] = row;
 })
@@ -42,7 +42,7 @@ function resetEffects() {
 
     ctx.clearRect(0, 0, c.width, c.height);
 
-    // Initialize drops below screen
+    // Initialize drops above screen
     for (var x = 0; x < c.width / font_size; x++) {
         drops[x] = 0;
     }

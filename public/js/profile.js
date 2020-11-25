@@ -1,6 +1,7 @@
 // DOM elements
 let endlessObj = new endless();
 const pagename = window.location.href.split('/')[4];
+document.title = pagename;
 var viewUID = null;
 var followState = null;
 var following = null;
@@ -56,47 +57,52 @@ function loadProfile(userDoc) {
 function loadFollowButton() {
     if (UID == null || UID == viewUID) {
         // hide follow button if guest or logged in user
-        $('#follow-button').hide();
+        $('#follow-button-container').hide();
         followState = false;
     } else {
-        $('#follow-button').show();
+        $('#follow-button-container').show();
         db.collection('users').doc(UID).get().then(doc => {
-            var loc = doc.data().followingUsers.indexOf(viewUID);
-
-            if (followState == null) {
-                // if this is the first time loading the page,
-                // set the attribute
-                $('#follow-button').attr('onclick', "changeFollowState()");
-            }
-
-            if (loc > -1) {
+            if (doc.data().followingUsers.includes(viewUID)) {
                 // they are currently following
                 followState = true;
-                ReactDOM.render(<div><i className="user minus icon"></i>Unfollow</div>, document.querySelector('#follow-button'));
+                ReactDOM.render(
+                    <div className="ui violet right floated button" onClick={changeFollowState}>
+                        <i className="user minus icon"></i>
+                        Unfollow
+                    </div>,
+                    document.querySelector('#follow-button-container'));
             } else {
                 followState = false;
-                ReactDOM.render(<div><i className="user plus icon"></i>Follow</div>, document.querySelector('#follow-button'));
+                ReactDOM.render(
+                    <div className="ui basic violet right floated button" onClick={changeFollowState}>
+                        <i className="user plus icon"></i>
+                        Follow
+                    </div>,
+                    document.querySelector('#follow-button-container'));
             }
         });
     }
 }
 
 function changeFollowState() {
-    if (followState) {
-        // they are currently following. unfollow.
-        followState = false;
-        // update database
-        db.collection('users').doc(UID).update({
-            followingUsers: firebase.firestore.FieldValue.arrayRemove(viewUID)
-        });
-    } else {
-        followState = true;
-        db.collection('users').doc(UID).update({
-            followingUsers: firebase.firestore.FieldValue.arrayUnion(viewUID)
-        });
-    }
-    // reload the follow button to change the icon
-    loadFollowButton();
+    new Promise((resolve) => {
+        if (followState) {
+            // they are currently following. unfollow.
+            followState = false;
+            // update database
+            db.collection('users').doc(UID).update({
+                followingUsers: firebase.firestore.FieldValue.arrayRemove(viewUID)
+            }).then(resolve);
+        } else {
+            followState = true;
+            db.collection('users').doc(UID).update({
+                followingUsers: firebase.firestore.FieldValue.arrayUnion(viewUID)
+            }).then(resolve);
+        }
+    }).then(() => {
+        // reload the follow button to change the icon
+        loadFollowButton();
+    });
 }
 
 function refreshTab(tabName) {
@@ -228,30 +234,50 @@ function loadFollowedUsers(userDoc) {
         ReactDOM.render(<div className="ui red message">No Followed Users Found!</div>, document.querySelector('#followed-users-container'));
     } else {
         var users = [];
+        var promises = [];
 
         // Reverse loop through each user to add formatted JSX element to list
         userDoc.data().followingUsers.slice().reverse().forEach(userID => {
-            db.collection('users').doc(userID).get().then(doc => {
-                var usernamehere = doc.data().username;
-                users.push(
-                    <div className="item" key={userID}>
-                        <a className="ui small violet header" href={"/user/" + usernamehere}>{usernamehere}</a>
-                    </div>
-                );
-            }).then(function () {
-                // Followed users container
-                // there has got to be a better way to do this than 
-                // rendering it again EVERY TIME
-                // but i need it to be a .then function so i can 
-                // wait for the database queries to be done
-                ReactDOM.render(
-                    <div className="ui relaxed divided list">
-                        {users}
-                    </div>,
-                    document.querySelector('#followed-users-container'));
-            });
+            promises.push(new Promise(resolve => {
+                db.collection('users').doc(userID).get().then(doc => {
+                    var usernamehere = doc.data().username;
+                    var profileImageURL = doc.data().profileImageURL;
+
+                    users.push(
+                        <div className="item" key={userID}>
+                            <span className="ui compact basic violet right floated button" style={{ display: (UID == viewUID ? "" : "none") }}
+                                onClick={() => {
+                                    if (UID == viewUID) {
+                                        db.collection('users').doc(UID).update({
+                                            followingUsers: firebase.firestore.FieldValue.arrayRemove(userID)
+                                        }).then(() => {
+                                            refreshTab("users");
+                                        });
+                                    }
+                                }}>
+                                <i className="user minus icon"></i>
+                                Unfollow
+                            </span>
+
+                            <a className="ui basic image medium label" href={"/user/" + usernamehere}>
+                                <img src={profileImageURL}></img>
+                                {usernamehere}
+                            </a>
+                        </div>
+                    );
+
+                    resolve();
+                });
+            }));
         });
 
+        Promise.all(promises).then(() => {
+            ReactDOM.render(
+                <div className="ui relaxed divided list">
+                    {users}
+                </div>,
+                document.querySelector('#followed-users-container'));
+        });
     }
 }
 
@@ -266,10 +292,25 @@ function loadFollowedTopics(userDoc) {
         userDoc.data().followingTopics.slice().reverse().forEach(topicname => {
             topics.push(
                 <div className="item" key={topicname}>
-                    <a className="ui small violet header" href={"/topic/" + topicname}>{topicname}</a>
+                    <span className="ui compact basic violet right floated button" style={{ display: (UID == viewUID ? "" : "none") }}
+                        onClick={() => {
+                            if (UID == viewUID) {
+                                db.collection('users').doc(UID).update({
+                                    followingTopics: firebase.firestore.FieldValue.arrayRemove(topicname)
+                                }).then(() => {
+                                    refreshTab("topics");
+                                });
+                            }
+                        }}>
+                        <i className="comment slash icon"></i>
+                        Unfollow
+                    </span>
+
+                    <a className="ui basic image medium label" href={"/topic/" + topicname}>{'#' + topicname}</a>
                 </div>
             );
         });
+
         // Followed topics container
         ReactDOM.render(
             <div className="ui relaxed divided list">
