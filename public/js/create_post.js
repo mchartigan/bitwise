@@ -2,50 +2,57 @@
 // Give live preview of post card
 
 var UID = null;
-var storage = firebase.storage();
-var storageRef = storage.ref();
-var docRef = null;
 
 let titleField = document.getElementById('title-field'),
-    bodyField  = document.getElementById('body-field'),
+    bodyField = document.getElementById('body-field'),
     topicField = document.getElementById('topic-field'),
-    anonBox    = document.getElementById('anon-checkbox'),
+    anonBox = document.getElementById('anon-checkbox'),
     imageField = document.getElementById('image-file-field'),
-    postImage  = document.getElementById('post-image'),
-    imageFile  = {};
+    postImage = document.getElementById('post-image'),
+    imageFile = {};
 
-// initially hide this button
-$('#signin-button').hide();
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
 
-// load Bitwise logo in menu bar
-storageRef.child('assets/logo.png').getDownloadURL().then(imgURL => {
-    $('#logo-icon').attr('src', imgURL);
-    console.log('Successfully Downloaded Logo Icon'); // DEBUG LOG
-}).catch(err => {
-    console.log('Failed to Download Icon'); // DEBUG LOG
-});
-
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-        UID = user.uid;
-        docRef = db.collection("users").doc(UID);
-
-        loadDropdown();
-    
-        $("#login-button").hide();
-        $("#user-dropdown").show();
+    if (UID) {
+        // User logged in
     } else {
         location.replace("/index.html");
     }
 });
-  
-function loadDropdown() {
-    docRef.get().then(function(doc) {
-        $('#user-own-profile').attr('href', '/user/'+doc.data().username);
-        $('#profile-icon').attr('src', doc.data().profileImageURL);
-        document.getElementById('account-dropdown').innerHTML = '&nbsp; ' + doc.data().username;
-    });
-}
+
+$('.ui.toggle').checkbox();
+
+// Form Validation
+$('#create-post').form({
+    on: 'blur',
+    fields: {
+        title: {
+            identifier: 'title-field',
+            rules: [{
+                type: 'empty',
+                prompt: 'Please enter a post title'
+            }]
+        },
+        topic: {
+            identifier: 'topic-field',
+            rules: [{
+                // Regex checks for empty string or any string of 3 or more characters
+                type: 'regExp[/^$|^.{3,}$/]',
+                prompt: 'Topics must be at least 3 characters long.'
+            }]
+        }
+    },
+    onFailure: function () {
+        console.log('Validation Failed')
+        return false;
+    },
+    onSuccess: function (event, fields) {
+        console.log('Validation Succeeded')
+        submitPost();
+        return false;
+    }
+});
 
 function submitPost() {
     // check topic -- can be performed asynchronously
@@ -53,7 +60,7 @@ function submitPost() {
     if (topic != '') {
         console.log('check topics');
         // create topic if nonexistent in database
-        db.collection('topics').where('name', '==', topic).get().then(function(query) {
+        db.collection('topics').where('name', '==', topic).get().then(function (query) {
 
             if (!query.size) {
                 db.collection('topics').add({
@@ -70,10 +77,10 @@ function submitPost() {
     if (anon || !UID) {
         addPost(
             true,
-            uid=UID,
-            title=titleField.value,
-            body=bodyField.value,
-            subject=topic
+            uid = UID,
+            title = titleField.value,
+            body = bodyField.value,
+            subject = topic
         );
     }
     // otherwise post with username attached
@@ -81,10 +88,10 @@ function submitPost() {
         db.collection('users').doc(UID).get().then(user => {
             addPost(
                 false,
-                uid=UID,
-                title=titleField.value,
-                body=bodyField.value,
-                subject=topic
+                uid = UID,
+                title = titleField.value,
+                body = bodyField.value,
+                subject = topic
             );
         });
     }
@@ -106,19 +113,19 @@ function addPost(anonymous, uid, title, body, subject) {
         dislikedUsers: [],
         savedUsers: []
     }).then(reference => {
-        if(reference) {
+        if (reference) {
             if (imageField.files.length != 0) {
                 // Update storage with new image file
                 var path = `posts/${reference.id}/1.jpg`;
-                storageRef.child(path).put(imageFile).then(function (upload) {
-                    
+                firebase.storage().ref().child(path).put(imageFile).then(function (upload) {
+
                     // get download URL for image and attach to post
                     return upload.ref.getDownloadURL();
-                }).then(function(downloadURL) {
+                }).then(function (downloadURL) {
 
                     reference.set({
                         image: downloadURL
-                    },{merge: true});
+                    }, { merge: true });
 
                     cancelPost(); // ----------------what is the point of calling cancel post here if it redirects to index.html anyway
 
@@ -138,13 +145,13 @@ function addPost(anonymous, uid, title, body, subject) {
 
 function cancelPost() {
     titleField.value = '';
-    bodyField.value  = '';
+    bodyField.value = '';
     topicField.value = '';
     removeImage();
 }
 
 function previewImage() {
- 
+
     if (imageField.files.length != 0) {
         // Display chosen image file
         var reader = new FileReader();
@@ -177,39 +184,3 @@ function removeImage() {
         previewImage();
     }
 }
-
-// anonymous toggle box
-$(document).ready(function(){
-    $('.ui.toggle').checkbox();
-});
-
-// Form Validation
-$('#create-post').form({
-    on: 'blur',
-    fields: {
-        title: {
-            identifier: 'title-field',
-            rules: [{
-                type: 'empty',
-                prompt: 'Please enter a post title'
-            }]
-        },
-        topic: {
-            identifier: 'topic-field',
-            rules: [{
-                // Regex checks for empty string or any string of 3 or more characters
-                type: 'regExp[/^$|^.{3,}$/]',
-                prompt: 'Topics must be at least 3 characters long.'
-            }]
-        }
-    },
-    onFailure: function() {
-        console.log('Validation Failed')
-        return false;
-    },
-    onSuccess: function(event,fields) {
-        console.log('Validation Succeeded')
-        submitPost();
-        return false;
-    }
-});
