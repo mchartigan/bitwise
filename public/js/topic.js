@@ -76,7 +76,7 @@ function loadPosts() {
         .get().then(function (querySnapshot) {
             if (querySnapshot.empty) {
                 // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
+                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#topic-feed-container'));
             } else {
                 var posts = [];
 
@@ -104,7 +104,7 @@ function loadPosts() {
                     <div className="ui threaded comments">
                         {posts}
                     </div>,
-                    document.querySelector('#feed'));
+                    document.querySelector('#topic-feed-container'));
             }
         });
 }
