@@ -33,6 +33,14 @@ $('#create-post').form({
                 type: 'empty',
                 prompt: 'Please enter a post title'
             }]
+        },
+        topic: {
+            identifier: 'topic-field',
+            rules: [{
+                // Regex checks for empty string or any string of 3 or more characters
+                type: 'regExp[/^$|^.{3,}$/]',
+                prompt: 'Topics must be at least 3 characters long.'
+            }]
         }
     },
     onFailure: function () {
