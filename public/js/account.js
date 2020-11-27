@@ -122,9 +122,8 @@ $('#account-info').form({
             identifier: 'username-field',
             rules: [{
                 //Regex checks for any alphanumeric (including underscore and hyphen) string of three or more characters
-                //TODO: Does not properly check for whitespace at beginning and end of string
                 type: 'regExp[/^[A-Za-z0-9_-]{3,}$/]',
-                prompt: 'Username must be at least three character long and not contain spaces or special characters.'
+                prompt: 'Username must be at least three characters long and not contain spaces or special characters.'
             },
             {
                 type: 'usernameExists',
