@@ -536,6 +536,17 @@ async function deletePost(postID) {
         });
     });
 
+    // Remove post from topic doc
+    db.collection('topics').where('name', '==', doc.data().topic).get().then(qS => {
+        if (!qS.empty) {
+            qS.forEach(topicDoc => {
+                db.collection('topics').doc(topicDoc.id).update({
+                    posts: firebase.firestore.FieldValue.arrayRemove(postID)
+                });
+            });
+        }
+    });
+
     return new Promise((resolve, reject) => {
         if (doc.data().parent) {
             // ********************** DEBUG ********************** \\
