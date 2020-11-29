@@ -20,12 +20,12 @@
       "destination": "/common/profile.html"
     },
     {
-      "source": "/u**",
-      "function": "profile"
-    },
-    {
       "source": "/topic/**",
       "destination": "/common/topic.html"
+    },
+    {
+      "source": "/post/**",
+      "destination": "/common/post.html"
     }]
   },
   "storage": {

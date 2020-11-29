@@ -17,9 +17,7 @@ if (topicstring.length === 5 && topicstring[3] === 'topic') {
 
 
 function loadPage() {
-    $("#topic-name").text("#" + topicname);
-    loadFollowButton();
-
+    loadTopicHeader();
     loadPosts();
 
     if (UID) {
@@ -37,9 +35,26 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
+function loadTopicHeader() {
+    $("#topic-name").text("#" + topicname);
 
+    db.collection('topics').where('name', '==', topicname).get().then(qS => {
+        if (!qS.empty) {
+            qS.forEach(topicDoc => {
+                ReactDOM.render(
+                    <div className="ui small grey header">
+                        (
+                        {topicDoc.data().posts.length + " Post"}
+                        {(topicDoc.data().posts.length - 1) ? "s" : ""}
+                        )
+                    </div>,
+                    document.querySelector('#num-posts'));
+            });
+        }
+    });
 
-
+    loadFollowButton();
+}
 
 function loadFollowButton() {
     if (UID == null) {
@@ -100,7 +115,7 @@ function loadPosts() {
         .get().then(function (querySnapshot) {
             if (querySnapshot.empty) {
                 // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
+                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#topic-feed-container'));
             } else {
                 var posts = [];
 
@@ -128,7 +143,7 @@ function loadPosts() {
                     <div className="ui threaded comments">
                         {posts}
                     </div>,
-                    document.querySelector('#feed'));
+                    document.querySelector('#topic-feed-container'));
             }
         });
 }

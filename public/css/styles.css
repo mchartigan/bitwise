@@ -19,8 +19,22 @@ img {
     image-rendering: crisp-edges;
 }
 
+::-moz-selection {
+    background: #6435c980;
+}
+::-webkit-selection {
+    background: #6435c980;
+}
+::selection {
+    background: #6435c980;
+}
+
 .ui.basic.labels a.label:hover, a.ui.basic.label:hover {
     color: #6435c9;
+}
+
+.ui.header {
+    margin: 0em 0 0;
 }
 
 .ui.comments {
@@ -58,6 +72,11 @@ img {
 #delete-post-label {
     margin: 0 0.2em 0 0;
     padding: 0.2em 0.5em
+}
+
+#topic-label {
+    padding: 0.15em 0.75em !important;
+    min-height: 1em;
 }
 
 #create-post-button {

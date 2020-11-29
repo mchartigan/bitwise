@@ -40,23 +40,20 @@
 
     <div class="ui main text container">
         <div class="ui segment">
-            <div class="ui items">
-                <div class="item">
-                    <div class="top aligned content">
-                        <div id="follow-button-container" style="display:none;"></div>
+            <div class="item">
+                <div id="follow-button-container" style="display:none;"></div>
 
-                        <div class="ui violet huge header" id="topic-name">
-                            <p>loading...</p>
-                        </div>
-                    </div>
+                <div class="ui violet huge header" id="topic-name">
+                    <p>loading...</p>
                 </div>
+
+                <div id="num-posts"></div>
             </div>
         </div>
 
-        <div class="ui segment">
-            <div id="feed"></div>
-        </div>
+        <div class="ui segment" id="topic-feed-container"></div>
     </div>
+    <br>
 
     <script>
         // Initialize Firebase
@@ -76,7 +73,7 @@
 
     <script src="/js/header.js" type="text/babel"></script>
     <script src="/js/effects.js" type="text/babel"></script>
-    <script src="/js/post.js" type="text/babel"></script>
+    <script src="/js/post_component.js" type="text/babel"></script>
     <script src="/js/endless.js" type="text/babel"></script>
     <script src="/js/topic.js" type="text/babel"></script>
 </body>
