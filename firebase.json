@@ -17,11 +17,15 @@
     ],
     "rewrites": [ {
       "source": "/user/**",
-      "function": "user"
+      "destination": "/common/profile.html"
+    },
+    {
+      "source": "/u**",
+      "function": "profile"
     },
     {
       "source": "/topic/**",
-      "function": "topic"
+      "destination": "/common/topic.html"
     }]
   },
   "storage": {
