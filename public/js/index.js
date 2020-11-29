@@ -71,7 +71,7 @@ function loadMyTimeline(myUID) {
                     // Loop through each post to add formatted JSX element to list
                     querySnapshot.forEach(doc => {
                         // Display only followed users or topics
-                        if (followingUsers.includes(doc.data().authorUID) || followingTopics.includes(doc.data().topic)) {
+                        if ((followingUsers.includes(doc.data().authorUID) && (!doc.data().anon || (doc.data().authorUID == myUID))) || followingTopics.includes(doc.data().topic)) {
                             // Only display parent posts (no comments)
                             if (doc.data().parent == null) {
                                 var postProps = {
