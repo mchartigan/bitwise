@@ -10,6 +10,14 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
 
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
     <link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
     <script src="/dist/semantic.min.js"></script>
 
@@ -27,9 +35,23 @@
       <a href="index.html">return to bitwise home</a>
     </div>
 
+    <script>
+      // Initialize Firebase
+      var firebaseConfig = {
+          apiKey: "AIzaSyBJTDxfjl_xpPXSuiZmcriEpRj4KPPiVpg",
+          authDomain: "bitwise-a3c2d.firebaseapp.com",
+          databaseURL: "https://bitwise-a3c2d.firebaseio.com",
+          projectId: "bitwise-a3c2d",
+          storageBucket: "bitwise-a3c2d.appspot.com",
+          messagingSenderId: "1025486551841",
+          appId: "1:1025486551841:web:24f84a09e2f70631625c60",
+          measurementId: "G-9DCMV9YV2N"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+    </script>
 
     <script src="/js/header.js" type="text/babel"></script>
     <script src="/js/effects.js" type="text/babel"></script>
 </body>
-
 </html>

@@ -1,13 +1,42 @@
-const postID = window.location.href.split('/')[4];
 
-loadPost(postID, null).then(posts => {
-    // Threaded post container
-    ReactDOM.render(
-        <div className="ui threaded comments">
-            {posts}
-        </div>,
-        document.querySelector('#post-container'));
-});
+// isolate the post we are looking for
+var urlstring = window.location.href.split('/');
+var postID = null;
+
+if (urlstring.length === 5 && urlstring[3] === 'post') {
+    postID = urlstring[4];
+    // search the database for that post
+    if (postID === "null" || postID == "") {
+        window.location.replace('/404.html');
+    } else {
+        db.collection('posts')
+            .doc(postID).get()
+            .then(doc => {
+                if (doc.exists) {
+                    // continue loading that post
+                    loadPost(postID, null).then(posts => {
+                        // Threaded post container
+                        ReactDOM.render(
+                            <div className="ui threaded comments">
+                                {posts}
+                            </div>,
+                            document.querySelector('#post-container'));
+                    });
+                } else {
+                    window.location.replace('/404.html');
+                }
+            });
+    }
+} else {
+    window.location.replace('/404.html');
+}
+
+
+// this is where we would add the onauthstatechanged funtion
+// nick doesnt think we need that (whos gunna check)
+
+
+
 
 // Recursively loads a post
 function loadPost(postID, childPost) {
