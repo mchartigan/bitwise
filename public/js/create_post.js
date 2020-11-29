@@ -38,8 +38,8 @@ $('#create-post').form({
             identifier: 'topic-field',
             rules: [{
                 // Regex checks for empty string or any string of 3 or more characters
-                type: 'regExp[/^$|^.{3,}$/]',
-                prompt: 'Topics must be at least 3 characters long.'
+                type: 'regExp[/^$|^[A-Za-z0-9_-]{3,}$/]',
+                prompt: 'Topics must be at least three characters long and not contain spaces or special characters.'
             }]
         }
     },
@@ -59,6 +59,8 @@ function submitPost() {
     var topic = topicField.value;
     if (topic != '') {
         console.log('check topics');
+        // Remove spaces if there are any (regex won't detect them sometimes for some reason)
+        topic = topic.replace(/ /g, '');
         // create topic if nonexistent in database
         db.collection('topics').where('name', '==', topic).get().then(function (query) {
 
@@ -114,31 +116,55 @@ function addPost(anonymous, uid, title, body, subject) {
         savedUsers: []
     }).then(reference => {
         if (reference) {
-            if (imageField.files.length != 0) {
-                // Update storage with new image file
-                var path = `posts/${reference.id}/1.jpg`;
-                firebase.storage().ref().child(path).put(imageFile).then(function (upload) {
+            var topicCheck = new Promise(resolve => {
+                if (subject != '') {
+                    db.collection('topics').where('name', '==', subject).get().then(qS => {
+                        if (!qS.empty) {
+                            qS.forEach(topicDoc => {
+                                console.log('Added to topic:', subject);
+                                resolve();
+                                db.collection('topics').doc(topicDoc.id).update({
+                                    posts: firebase.firestore.FieldValue.arrayUnion(reference.id)
+                                });
+                            });
+                        }
+                    });
+                } else {
+                    resolve();
+                }
+            });
 
-                    // get download URL for image and attach to post
-                    return upload.ref.getDownloadURL();
-                }).then(function (downloadURL) {
+            var imageCheck = new Promise(resolve => {
+                if (imageField.files.length != 0) {
+                    // Update storage with new image file
+                    var path = `posts/${reference.id}/1.jpg`;
+                    firebase.storage().ref().child(path).put(imageFile).then(function (upload) {
 
-                    reference.set({
-                        image: downloadURL
-                    }, { merge: true });
+                        // get download URL for image and attach to post
+                        return upload.ref.getDownloadURL();
+                    }).then(function (downloadURL) {
 
-                    cancelPost(); // ----------------what is the point of calling cancel post here if it redirects to index.html anyway
+                        reference.set({
+                            image: downloadURL
+                        }, { merge: true });
 
-                    console.log('Successfully Uploaded: ', path); // DEBUG LOG
-                    location.replace("/index.html");
-                }).catch(err => {
-                    console.log('Failed to Upload: ', path); // DEBUG LOG
-                });
-            }
-            else {
-                cancelPost();     // ----------------same as above...
+                        console.log('Successfully Uploaded: ', path); // DEBUG LOG
+                        resolve();
+                    }).catch(err => {
+                        console.log('Failed to Upload: ', path); // DEBUG LOG
+                    });
+                }
+                else {
+                    resolve();
+                }
+            });
+
+            Promise.all([topicCheck, imageCheck]).then(() => {
+                cancelPost();
                 location.replace("/index.html");
-            }
+            });
+        } else {
+            console.log('Failed to add post!'); // DEBUG LOG
         }
     });
 }

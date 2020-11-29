@@ -1,13 +1,23 @@
-const topicname = window.location.href.split('/')[4];
-document.title = "#" + topicname;
 var followState = null;
+var UID = null;
 
-firebase.auth().onAuthStateChanged(function (user) {
-    UID = user ? user.uid : null;
+// check url formatting and make sure its exactly what we want
+var topicstring = window.location.href.split('/');
+var topicname = null;
 
-    $("#topic-name").text("#" + topicname);
-    loadFollowButton();
+if (topicstring.length === 5 && topicstring[3] === 'topic') {
+    topicname = topicstring[4];
+    document.title = "#" + topicname;
+    // search the database for that topic and display its posts
+    loadPage();
+} else {
+    window.location.replace('/404.html');
+}
 
+
+
+function loadPage() {
+    loadTopicHeader();
     loadPosts();
 
     if (UID) {
@@ -15,7 +25,36 @@ firebase.auth().onAuthStateChanged(function (user) {
     } else {
         $('#create-post-button').hide();
     }
+}
+
+
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+    if (topicname != null) {
+        loadPage();
+    }
 });
+
+function loadTopicHeader() {
+    $("#topic-name").text("#" + topicname);
+
+    db.collection('topics').where('name', '==', topicname).get().then(qS => {
+        if (!qS.empty) {
+            qS.forEach(topicDoc => {
+                ReactDOM.render(
+                    <div className="ui small grey header">
+                        (
+                        {topicDoc.data().posts.length + " Post"}
+                        {(topicDoc.data().posts.length - 1) ? "s" : ""}
+                        )
+                    </div>,
+                    document.querySelector('#num-posts'));
+            });
+        }
+    });
+
+    loadFollowButton();
+}
 
 function loadFollowButton() {
     if (UID == null) {
@@ -76,7 +115,7 @@ function loadPosts() {
         .get().then(function (querySnapshot) {
             if (querySnapshot.empty) {
                 // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
+                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#topic-feed-container'));
             } else {
                 var posts = [];
 
@@ -104,7 +143,7 @@ function loadPosts() {
                     <div className="ui threaded comments">
                         {posts}
                     </div>,
-                    document.querySelector('#feed'));
+                    document.querySelector('#topic-feed-container'));
             }
         });
 }
