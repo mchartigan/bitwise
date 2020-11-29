@@ -9,6 +9,9 @@ let usernameField = document.getElementById('username-field'),
     curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
 
 firebase.auth().onAuthStateChanged(function (user) {
+    $("#warning-text").hide();
+    $("#accept-delete").hide();
+    $("#deny-delete").hide();
     UID = user ? user.uid : null;
 
     if (UID) {
@@ -114,6 +117,27 @@ function countChars(obj) {
     } else {
         document.getElementById("charNum").innerHTML = strLength + '/' + maxLength + ' characters';
     }
+}
+
+function deleteWarning() {
+  //Show hidden warning buttons and hide the original button
+  $("#delete-button").hide();
+  $("#warning-text").show();
+  $("#accept-delete").show();
+  $("#deny-delete").show();
+}
+
+function deleteAccount() {
+    //Temporary Code Below. This simply logs out the user and redirects them to index
+    firebase.auth().signOut();
+    window.location.reload();
+}
+
+function deleteBackout() {
+    $("#delete-button").show();
+    $("#warning-text").hide();
+    $("#accept-delete").hide();
+    $("#deny-delete").hide();
 }
 
 $.fn.form.settings.rules.usernameExists = function (param) {

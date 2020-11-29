@@ -176,7 +176,7 @@ var uiConfig = {
                         bioText: '',
                         email: firebase.auth().currentUser.email
                     }, { merge: true }).then(() => {
-                        // Allow user to modify default account settngs
+                        // Allow user to modify default account settings
                         location.replace("/common/account.html");
                     });
                 }
