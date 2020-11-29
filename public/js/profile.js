@@ -306,7 +306,9 @@ function loadFollowedTopics(userDoc) {
                         Unfollow
                     </span>
 
-                    <a className="ui basic image medium label" href={"/topic/" + topicname}>{'#' + topicname}</a>
+                    <a className="ui violet circular label" href={"/topic/" + topicname} style={{ margin: "0.25em 0" }}>
+                        {'#' + topicname}
+                    </a>
                 </div>
             );
         });

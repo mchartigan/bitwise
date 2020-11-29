@@ -27,8 +27,7 @@ class Post extends React.Component {
         db.collection('posts').doc(this.postID).get().then((postDoc) => {
             this.authorUID = postDoc.data().authorUID;
             this.createdText = jQuery.timeago(postDoc.data().created.toDate());
-            this.topic = postDoc.data().topic;
-            this.topicText = ((this.topic != "") ? "[" + this.topic + "] " : "")
+            this.topicText = (postDoc.data().topic == "") ? null : postDoc.data().topic;
             this.titleText = postDoc.data().title ? postDoc.data().title : "";
             this.contentText = postDoc.data().content;
             this.imageURL = postDoc.data().image;
@@ -88,51 +87,6 @@ class Post extends React.Component {
                 this.setState({ retrievedPost: true });
             });
         });
-    }
-
-    saveClick = () => {
-        if (UID) {
-            if (this.state.saved) {
-                console.log("Un-Save Post:", this.postID)
-
-                // Un-save
-                db.collection('posts').doc(this.postID).update({
-                    savedUsers: firebase.firestore.FieldValue.arrayRemove(UID)
-                }).then(() => {
-                    db.collection('users').doc(UID).update({
-                        postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
-                    });
-                });
-
-                this.setState({ saved: false });
-            } else {
-                console.log("Save Post:", this.postID);
-
-                // Save
-                db.collection('posts').doc(this.postID).update({
-                    savedUsers: firebase.firestore.FieldValue.arrayUnion(UID)
-                }).then(() => {
-                    db.collection('users').doc(UID).update({
-                        postsSaved: firebase.firestore.FieldValue.arrayUnion(this.postID)
-                    });
-                });
-
-                this.setState({ saved: true });
-            }
-        }
-    }
-
-    deleteClick = () => {
-        if (this.authorUID == UID) {
-            this.setState({ confirmDelete: true });
-
-            deletePost(this.postID);
-
-            if (this.type == "comment") {
-                this.props.onDelete(this.postID);
-            }
-            this.setState({ deleted: true });
-        }
     }
 
     likeClick = (event) => {
@@ -225,6 +179,41 @@ class Post extends React.Component {
         }
     }
 
+    saveClick = (event) => {
+        // Prevent highlighting on double click
+        event.target.onselectstart = function () { return false; };
+
+        if (UID) {
+            if (this.state.saved) {
+                console.log("Un-Save Post:", this.postID)
+
+                // Un-save
+                db.collection('posts').doc(this.postID).update({
+                    savedUsers: firebase.firestore.FieldValue.arrayRemove(UID)
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsSaved: firebase.firestore.FieldValue.arrayRemove(this.postID)
+                    });
+                });
+
+                this.setState({ saved: false });
+            } else {
+                console.log("Save Post:", this.postID);
+
+                // Save
+                db.collection('posts').doc(this.postID).update({
+                    savedUsers: firebase.firestore.FieldValue.arrayUnion(UID)
+                }).then(() => {
+                    db.collection('users').doc(UID).update({
+                        postsSaved: firebase.firestore.FieldValue.arrayUnion(this.postID)
+                    });
+                });
+
+                this.setState({ saved: true });
+            }
+        }
+    }
+
     replyClick = (event) => {
         // Prevent highlighting on double click
         event.target.onselectstart = function () { return false; };
@@ -307,6 +296,19 @@ class Post extends React.Component {
         this.setState({ collapsedReplies: true });
     }
 
+    deleteClick = () => {
+        if (this.authorUID == UID) {
+            this.setState({ confirmDelete: true });
+
+            deletePost(this.postID);
+
+            if (this.type == "comment") {
+                this.props.onDelete(this.postID);
+            }
+            this.setState({ deleted: true });
+        }
+    }
+
     componentDidMount() {
         const post = this;
 
@@ -325,12 +327,6 @@ class Post extends React.Component {
                 return false;
             },
             onSuccess: function () {
-                // ********************** DEBUG ********************** \\
-                // console.log("Reply to post: ",post.postID);
-                // console.log("Text: ",replyText);
-                // console.log("Anonymous: ",anonFlag)
-                // *************************************************** \\
-
                 const replyText = $('#reply-form-' + post.instance).find('#reply-text-area').val();
                 const anonFlag = $('#reply-form-' + post.instance).find('#anonymous-reply-flag').checkbox('is checked');
                 post.addReply(post.postID, replyText, anonFlag);
@@ -363,6 +359,7 @@ class Post extends React.Component {
 
                         <div className="metadata">
                             <span className="date">{this.createdText}</span>
+                            <a className="ui violet circular label" id="topic-label" href={"/topic/" + this.topicText} style={{ display: (this.topicText ? "" : "none") }}>{"#" + this.topicText}</a>
                         </div>
 
                         <span className="actions" style={{ float: "right" }}>
@@ -373,7 +370,6 @@ class Post extends React.Component {
 
                         <div className="thread">
                             <div className="text">
-                                <a className="ui violet medium header" href={"/topic/" + this.topic}>{this.topicText}</a>
                                 <span className="ui violet medium header">{this.titleText}</span>
                                 <div>{this.contentText}</div>
                                 {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
@@ -385,7 +381,7 @@ class Post extends React.Component {
                                         {this.numLikes}
                                         &nbsp;
                                         {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
-                                        Like
+                                        {this.state.liked ? "Liked" : "Like"}
                                     </a>
                                 </span>
 
@@ -395,7 +391,7 @@ class Post extends React.Component {
                                         {this.numDislikes}
                                         &nbsp;
                                         {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
-                                        Dislike
+                                        {this.state.disliked ? "Disliked" : "Dislike"}
                                     </a>
                                 </span>
 
@@ -506,10 +502,6 @@ function addPost(anonymous, parentID, UID, topic, title, body, imageURL) {
             db.collection('posts').doc(parentID).update({
                 children: firebase.firestore.FieldValue.arrayUnion(postDocRef.id)
             }).then(() => {
-                // ********************** DEBUG ********************** \\
-                // console.log("Added Post: ", postDocRef.id);
-                // *************************************************** \\
-
                 resolve(postDocRef.id);
             });
         });

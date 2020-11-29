@@ -6,7 +6,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
     $("#topic-name").text("#" + topicname);
-    loadFollowButton();
+    loadTopicHeader();
 
     loadPosts();
 
@@ -16,6 +16,27 @@ firebase.auth().onAuthStateChanged(function (user) {
         $('#create-post-button').hide();
     }
 });
+
+function loadTopicHeader() {
+    $("#topic-name").text("#" + topicname);
+
+    db.collection('topics').where('name', '==', topicname).get().then(qS => {
+        if (!qS.empty) {
+            qS.forEach(topicDoc => {
+                ReactDOM.render(
+                    <div className="ui small grey header">
+                        (
+                        {topicDoc.data().posts.length + " Post"}
+                        {(topicDoc.data().posts.length - 1) ? "s" : ""}
+                        )
+                    </div>,
+                    document.querySelector('#num-posts'));
+            });
+        }
+    });
+
+    loadFollowButton();
+}
 
 function loadFollowButton() {
     if (UID == null) {

@@ -82,10 +82,12 @@ exports.post = functions.https.onRequest((req, res) => {
         } else {
             db.collection('posts')
                 .doc(postID).get()
-                .then(() => {
-                    res.status(200).sendFile('/public/common/post.html', { root: '../' });
-                }).catch(() => {
-                    res.status(404).sendFile('/public/404.html', { root: '../' });
+                .then(doc => {
+                    if (doc.exists) {
+                        res.status(200).sendFile('/public/common/post.html', { root: '../' });
+                    } else {
+                        res.status(404).sendFile('/public/404.html', { root: '../' });
+                    }
                 });
         }
     } else {
