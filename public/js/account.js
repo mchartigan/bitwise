@@ -129,8 +129,13 @@ function deleteWarning() {
 
 function deleteAccount() {
     //Temporary Code Below. This simply logs out the user and redirects them to index
-    firebase.auth().signOut();
-    window.location.reload();
+    var user = firebase.auth().currentUser;
+
+    user.delete().then(function() {
+        window.location.reload();
+    }).catch(function(error) {
+      // An error happened.
+    });
 }
 
 function deleteBackout() {
