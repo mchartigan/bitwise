@@ -38,8 +38,8 @@ $('#create-post').form({
             identifier: 'topic-field',
             rules: [{
                 // Regex checks for empty string or any string of 3 or more characters
-                type: 'regExp[/^$|^.{3,}$/]',
-                prompt: 'Topics must be at least 3 characters long.'
+                type: 'regExp[/^$|^[A-Za-z0-9_-]{3,}$/]',
+                prompt: 'Topics must be at least three characters long and not contain spaces or special characters.'
             }]
         }
     },
@@ -59,6 +59,8 @@ function submitPost() {
     var topic = topicField.value;
     if (topic != '') {
         console.log('check topics');
+        // Remove spaces if there are any (regex won't detect them sometimes for some reason)
+        topic = topic.replace(/ /g, '');
         // create topic if nonexistent in database
         db.collection('topics').where('name', '==', topic).get().then(function (query) {
 

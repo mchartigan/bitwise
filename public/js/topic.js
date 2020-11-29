@@ -1,19 +1,37 @@
-const topicname = window.location.href.split('/')[4];
-document.title = "#" + topicname;
 var followState = null;
+var UID = null;
 
-firebase.auth().onAuthStateChanged(function (user) {
-    UID = user ? user.uid : null;
+// check url formatting and make sure its exactly what we want
+var topicstring = window.location.href.split('/');
+var topicname = null;
 
-    $("#topic-name").text("#" + topicname);
+if (topicstring.length === 5 && topicstring[3] === 'topic') {
+    topicname = topicstring[4];
+    document.title = "#" + topicname;
+    // search the database for that topic and display its posts
+    loadPage();
+} else {
+    window.location.replace('/404.html');
+}
+
+
+
+function loadPage() {
     loadTopicHeader();
-
     loadPosts();
 
     if (UID) {
         $('#create-post-button').transition('zoom');
     } else {
         $('#create-post-button').hide();
+    }
+}
+
+
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+    if (topicname != null) {
+        loadPage();
     }
 });
 

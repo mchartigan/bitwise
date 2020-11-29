@@ -1,47 +1,81 @@
 // DOM elements
 let endlessObj = new endless();
-const pagename = window.location.href.split('/')[4];
-document.title = pagename;
 var viewUID = null;
 var followState = null;
 var following = null;
+var UID = null;
+
+// check url formatting and make sure its exactly what we want
+var urlstring = window.location.href.split('/');
+var viewname = null;
+
+if (urlstring.length === 5 && urlstring[3] === 'user') {
+    viewname = urlstring[4];
+    // search the database for that username
+    if (viewname === "null") {
+        window.location.replace('/404.html');
+    } else {
+        db.collection('users')
+            .where('username', '==', viewname).get()
+            .then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    // user not found
+                    window.location.replace('/404.html');
+
+                } else {
+                    // continue along loading the page
+                    viewUID = querySnapshot.docs[0].id;
+                    loadPage();
+                }
+            });
+    }
+} else {
+    window.location.replace('/404.html');
+}
+
+document.title = viewname;
+
+function loadPage() {
+    if (viewUID != null) {
+        db.collection('users').doc(viewUID)
+            .get().then(doc => {
+                let userDoc = doc;
+
+                loadProfile(userDoc);
+                loadFollowButton();
+
+                //following = [viewUID];
+                //endlessObj.init(following);
+
+                loadUserPosts(viewUID);
+                loadUserReplies(viewUID);
+                loadFollowedUsers(userDoc);
+                loadFollowedTopics(userDoc);
+                loadLikedPosts(userDoc);
+                loadDislikedPosts(userDoc);
+
+                if (UID) {
+                    if (UID == viewUID) {
+                        loadSavedPosts(userDoc);
+                        $("#saved-tab").show();
+                    } else {
+                        $("#saved-tab").hide();
+                    }
+
+                    $('#create-post-button').transition('zoom');
+                } else {
+                    $('#create-post-button').hide();
+                    $("#saved-tab").hide();
+                }
+            });
+    }
+}
 
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
-
-    db.collection('users')
-        .where('username', '==', pagename)
-        .get().then(querySnapshot => {
-            let userDoc = querySnapshot.docs[0];
-            viewUID = userDoc.id;
-
-            loadProfile(userDoc);
-            loadFollowButton();
-
-            //following = [viewUID];
-            //endlessObj.init(following);
-
-            loadUserPosts(viewUID);
-            loadUserReplies(viewUID);
-            loadFollowedUsers(userDoc);
-            loadFollowedTopics(userDoc);
-            loadLikedPosts(userDoc);
-            loadDislikedPosts(userDoc);
-
-            if (UID) {
-                if (UID == viewUID) {
-                    loadSavedPosts(userDoc);
-                    $("#saved-tab").show();
-                } else {
-                    $("#saved-tab").hide();
-                }
-
-                $('#create-post-button').transition('zoom');
-            } else {
-                $('#create-post-button').hide();
-                $("#saved-tab").hide();
-            }
-        });
+    if (viewUID != null) {
+        loadPage();
+    }
 });
 
 // Initialize dynamic tab groups
