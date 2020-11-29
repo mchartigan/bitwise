@@ -5,6 +5,15 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.firestore();
 
+// ############################################
+// #                                          #
+// # we arent freakin using functions anymore #
+// #                                          #
+// # keeping these as a reference in case we  #
+// #       need em again in the future        #
+// ############################################
+
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -13,8 +22,23 @@ const db = admin.firestore();
 //   response.send("Hello from Firebase!");
 // });
 
-exports.user = functions.https.onRequest((req, res) => {
+/*
+exports.profile = functions.https.onRequest((req, res) => {
+  // format requrests like bitwise.com/user?u=starmaid
+  console.log("running func profile");
+  
+  var username = req.query.u;
+  //res.location('common/profile.html');
+  res.json({u: username});
+  //res.status(200).send();
+  console.log(username);
+});
+*/
 
+/*
+exports.user = functions.https.onRequest((req, res) => {
+  // OLD USER PAGE RESPONSE CONTENT
+  // DOES NOT WORK ON PRODUCTION SERVERS
   // isolate the username we are looking for
   var urlstring = req.path.split('/');
   var username;
@@ -30,19 +54,21 @@ exports.user = functions.https.onRequest((req, res) => {
       .then(querySnapshot => {
         if (querySnapshot.empty) {
           // user not found
-          res.status(404).sendFile('/public/404.html', {root: '../'});
+          res.status(404).sendFile('./public/404.html', {root: '../'});
   
         } else {
           // querySnapshot.docs[0].id;
-          res.status(200).sendFile('/public/common/profile.html', {root: '../'});
+          res.status(200).sendFile('./public/common/profile.html', {root: '../'});
         }
       });
     }
   } else {
-    res.status(404).sendFile('/public/404.html', {root: '../'});
+    res.status(404).sendFile('./public/404.html', {root: '../'});
   }
 });
+*/
 
+/*
 exports.topic = functions.https.onRequest((req, res) => {
 
   // isolate the username we are looking for
@@ -60,15 +86,16 @@ exports.topic = functions.https.onRequest((req, res) => {
       .then(querySnapshot => {
         if (querySnapshot.empty) {
           // user not found
-          res.status(404).sendFile('/public/404.html', {root: '../'});
+          res.status(404).sendFile('./public/404.html', {root: '../'});
   
         } else {
           // querySnapshot.docs[0].id;
-          res.status(200).sendFile('/public/common/topic.html', {root: '../'});
+          res.status(200).sendFile('./public/common/topic.html', {root: '../'});
         }
       });
     }
   } else {
-    res.status(404).sendFile('/public/404.html', {root: '../'});
+    res.status(404).sendFile('./public/404.html', {root: '../'});
   }
 });
+*/
