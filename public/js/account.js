@@ -9,6 +9,9 @@ let usernameField = document.getElementById('username-field'),
     curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
 
 firebase.auth().onAuthStateChanged(function (user) {
+    $("#warning-text").hide();
+    $("#accept-delete").hide();
+    $("#deny-delete").hide();
     UID = user ? user.uid : null;
 
     if (UID) {
@@ -114,6 +117,104 @@ function countChars(obj) {
     } else {
         document.getElementById("charNum").innerHTML = strLength + '/' + maxLength + ' characters';
     }
+}
+
+function deleteWarning() {
+  //Show hidden warning buttons and hide the original button
+  $("#delete-button").hide();
+  $("#warning-text").show();
+  $("#accept-delete").show();
+  $("#deny-delete").show();
+}
+
+function deleteAccount() {
+    //Temporary Code Below. Currently only deletes the user and not any of their content and interactions
+    var user = firebase.auth().currentUser;
+
+    //Remove posts made by the user that have no parent or child
+    db.collection('posts')
+        .where('authorUID', '==', UID)
+        .where('parent', '==', null)
+        .where('children', '==', []).get().then(querySnapshot => {
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach(doc => {
+                    //Check to see if post has parent or child/children
+                    console.log('validation successful');
+                    //If not, delete the post entirely
+                    var postID = doc.id;
+
+                    // Remove post from any users with it in their liked list
+                    doc.data().likedUsers.forEach(userID => {
+                        db.collection('users').doc(userID).update({
+                            postsLiked: firebase.firestore.FieldValue.arrayRemove(postID)
+                        });
+                    });
+
+                    // Remove post from any users with it in their disliked list
+                    doc.data().dislikedUsers.forEach(userID => {
+                        db.collection('users').doc(userID).update({
+                            postsDisliked: firebase.firestore.FieldValue.arrayRemove(postID)
+                        });
+                    });
+
+                    // Remove post from any users with it in their saved list
+                    doc.data().savedUsers.forEach(userID => {
+                        db.collection('users').doc(userID).update({
+                            postsSaved: firebase.firestore.FieldValue.arrayRemove(postID)
+                        });
+                    });
+
+                    // Remove post from topic doc (currently not working for some reason)
+                    db.collection('topics').where('name', '==', doc.data().topic).get().then(qS => {
+                        if (!qS.empty) {
+                            qS.forEach(topicDoc => {
+                                db.collection('topics').doc(topicDoc.id).update({
+                                    posts: firebase.firestore.FieldValue.arrayRemove(postID)
+                                });
+                            });
+                        }
+                    });
+
+                    //Delete the post
+                    db.collection('posts').doc(postID).delete();
+                });
+            }
+    });
+
+/*     //Modify posts made by the user that have a parent and/or child
+        db.collection('posts')
+            .where('authorUID', '==', UID).get().then(querySnapshot => {
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach(doc => {
+                        console.log(doc.id);
+                        db.collection('posts').doc(doc.id).update({
+                            anon: false,
+                            content: '[removed]',
+                            image: null,
+                            title: "[Deleted User]"
+                        });
+                    });
+                }
+        }); */
+
+    //Label the user in the 'users' document as deleted
+     db.collection('users').doc(UID).update({
+         username: "[Deleted User]"
+     });
+
+    //Officially delete user from database and redirect to index
+    user.delete().then(function() {
+        window.location.reload();
+    }).catch(function(error) {
+      // An error happened.
+    });
+}
+
+function deleteBackout() {
+    $("#delete-button").show();
+    $("#warning-text").hide();
+    $("#accept-delete").hide();
+    $("#deny-delete").hide();
 }
 
 $.fn.form.settings.rules.usernameExists = function (param) {

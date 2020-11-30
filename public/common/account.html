@@ -117,7 +117,12 @@
                 </div>
 
                 <div class="ui tab segment" data-tab="options">
-                    Delete Account
+                    <div class='ui red button' id='delete-button' onclick="deleteWarning()">Delete Account</div>
+                    <label id="warning-text">WARNING: This action cannot be reverted. Are you sure you want to delete your account?</textarea>
+                    <br>
+                    <br>
+                    <div class='ui primary button' id='accept-delete' onclick="deleteAccount()">Yes</div>
+                    <div class='ui button' id='deny-delete' onclick="deleteBackout()">No</div>
                 </div>
             </div>
         </div>
