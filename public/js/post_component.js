@@ -39,14 +39,16 @@ class Post extends React.Component {
 
             this.anonymous = postDoc.data().anon;
 
-            this.profileClickable = !this.anonymous;
+            //Decides if username and profile pic are clickable
+            this.profileClickable = false;
+            //Decides if like, dislike, save, and reply parameters are clickable
+            this.interactClickable = true;
 
             let authorInfoPromise = new Promise(resolve => {
                 db.collection("users").doc(this.authorUID).get().then(userDoc => {
                     if (this.anonymous) {
                         if (this.authorUID == UID) {
                             this.profileClickable = true;
-
                             this.authorText = "Anonymous (" + userDoc.data().username + ")";
                             this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
                             this.profileLinkName = userDoc.data().username;
@@ -56,9 +58,18 @@ class Post extends React.Component {
                             this.profileLinkName = "";
                         }
                     } else {
-                        this.authorText = userDoc.data().username;
-                        this.authorImageURL = userDoc.data().profileImageURL;
-                        this.profileLinkName = userDoc.data().username;
+                        if (userDoc.data().username == "[Deleted User]") {
+                            this.interactClickable = false;
+                            this.authorText = userDoc.data().username;
+                            this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+                            this.profileLinkName = "";
+                        }
+                        else {
+                            this.profileClickable = true;
+                            this.authorText = userDoc.data().username;
+                            this.authorImageURL = userDoc.data().profileImageURL;
+                            this.profileLinkName = userDoc.data().username;
+                        }
                     }
 
                     resolve();
@@ -377,7 +388,7 @@ class Post extends React.Component {
 
                             <div className="actions">
                                 <span>
-                                    <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                    <a className="like" onClick={this.likeClick} style={{ pointerEvents: (this.interactClickable ? "" : "none") }}>
                                         {this.numLikes}
                                         &nbsp;
                                         {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
@@ -387,7 +398,7 @@ class Post extends React.Component {
 
                                 <span>
                                     &nbsp;&middot;&nbsp;
-                                    <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                    <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (this.interactClickable ? "" : "none") }}>
                                         {this.numDislikes}
                                         &nbsp;
                                         {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
@@ -395,7 +406,7 @@ class Post extends React.Component {
                                     </a>
                                 </span>
 
-                                <span style={{ display: (UID ? "" : "none") }}>
+                                <span style={{ display: (this.interactClickable ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
                                     <a className="save" onClick={this.saveClick}>
                                         {this.state.saved ? <i className="violet bookmark icon"></i> : <i className="bookmark outline icon"></i>}
@@ -403,7 +414,7 @@ class Post extends React.Component {
                                     </a>
                                 </span>
 
-                                <span style={{ display: (UID && !this.static ? "" : "none") }}>
+                                <span style={{ display: (this.interactClickable && !this.static ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
                                     <a className="reply" onClick={this.replyClick}>
                                         <i className="reply icon"></i>
