@@ -128,86 +128,121 @@ function deleteWarning() {
 }
 
 function deleteAccount() {
-    //Temporary Code Below. Currently only deletes the user and not any of their content and interactions
-    var user = firebase.auth().currentUser;
-
-    //Remove posts made by the user that have no parent or child
+    //Iterate through all posts and call an async function for each.
     db.collection('posts')
-        .where('authorUID', '==', UID)
-        .where('parent', '==', null)
-        .where('children', '==', []).get().then(querySnapshot => {
+        .where('authorUID', '==', UID).get().then(querySnapshot => {
+            //Check to see if there were any posts made by the user
             if (!querySnapshot.empty) {
-                querySnapshot.forEach(doc => {
-                    //Check to see if post has parent or child/children
-                    console.log('validation successful');
-                    //If not, delete the post entirely
-                    var postID = doc.id;
-
-                    // Remove post from any users with it in their liked list
-                    doc.data().likedUsers.forEach(userID => {
-                        db.collection('users').doc(userID).update({
-                            postsLiked: firebase.firestore.FieldValue.arrayRemove(postID)
-                        });
-                    });
-
-                    // Remove post from any users with it in their disliked list
-                    doc.data().dislikedUsers.forEach(userID => {
-                        db.collection('users').doc(userID).update({
-                            postsDisliked: firebase.firestore.FieldValue.arrayRemove(postID)
-                        });
-                    });
-
-                    // Remove post from any users with it in their saved list
-                    doc.data().savedUsers.forEach(userID => {
-                        db.collection('users').doc(userID).update({
-                            postsSaved: firebase.firestore.FieldValue.arrayRemove(postID)
-                        });
-                    });
-
-                    // Remove post from topic doc (currently not working for some reason)
-                    db.collection('topics').where('name', '==', doc.data().topic).get().then(qS => {
-                        if (!qS.empty) {
-                            qS.forEach(topicDoc => {
-                                db.collection('topics').doc(topicDoc.id).update({
-                                    posts: firebase.firestore.FieldValue.arrayRemove(postID)
-                                });
-                            });
-                        }
-                    });
-
-                    //Delete the post
-                    db.collection('posts').doc(postID).delete();
+                //Count the amount of posts made by the user
+                var totalPost = 0;
+                querySnapshot.forEach(post => {
+                    totalPost++;
+                });
+                var i = 0;
+                //Iterate through each post and call asynchronous function to delete the post
+                querySnapshot.forEach(post => {
+                    i++;
+                    callAsyncDeletePost(post.id, i, totalPost);
+                });
+            }
+            else {
+                //Delete the user document and the user themselves
+                var user = firebase.auth().currentUser;
+                //Delete the user document from the database
+                db.collection('users').doc(UID).delete();
+        
+                //Officially delete user from database and redirect to index
+                user.delete().then(function() {
+                    // Something
+                }).catch(function(error) {
+                    // An error happened.
                 });
             }
     });
+}
 
-/*     //Modify posts made by the user that have a parent and/or child
-        db.collection('posts')
-            .where('authorUID', '==', UID).get().then(querySnapshot => {
-                if (!querySnapshot.empty) {
-                    querySnapshot.forEach(doc => {
-                        console.log(doc.id);
-                        db.collection('posts').doc(doc.id).update({
-                            anon: false,
-                            content: '[removed]',
-                            image: null,
-                            title: "[Deleted User]"
-                        });
+async function callAsyncDeletePost(postId, numPost, totalPost) {
+    var x = await deletePost(postId);
+    if (numPost == totalPost) {
+        //All posts have been deleted. Now, delete the user document and the user themselves
+        var user = firebase.auth().currentUser;
+        //Delete the user document from the database
+        db.collection('users').doc(UID).delete();
+
+        //Officially delete user from database and redirect to index
+        user.delete().then(function() {
+            // Something
+        }).catch(function(error) {
+            // An error happened.
+        });
+    }
+}
+
+async function deletePost(postID) {
+    try {
+        // ********************** DEBUG ********************** \\
+        // console.log("-> Delete Post:", postID);
+        // *************************************************** \\
+
+        let doc = await db.collection("posts").doc(postID).get();
+
+        // Remove post from any users with it in their liked list
+        doc.data().likedUsers.forEach(userID => {
+            db.collection('users').doc(userID).update({
+                postsLiked: firebase.firestore.FieldValue.arrayRemove(postID)
+            });
+        });
+
+        // Remove post from any users with it in their disliked list
+        doc.data().dislikedUsers.forEach(userID => {
+            db.collection('users').doc(userID).update({
+                postsDisliked: firebase.firestore.FieldValue.arrayRemove(postID)
+            });
+        });
+
+        // Remove post from any users with it in their saved list
+        doc.data().savedUsers.forEach(userID => {
+            db.collection('users').doc(userID).update({
+                postsSaved: firebase.firestore.FieldValue.arrayRemove(postID)
+            });
+        });
+
+        // Remove post from topic doc
+        db.collection('topics').where('name', '==', doc.data().topic).get().then(qS => {
+            if (!qS.empty) {
+                qS.forEach(topicDoc => {
+                    db.collection('topics').doc(topicDoc.id).update({
+                        posts: firebase.firestore.FieldValue.arrayRemove(postID)
                     });
-                }
-        }); */
+                });
+            }
+        });
 
-    //Label the user in the 'users' document as deleted
-     db.collection('users').doc(UID).update({
-         username: "[Deleted User]"
-     });
+        return new Promise((resolve, reject) => {
+            if (doc.data().parent) {
+                // ********************** DEBUG ********************** \\
+                // console.log("-- Removed ",postID," as child from parent: ",doc.data().parent);
+                // *************************************************** \\
 
-    //Officially delete user from database and redirect to index
-    user.delete().then(function() {
-        window.location.reload();
-    }).catch(function(error) {
-      // An error happened.
-    });
+                db.collection('posts').doc(doc.data().parent).update({
+                    children: firebase.firestore.FieldValue.arrayRemove(postID)
+                });
+            }
+
+            const promises = doc.data().children.map(childID => {
+                return deletePost(childID);
+            });
+            resolve(Promise.all(promises));
+        }).then(() => {
+            // ********************** DEBUG ********************** \\
+            // console.log("<- Deleted Post:", postID);
+            // *************************************************** \\
+
+            db.collection('posts').doc(postID).delete();
+        });
+    } catch(err) {
+        return;
+    }
 }
 
 function deleteBackout() {
