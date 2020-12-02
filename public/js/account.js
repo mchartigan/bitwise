@@ -5,28 +5,19 @@ var imageFile = {}
 var curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
 
 firebase.auth().onAuthStateChanged(function (user) {
-    $("#warning-text").hide();
-    $("#accept-delete").hide();
-    $("#deny-delete").hide();
     UID = user ? user.uid : null;
-    loadPage().then(() => {
+
+    loadTheme().then(() => {
+        background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"));
         pageMounted();
-        if (UID) {
-            getUserList();
-            loadAccountInfo();
-            loadTheme();
-        } else {
-            location.replace("/index.html");
-        }
     });
 });
 
 // ========================================== Page ========================================== \\
 
-function Page(props) {
-    var accent = " " + props.accent + " ";
-    var dark = props.dark ? " inverted " : " ";
-
+function Page() {
     return (
         <div className='ui main text container'>
             <div className="ui stackable two column grid">
@@ -186,31 +177,17 @@ function Page(props) {
                     </div>
 
                     <div className={"ui" + dark + "tab segment"} data-tab="options">
-                        Delete Account
+                        <div className='ui red button' id='delete-button' onClick={deleteWarning}>Delete Account</div>
+                        <label id="warning-text">WARNING: This action cannot be reverted. Are you sure you want to delete your account?</label>
+                        <br />
+                        <br />
+                        <div className='ui red button' id='accept-delete' onClick={deleteAccount}>Yes</div>
+                        <div className='ui button' id='deny-delete' onClick={deleteBackout}>No</div>
                     </div>
                 </div>
             </div>
         </div>
     )
-}
-
-function loadPage() {
-    return new Promise(resolve => {
-        if (UID) {
-            // Load dropdown
-            db.collection("users").doc(UID).get().then(function (doc) {
-                var dark = doc.data().dark;
-                var accent = doc.data().accent;
-                background(dark, accent);
-                ReactDOM.render(<Page accent={accent} dark={dark} />, document.getElementById("page"));
-                resolve();
-            });
-        } else {
-            background(false, "violet");
-            ReactDOM.render(<Page accent="violet" dark={false} />, document.getElementById("page"));
-            resolve();
-        }
-    })
 }
 
 function getUserList() {
@@ -298,12 +275,22 @@ function cancelForm() {
     $('.ui.form').form('reset');
 }
 
-function cancelTheme() {
-    // Reset theme values with original data in firestore
-    loadTheme();
+function countChars(obj) {
+    var maxLength = 160;
+    var strLength = obj.value.length;
+    if (strLength > maxLength) {
+        document.getElementById("charNum").innerHTML = '<span style = "color: red;">' + strLength + '/' + maxLength + ' characters</span>';
+    } else {
+        document.getElementById("charNum").innerHTML = strLength + '/' + maxLength + ' characters';
+    }
 }
 
-function loadTheme() {
+function cancelTheme() {
+    // Reset theme values with original data in firestore
+    getTheme();
+}
+
+function getTheme() {
     db.collection("users").doc(UID).get().then(doc => {
         if (doc.data().dark) {
             $('#dark-value').dropdown('set selected', "dark")
@@ -324,17 +311,19 @@ function saveTheme() {
     })
 }
 
-function countChars(obj) {
-    var maxLength = 160;
-    var strLength = obj.value.length;
-    if (strLength > maxLength) {
-        document.getElementById("charNum").innerHTML = '<span style = "color: red;">' + strLength + '/' + maxLength + ' characters</span>';
-    } else {
-        document.getElementById("charNum").innerHTML = strLength + '/' + maxLength + ' characters';
-    }
-}
-
 function pageMounted() {
+    if (UID) {
+        getUserList();
+        loadAccountInfo();
+        getTheme();
+    } else {
+        location.replace("/index.html");
+    }
+
+    $("#warning-text").hide();
+    $("#accept-delete").hide();
+    $("#deny-delete").hide();
+
     // Initialize dynamic tab groups
     $('.menu .item').tab();
     // Initialize accent color dropdown menu

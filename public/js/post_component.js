@@ -23,8 +23,6 @@ class Post extends React.Component {
 
         this.repliesID = [];
         this.repliesHTML = [];
-        this.dark = " ";
-        this.accent = " grey ";
 
         db.collection('posts').doc(this.postID).get().then((postDoc) => {
             this.authorUID = postDoc.data().authorUID;
@@ -69,8 +67,6 @@ class Post extends React.Component {
             let viewerStatePromise = new Promise(resolve => {
                 if (UID) {
                     db.collection("users").doc(UID).get().then(userDoc => {
-                        this.dark = " " + userDoc.data().dark + " ";
-                        this.accent = " " + userDoc.data().accent + " ";
                         this.state.liked = userDoc.data().postsLiked.includes(this.postID);
                         this.state.disliked = userDoc.data().postsDisliked.includes(this.postID);
                         this.state.saved = userDoc.data().postsSaved.includes(this.postID);
@@ -348,7 +344,7 @@ class Post extends React.Component {
             <div className="post" id={this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
                 <div className="ui divider" style={{ display: (this.topDivider ? "" : "none") }}></div>
 
-                <div className={"ui inline centered active slow" + this.accent + "double loader"} style={{ display: (this.state.retrievedPost ? "none" : "") }}></div>
+                <div className={"ui inline centered active slow" + accent + "double loader"} style={{ display: (this.state.retrievedPost ? "none" : "") }}></div>
 
                 <div className="comment" style={{ display: (this.state.retrievedPost ? "" : "none") }}>
                     <a className="avatar" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
@@ -362,7 +358,7 @@ class Post extends React.Component {
 
                         <div className="metadata">
                             <span className="date">{this.createdText}</span>
-                            <a className={"ui" + this.accent + "circular label"} id="topic-label" href={"/topic/" + this.topicText} style={{ display: (this.topicText ? "" : "none") }}>{"#" + this.topicText}</a>
+                            <a className={"ui" + accent + "circular label"} id="topic-label" href={"/topic/" + this.topicText} style={{ display: (this.topicText ? "" : "none") }}>{"#" + this.topicText}</a>
                         </div>
 
                         <span className="actions" style={{ float: "right" }}>
@@ -373,7 +369,7 @@ class Post extends React.Component {
 
                         <div className="thread">
                             <div className="text">
-                                <span className={"ui" + this.accent + "medium header"}>{this.titleText}</span>
+                                <span className={"ui" + accent + "medium header"}>{this.titleText}</span>
                                 <div>{this.contentText}</div>
                                 {this.imageURL != null && <img className="ui image" src={this.imageURL} />}
                             </div>
@@ -401,7 +397,7 @@ class Post extends React.Component {
                                 <span style={{ display: (UID ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
                                     <a className="save" onClick={this.saveClick}>
-                                        {this.state.saved ? <i className={this.accent + "bookmark icon"}></i> : <i className="bookmark outline icon"></i>}
+                                        {this.state.saved ? <i className={accent + "bookmark icon"}></i> : <i className="bookmark outline icon"></i>}
                                         {this.state.saved ? "Saved" : "Save"}
                                     </a>
                                 </span>
@@ -467,7 +463,7 @@ class Post extends React.Component {
                             </div>
                         </div>
 
-                        <div className={"ui" + this.accent + "submit labeled icon button"}>
+                        <div className={"ui" + accent + "submit labeled icon button"}>
                             <i className="icon edit"></i> Add Reply
                     </div>
                     </form>
