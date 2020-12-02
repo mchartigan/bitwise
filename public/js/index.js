@@ -35,7 +35,7 @@ function loadAllPosts() {
                             instance: Math.floor(Math.random() * Math.pow(10, 8)),
                             type: "post",
                             topDivider: false,
-                            botDivider: true
+                            botDivider: true,
                         };
 
                         posts.push(<Post {...postProps} key={doc.id} />);

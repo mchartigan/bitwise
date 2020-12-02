@@ -1,26 +1,199 @@
 var uids = [];
 var usernames = [];
 
-let usernameField = document.getElementById('username-field'),
-    emailField = document.getElementById('email-field'),
-    bioTxtField = document.getElementById('bio-txt-field'),
-    imageFileField = document.getElementById('image-file-field'),
-    imageFile = {},
-    curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
+var imageFile = {}
+var curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
 
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
-
-    if (UID) {
-        getUserList();
-        loadAccountInfo();
-    } else {
-        location.replace("/index.html");
-    }
+    loadPage().then(() => {
+        pageMounted();
+        if (UID) {
+            getUserList();
+            loadAccountInfo();
+            loadTheme();
+        } else {
+            location.replace("/index.html");
+        }
+    });
 });
 
-// Initialize dynamic tab groups
-$('.menu .item').tab();
+// ========================================== Page ========================================== \\
+
+function Page(props) {
+    var accent = " " + props.accent + " ";
+    var dark = props.dark ? " inverted " : " ";
+
+    return (
+        <div className='ui main text container'>
+        <div className="ui grid">
+            <div className="four wide column">
+                <div className={"ui secondary" + dark + "vertical pointing fluid menu"}>
+                    <a className={accent + "item active"} data-tab="information">
+                        <i className="user icon"></i>
+                        Information
+                    </a>
+
+                    <a className={accent + "item"} data-tab="display">
+                        <i className="desktop icon"></i>
+                        Display
+                    </a>
+
+                    <a className={accent + "item"} data-tab="accessibility">
+                        <i className="universal access icon"></i>
+                        Accessibility
+                    </a>
+
+                    <a className={accent + "item"} data-tab="options">
+                        <i className="sliders horizontal icon"></i>
+                        Options
+                    </a>
+                </div>
+            </div>
+
+            <div className="twelve wide stretched column">
+                <div className={"ui" + dark + "tab segment active"} data-tab="information">
+                    <form className={'ui' + dark + 'form'} id='account-info'>
+                        <div className='field'>
+                            <label>Profile Picture</label>
+                        </div>
+
+                        <img className='ui medium bordered image' id='profile-image'
+                            src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551" />
+                        <br />
+
+                        <label className={"ui" + dark + "basic button"} htmlFor="image-file-field">
+                            <i className="file icon"></i>
+                            Upload
+                        </label>
+                        <input type="file" accept=".png, .jpg, .jpeg" id="image-file-field" style={{display: "none"}}
+                            onChange={e => uploadImage(e)} />
+                        <div className={"ui" + dark + "basic button"} onClick={removeImage}>
+                            <i className="trash icon"></i>
+                            Remove
+                        </div>
+                        <br /><br />
+
+                        <div className='field'>
+                            <label>Username</label>
+                            <input type="text" id="username-field" required />
+                        </div>
+
+                        <div className='field'>
+                            <label>Short Bio</label>
+                            <textarea rows="2" type="text" id="bio-txt-field" onKeyUp={e => countChars(e.target)}></textarea>
+                          <p id="charNum"></p>
+                        </div>
+
+                        <div className='field'>
+                            <label>Email</label>
+                            <div className="ui disabled input">
+                                <input type="text" placeholder="retrieving email..." id="email-field" />
+                            </div>
+                        </div>
+                        <br />
+
+                        <div className={'ui' + accent + 'submit button'}>Save</div>
+                        <div className={'ui' + dark + 'basic button'} onClick={cancelForm}>Cancel</div>
+                        <div className="ui error message"></div>
+                    </form>
+                </div>
+
+                <div className={"ui" + dark + "tab segment"} data-tab="display">
+                    Dark Mode
+                    <br />
+                        <div className={"ui toggle checkbox"} id="dark-value">
+                            <input type="checkbox" />
+                            <label></label>
+                        </div>
+                    <br />
+                    <br />
+                    Accent Color
+                    <br />
+                    <div className="ui selection dropdown" id="accent-value">
+                        <input type="hidden" />
+                        <i className="dropdown icon"></i>
+                        <div className="default text">Default</div>
+                        <div className ="scrollhint menu">
+                            <div className="item" data-value="red">
+                                <div className="ui red empty circular label"></div>
+                                Red
+                            </div>
+                            <div className="item" data-value="orange">
+                                <div className="ui orange empty circular label"></div>
+                                Orange
+                            </div><div className="item" data-value="yellow">
+                                <div className="ui yellow empty circular label"></div>
+                                Yellow
+                            </div>
+                            <div className="item" data-value="olive">
+                                <div className="ui olive empty circular label"></div>
+                                Olive
+                            </div><div className="item" data-value="green">
+                                <div className="ui green empty circular label"></div>
+                                Green
+                            </div>
+                            <div className="item" data-value="teal">
+                                <div className="ui teal empty circular label"></div>
+                                Teal
+                            </div><div className="item" data-value="blue">
+                                <div className="ui blue empty circular label"></div>
+                                Blue
+                            </div>
+                            <div className="item" data-value="violet">
+                                <div className="ui violet empty circular label"></div>
+                                Violet
+                            </div><div className="item" data-value="purple">
+                                <div className="ui purple empty circular label"></div>
+                                Purple
+                            </div>
+                            <div className="item" data-value="pink">
+                                <div className="ui pink empty circular label"></div>
+                                Pink
+                            </div>
+                            <div className="item" data-value="brown">
+                                <div className="ui brown empty circular label"></div>
+                                Brown
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div className={'ui' + accent + 'button'} onClick={saveTheme}>Save</div>
+                    <div className={'ui' + dark + 'basic button'} onClick={cancelTheme}>Cancel</div>
+                </div>
+
+                <div className={"ui" + dark + "tab segment"} data-tab="accessibility">
+                    Enable Accessibility Features
+                </div>
+
+                <div className={"ui" + dark + "tab segment"} data-tab="options">
+                    Delete Account
+                </div>
+            </div>
+        </div>
+    </div>
+    )
+}
+
+function loadPage() {
+    return new Promise(resolve => {
+        if (UID) {
+            // Load dropdown
+            db.collection("users").doc(UID).get().then(function (doc) {
+                var dark = doc.data().dark;
+                var accent= doc.data().accent;
+                background(dark, accent);
+                ReactDOM.render(<Page accent={accent} dark={dark}/>, document.getElementById("page"));
+                resolve();
+            });
+        } else {
+            background(false, "violet");
+            ReactDOM.render(<Page accent="violet" dark={false}/>, document.getElementById("page"));
+            resolve();
+        }
+    })
+}
 
 function getUserList() {
     db.collection('users').orderBy('username').get().then(function (querySnapshot) {
@@ -39,14 +212,14 @@ function getUserList() {
 function loadAccountInfo() {
     db.collection("users").doc(UID).get().then(function (doc) {
         // Fill out account info form with current info
-        usernameField.value = doc.data().username;
-        emailField.value = doc.data().email;
-        bioTxtField.value = doc.data().bioText;
-        curProfileImageURL = doc.data().profileImageURL;
+        $('#username-field').val(doc.data().username)
+        $('#email-field').val(doc.data().email)
+        $('#bio-txt-field').val(doc.data().bioText)
+        curProfileImageURL = doc.data().profileImageURL
         $('#profile-image').attr('src', curProfileImageURL);
     });
 
-    imageFileField.value = '';
+    $('#image-file-field').val('')
     imageFile = {};
 }
 
@@ -67,25 +240,28 @@ function removeImage() {
     curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
     $('#profile-image').attr('src', curProfileImageURL);
 
-    imageFileField.value = '';
+    $('#image-file-field').val('')
     imageFile = {};
 }
 
 function saveForm() {
     // First, remove spaces if there are any (regex won't detect them sometimes for some reason)
-    usernameField.value = usernameField.value.replace(/ /g, '');
-  
+    let usernameField = $('#username-field').val()
+    $('#username-field').val(usernameField.replace(/ /g, ''))
+
+    console.log($('#username-field').val())
+
     // Update firestore with new field values
     db.collection("users").doc(UID).update({
-        username: usernameField.value,
-        bioText: bioTxtField.value,
+        username: $('#username-field').val(),
+        bioText: $('#bio-txt-field').val(),
         profileImageURL: curProfileImageURL
     }).then(() => {
         refreshHeader();
         loadAccountInfo();
     });
 
-    if (imageFileField.files.length != 0) {
+    if ($('#image-file-field').val().length != 0) {
         // Update storage with new image file
         var path = 'usercontent/' + UID + '/profile.jpg';
 
@@ -106,6 +282,32 @@ function cancelForm() {
     $('.ui.form').form('reset');
 }
 
+function cancelTheme() {
+    // Reset theme values with original data in firestore
+    loadTheme();
+}
+
+function loadTheme() {
+    db.collection("users").doc(UID).get().then(doc => {
+        if (doc.data().dark) {
+            $('#dark-value').checkbox('check')
+        } else {
+            $('#dark-value').checkbox('uncheck')
+        }
+        $('#accent-value').dropdown('set selected', doc.data().accent)
+    })
+}
+
+function saveTheme() {
+    // Update firestore with new theme values
+    db.collection("users").doc(UID).update({
+        dark: $('#dark-value').checkbox('is checked'),
+        accent: $('#accent-value').dropdown('get value')
+    }).then(() => {
+        window.location.reload();
+    })
+}
+
 function countChars(obj) {
     var maxLength = 160;
     var strLength = obj.value.length;
@@ -116,44 +318,52 @@ function countChars(obj) {
     }
 }
 
-$.fn.form.settings.rules.usernameExists = function (param) {
-    return checkDuplicates(param);
-}
+function pageMounted() {
+    // Initialize dynamic tab groups
+    $('.menu .item').tab();
+    // Initialize accent color dropdown menu
+    $('.ui.dropdown').dropdown();
 
-// Form Validation
-$('#account-info').form({
-    on: 'blur',
-    fields: {
-        username: {
-            identifier: 'username-field',
-            rules: [{
-                //Regex checks for any alphanumeric (including underscore and hyphen) string of three or more characters
-                type: 'regExp[/^[A-Za-z0-9_-]{3,}$/]',
-                prompt: 'Username must be at least three characters long and not contain spaces or special characters.'
-            },
-            {
-                type: 'usernameExists',
-                prompt: 'This username already exists. Please choose a unique username'
-            }]
-        },
-        bio: {
-            identifier: 'bio-txt-field',
-            rules: [{
-                type: 'maxLength[160]',
-                prompt: 'Your bio must not be more than {ruleValue} characters'
-            }]
-        }
-    },
-    onFailure: function () {
-        console.log('Validation Failed')
-        return false;
-    },
-    onSuccess: function (event, fields) {
-        console.log('Validation Succeeded')
-        saveForm();
-        return false;
+    // Defines the rules for validating username
+    $.fn.form.settings.rules.usernameExists = function (param) {
+        return checkDuplicates(param);
     }
-});
+
+    // Form Validation
+    $('#account-info').form({
+        on: 'blur',
+        fields: {
+            username: {
+                identifier: 'username-field',
+                rules: [{
+                    //Regex checks for any alphanumeric (including underscore and hyphen) string of three or more characters
+                    type: 'regExp[/^[A-Za-z0-9_-]{3,}$/]',
+                    prompt: 'Username must be at least three characters long and not contain spaces or special characters.'
+                },
+                {
+                    type: 'usernameExists',
+                    prompt: 'This username already exists. Please choose a unique username'
+                }]
+            },
+            bio: {
+                identifier: 'bio-txt-field',
+                rules: [{
+                    type: 'maxLength[160]',
+                    prompt: 'Your bio must not be more than {ruleValue} characters'
+                }]
+            }
+        },
+        onFailure: function () {
+            console.log('Validation Failed')
+            return false;
+        },
+        onSuccess: function (event, fields) {
+            console.log('Validation Succeeded')
+            saveForm();
+            return false;
+        }
+    });
+}
 
 function checkDuplicates(param) {
     var i;
