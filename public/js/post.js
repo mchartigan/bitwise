@@ -3,44 +3,14 @@
 var urlstring = window.location.href.split('/');
 var postID = null;
 
-if (urlstring.length === 5 && urlstring[3] === 'post') {
-    postID = urlstring[4];
-    // search the database for that post
-    if (postID === "null" || postID == "") {
-        window.location.replace('/404.html');
-    } else {
-        db.collection('posts')
-            .doc(postID).get()
-            .then(doc => {
-                if (doc.exists) {
-                    // continue loading that post
-                    loadPost(postID, null).then(posts => {
-                        // Threaded post container
-                        ReactDOM.render(
-                            <div className="ui threaded comments">
-                                {posts}
-                            </div>,
-                            document.querySelector('#post-container'));
-                    });
-                } else {
-                    window.location.replace('/404.html');
-                }
-            });
-    }
-} else {
-    window.location.replace('/404.html');
-}
-
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
-    loadPost(postID, null).then(posts => {
-        // Threaded post container
-        ReactDOM.render(
-            <div className="ui threaded comments">
-                {posts}
-            </div>,
-            document.querySelector('#post-container'));
+    loadTheme().then(() => {
+        background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"));
+        pageMounted();
     });
 });
 
@@ -83,4 +53,43 @@ function loadPost(postID, childPost) {
             }
         });
     });
+}
+
+function Page() {
+    return (
+        <div className="ui main text container">
+            <div className={"ui" + dark + "segment"} id="post-container"></div>
+            <br/>
+        </div>
+    )
+}
+
+function pageMounted() {
+    if (urlstring.length === 5 && urlstring[3] === 'post') {
+        postID = urlstring[4];
+        // search the database for that post
+        if (postID === "null" || postID == "") {
+            window.location.replace('/404.html');
+        } else {
+            db.collection('posts')
+                .doc(postID).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        // continue loading that post
+                        loadPost(postID, null).then(posts => {
+                            // Threaded post container
+                            ReactDOM.render(
+                                <div className={"ui" + dark + "threaded comments"}>
+                                    {posts}
+                                </div>,
+                                document.querySelector('#post-container'));
+                        });
+                    } else {
+                        window.location.replace('/404.html');
+                    }
+                });
+        }
+    } else {
+        window.location.replace('/404.html');
+    }
 }

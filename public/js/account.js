@@ -7,12 +7,16 @@ var curProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
-    loadPage().then(() => {
+    loadTheme().then(() => {
+        console.log(dark);
+        background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"));
         pageMounted();
         if (UID) {
             getUserList();
             loadAccountInfo();
-            loadTheme();
+            getTheme();
         } else {
             location.replace("/index.html");
         }
@@ -21,10 +25,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 
 // ========================================== Page ========================================== \\
 
-function Page(props) {
-    var accent = " " + props.accent + " ";
-    var dark = props.dark ? " inverted " : " ";
-
+function Page() {
     return (
         <div className='ui main text container'>
             <div className="ui stackable two column grid">
@@ -169,36 +170,17 @@ function Page(props) {
                 </div>
 
                     <div className={"ui" + dark + "tab segment"} data-tab="options">
-                        <div class='ui red button' id='delete-button' onClick={deleteWarning}>Delete Account</div>
+                        <div className='ui red button' id='delete-button' onClick={deleteWarning}>Delete Account</div>
                         <label id="warning-text">WARNING: This action cannot be reverted. Are you sure you want to delete your account?</label>
                         <br />
                         <br />
-                        <div class='ui red button' id='accept-delete' onclick={deleteAccount}>Yes</div>
-                        <div class='ui button' id='deny-delete' onClick={deleteBackout}>No</div>
+                        <div className='ui red button' id='accept-delete' onClick={deleteAccount}>Yes</div>
+                        <div className='ui button' id='deny-delete' onClick={deleteBackout}>No</div>
                     </div>
                 </div>
             </div>
         </div>
     )
-}
-
-function loadPage() {
-    return new Promise(resolve => {
-        if (UID) {
-            // Load dropdown
-            db.collection("users").doc(UID).get().then(function (doc) {
-                var dark = doc.data().dark;
-                var accent = doc.data().accent;
-                background(dark, accent);
-                ReactDOM.render(<Page accent={accent} dark={dark} />, document.getElementById("page"));
-                resolve();
-            });
-        } else {
-            background(false, "violet");
-            ReactDOM.render(<Page accent="violet" dark={false} />, document.getElementById("page"));
-            resolve();
-        }
-    })
 }
 
 function getUserList() {
@@ -298,10 +280,10 @@ function countChars(obj) {
 
 function cancelTheme() {
     // Reset theme values with original data in firestore
-    loadTheme();
+    getTheme();
 }
 
-function loadTheme() {
+function getTheme() {
     db.collection("users").doc(UID).get().then(doc => {
         if (doc.data().dark) {
             $('#dark-value').checkbox('check')
