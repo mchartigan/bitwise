@@ -81,7 +81,91 @@ img {
 
 #create-post-button {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 2rem;
+    right: 2rem;
     z-index: 1;
+}
+
+@media only screen and (max-width: 62em) {
+    body {
+        font-size: 3rem;
+    }
+
+    .ui.menu {
+        font-size: 3rem;
+    }
+
+    .ui.dropdown, .ui.dropdown .menu>.item {
+        font-size: 3rem;
+    }
+
+    .ui.segment, .ui.segments .segment {
+        font-size: 3rem;
+    }
+
+    .ui.small.image, .ui.small.images .image, .ui.small.images img, .ui.small.images svg {
+        width: 100%;
+    }
+
+    .ui.medium.image, .ui.medium.images .image, .ui.medium.images img, .ui.medium.images svg {
+        font-size: 3rem;
+    }
+
+    .ui.label, .ui.labels .label {
+        font-size: 2.57142858rem;
+    }
+
+    .ui.ui.ui.container:not(.fluid) {
+        width: 96%;
+    }
+
+    .ui.text.container {
+        max-width: 100%;
+    }
+
+    .ui.comments {
+        font-size: 3rem;
+    }
+
+    .ui.form, .ui.form .field .dropdown, .ui.form .field .dropdown .menu>.item {
+        font-size: 3rem;
+    }
+
+    .ui.button, .ui.buttons .button, .ui.buttons .or {
+        font-size: 3rem;
+    }
+
+    #topic-label {
+        font-size: 2.57142858rem;
+    }
+
+    #delete-post-label {
+        font-size: 2.57142858rem;
+    }
+
+    #create-post-button {
+        font-size: 4rem;
+    }
+
+    .ui.grid>.stackable.stackable.stackable.row>.column,
+    .ui.stackable.grid>.column.grid>.column,
+    .ui.stackable.grid>.column.row>.column,
+    .ui.stackable.grid>.column:not(.row),
+    .ui.stackable.grid>.row>.column,
+    .ui.stackable.grid>.row>.wide.column,
+    .ui.stackable.grid>.wide.column {
+        width: 100%!important;
+    }
+
+    .ui.loader {
+        width: 6.85714287rem;
+        height: 6.85714287rem;
+        font-size: 3rem;
+    }
+    
+    .ui.loader:after, .ui.loader:before {
+        width: 6.85714287rem;
+        height: 6.85714287rem;
+        margin: 0 0 0 -3.42857143rem;
+    }
 }

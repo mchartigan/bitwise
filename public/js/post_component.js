@@ -437,7 +437,6 @@ class Post extends React.Component {
                                         onClick={(event) => {
                                             event.target.onselectstart = function () { return false; };
                                             this.setState({ confirmDelete: true });
-                                            setTimeout(() => { this.setState({ confirmDelete: false }); }, 3000);
                                         }}>
                                         <i className="trash alternate outline icon" ></i>
                                     </a>
