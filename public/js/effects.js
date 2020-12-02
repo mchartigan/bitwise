@@ -20,6 +20,7 @@ function background(dark, accent) {
     var match = /rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(,\s*\d+[\.\d+]*)*\)/g.exec(bgColor)
     var background = "rgba(" + [match[1], match[2], match[3], 0.25].join(',') + ")";
     ReactDOM.unmountComponentAtNode(document.getElementById("background"))
+    
     var font_size = 10;
     var delay = 100;
 
