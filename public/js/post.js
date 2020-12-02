@@ -9,7 +9,6 @@ firebase.auth().onAuthStateChanged(function (user) {
     loadTheme().then(() => {
         background();
         refreshHeader();
-        ReactDOM.render(<Page />, document.getElementById("page"));
         pageMounted();
     });
 });
@@ -65,6 +64,7 @@ function Page() {
 }
 
 function pageMounted() {
+    ReactDOM.render(<Page />, document.getElementById("page"));
     if (urlstring.length === 5 && urlstring[3] === 'post') {
         postID = urlstring[4];
         // search the database for that post

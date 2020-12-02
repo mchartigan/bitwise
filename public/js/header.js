@@ -95,6 +95,15 @@ function loadTheme() {
     })
 }
 
+function CreatePostButton() {
+    return (
+        <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html"
+            style={{ display: "none"}}>
+            <i className="plus icon"></i>
+        </a>
+    )
+}
+
 function scrambleLoad(el, message, delay, cycles) {
     const loadedPromise = new Promise((resolve) => {
         var codeLetters = "!&#*+%?£@§$";
