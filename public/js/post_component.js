@@ -375,7 +375,7 @@ class Post extends React.Component {
                             <div className="text">
                                 <span className={"ui" + this.accent + "medium header"}>{this.titleText}</span>
                                 <div>{this.contentText}</div>
-                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
+                                {this.imageURL != null && <img className="ui image" src={this.imageURL} />}
                             </div>
 
                             <div className="actions">

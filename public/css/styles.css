@@ -103,7 +103,7 @@ img {
         font-size: 3rem;
     }
 
-    .ui.small.image, .ui.small.images .image, .ui.small.images img, .ui.small.images svg {
+    img.ui.image {
         width: 100%;
     }
 
