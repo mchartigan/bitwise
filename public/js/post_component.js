@@ -48,7 +48,6 @@ class Post extends React.Component {
                     if (this.anonymous) {
                         if (this.authorUID == UID) {
                             this.profileClickable = true;
-
                             this.authorText = "Anonymous (" + userDoc.data().username + ")";
                             this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
                             this.profileLinkName = userDoc.data().username;
@@ -442,7 +441,6 @@ class Post extends React.Component {
                                         onClick={(event) => {
                                             event.target.onselectstart = function () { return false; };
                                             this.setState({ confirmDelete: true });
-                                            setTimeout(() => { this.setState({ confirmDelete: false }); }, 3000);
                                         }}>
                                         <i className="trash alternate outline icon" ></i>
                                     </a>

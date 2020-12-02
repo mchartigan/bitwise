@@ -31,12 +31,18 @@ if (urlstring.length === 5 && urlstring[3] === 'post') {
     window.location.replace('/404.html');
 }
 
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
 
-// this is where we would add the onauthstatechanged funtion
-// nick doesnt think we need that (whos gunna check)
-
-
-
+    loadPost(postID, null).then(posts => {
+        // Threaded post container
+        ReactDOM.render(
+            <div className="ui threaded comments">
+                {posts}
+            </div>,
+            document.querySelector('#post-container'));
+    });
+});
 
 // Recursively loads a post
 function loadPost(postID, childPost) {

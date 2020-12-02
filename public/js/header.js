@@ -12,7 +12,6 @@ function Header(props) {
     var accent = " " + props.accent + " ";
     var dark = props.dark ? " inverted " : " ";
     return (
-        <div>
             <div className={"ui fixed" + accent + "inverted compact grid menu"}>
                 <a className="item" href="/index.html">
                     <img className="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5"></img>
@@ -52,7 +51,6 @@ function Header(props) {
 
                 <div id="login-modal"></div>
             </div>
-        </div>
     )
 }
 
@@ -182,11 +180,15 @@ var uiConfig = {
                         username: firebase.auth().currentUser.displayName,
                         bioText: '',
                         email: firebase.auth().currentUser.email,
+                        followingTopics: [],
+                        followingUsers: [],
+                        postsDisliked: [],
+                        postsLiked: [],
+                        postsSaved: [],
                         dark: false,
                         accent: "violet"
-
                     }, { merge: true }).then(() => {
-                        // Allow user to modify default account settngs
+                        // Allow user to modify default account settings
                         location.replace("/common/account.html");
                     });
                 }
