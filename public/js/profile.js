@@ -8,7 +8,6 @@ var urlstring = window.location.href.split('/');
 var viewname = null;
 
 function pageMounted() {
-    ReactDOM.render(<CreatePostButton />, document.getElementById("create-post-button"));
     if (urlstring.length === 5 && urlstring[3] === 'user') {
         viewname = urlstring[4];
         // search the database for that username
@@ -83,94 +82,99 @@ firebase.auth().onAuthStateChanged(function (user) {
 
 function Page() {
     return (
-        <div className="ui main text container">
-            <div className={"ui" + dark + "segment"}>
-                <div className="ui stackable two column grid">
-                    <div className="four wide column">
-                        <img className="ui small image" id="profile-picture"
-                            src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"></img>
-                    </div>
+        <div>
+            <div className="ui main text container">
+                <div className={"ui" + dark + "segment"}>
+                    <div className="ui stackable two column grid">
+                        <div className="four wide column">
+                            <img className="ui small image" id="profile-picture"
+                                src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"></img>
+                        </div>
 
-                    <div className="twelve wide column">
-                        <div className={"ui" + dark + "items"}>
-                            <div className="item">
-                                <div className="top aligned content">
-                                    <div id="follow-button-container" style={{display: "none"}}></div>
+                        <div className="twelve wide column">
+                            <div className={"ui" + dark + "items"}>
+                                <div className="item">
+                                    <div className="top aligned content">
+                                        <div id="follow-button-container" style={{display: "none"}}></div>
 
-                                    <div className="ui huge header" id="profile-username">
-                                        <p>loading...</p>
-                                    </div>
+                                        <div className="ui huge header" id="profile-username">
+                                            <p>loading...</p>
+                                        </div>
 
-                                    <div className="meta">
-                                        <span>Bio:</span>
-                                    </div>
+                                        <div className="meta">
+                                            <span>Bio:</span>
+                                        </div>
 
-                                    <div className="bio" id="profile-bio">
-                                        <p>loading...</p>
+                                        <div className="bio" id="profile-bio">
+                                            <p>loading...</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div className={"ui" + dark + "top attached tabular menu"}>
+                    <a className={accent + dark + "item active"} data-tab="overview">Overview</a>
+                    <a className={accent + dark + "item"} data-tab="following">Following</a>
+                    <a className={accent + dark + "item"} data-tab="interactions">Interactions</a>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab segment active"} data-tab="overview">
+                    <div className={"ui secondary" + dark + "pointing tabular menu"}>
+                        <a className={accent + dark +"item active"} data-tab="posts">Posts</a>
+                        <a className={accent + dark + "item"} data-tab="replies">Replies</a>
+                    </div>
+
+                    <div className={"ui" + dark + "bottom attached tab active"} data-tab="posts" id="posts-container">
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                    </div>
+
+                    <div className={"ui" + dark + "bottom attached tab"} data-tab="replies" id="replies-container">
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                    </div>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab segment"} data-tab="following">
+                    <div className={"ui secondary" + dark + "pointing tabular menu"}>
+                        <a className={accent + dark + "item active"} data-tab="users">Users</a>
+                        <a className={accent + dark + "item"} data-tab="topics">Topics</a>
+                    </div>
+
+                    <div className={"ui" + dark + "bottom attached tab active"} data-tab="users" id="followed-users-container">
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                    </div>
+
+                    <div className={"ui" + dark + "bottom attached tab"} data-tab="topics" id="followed-topics-container">
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                    </div>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab segment"} data-tab="interactions">
+                    <div className={"ui secondary" + dark + "pointing tabular menu"}>
+                        <a className="green item active" data-tab="liked">Liked</a>
+                        <a className="red item" data-tab="disliked">Disliked</a>
+                        <a className={accent + dark + "item"} id="saved-tab" data-tab="saved" style={{display: "none"}}>Saved</a>
+                    </div>
+
+                    <div className={"ui" + dark + "bottom attached tab active"} data-tab="liked" id="liked-posts-container">
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                    </div>
+
+                    <div className={"ui" + dark + "bottom attached tab"} data-tab="disliked" id="disliked-posts-container">
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                    </div>
+
+                    <div className={"ui" + dark + "bottom attached tab"} data-tab="saved" id="saved-posts-container">
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                    </div>
+                </div>
+                <br />
             </div>
-
-            <div className={"ui" + dark + "top attached tabular menu"}>
-                <a className={accent + dark + "item active"} data-tab="overview">Overview</a>
-                <a className={accent + dark + "item"} data-tab="following">Following</a>
-                <a className={accent + dark + "item"} data-tab="interactions">Interactions</a>
-            </div>
-
-            <div className={"ui" + dark + "bottom attached tab segment active"} data-tab="overview">
-                <div className={"ui secondary" + dark + "pointing tabular menu"}>
-                    <a className={accent + dark +"item active"} data-tab="posts">Posts</a>
-                    <a className={accent + dark + "item"} data-tab="replies">Replies</a>
-                </div>
-
-                <div className={"ui" + dark + "bottom attached tab active"} data-tab="posts" id="posts-container">
-                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
-                </div>
-
-                <div className={"ui" + dark + "bottom attached tab"} data-tab="replies" id="replies-container">
-                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
-                </div>
-            </div>
-
-            <div className={"ui" + dark + "bottom attached tab segment"} data-tab="following">
-                <div className={"ui secondary" + dark + "pointing tabular menu"}>
-                    <a className={accent + dark + "item active"} data-tab="users">Users</a>
-                    <a className={accent + dark + "item"} data-tab="topics">Topics</a>
-                </div>
-
-                <div className={"ui" + dark + "bottom attached tab active"} data-tab="users" id="followed-users-container">
-                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
-                </div>
-
-                <div className={"ui" + dark + "bottom attached tab"} data-tab="topics" id="followed-topics-container">
-                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
-                </div>
-            </div>
-
-            <div className={"ui" + dark + "bottom attached tab segment"} data-tab="interactions">
-                <div className={"ui secondary" + dark + "pointing tabular menu"}>
-                    <a className="green item active" data-tab="liked">Liked</a>
-                    <a className="red item" data-tab="disliked">Disliked</a>
-                    <a className={accent + dark + "item"} id="saved-tab" data-tab="saved" style={{display: "none"}}>Saved</a>
-                </div>
-
-                <div className={"ui" + dark + "bottom attached tab active"} data-tab="liked" id="liked-posts-container">
-                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
-                </div>
-
-                <div className={"ui" + dark + "bottom attached tab"} data-tab="disliked" id="disliked-posts-container">
-                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
-                </div>
-
-                <div className={"ui" + dark + "bottom attached tab"} data-tab="saved" id="saved-posts-container">
-                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
-                </div>
-            </div>
-            <br />
+            <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html">
+            <i className="plus icon"></i>
+            </a>
         </div>
     )
 }
