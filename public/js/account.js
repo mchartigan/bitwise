@@ -252,8 +252,6 @@ function saveForm() {
     let usernameField = $('#username-field').val()
     $('#username-field').val(usernameField.replace(/ /g, ''))
 
-    console.log($('#username-field').val())
-
     // Update firestore with new field values
     db.collection("users").doc(UID).update({
         username: $('#username-field').val(),
