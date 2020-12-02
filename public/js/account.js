@@ -169,12 +169,12 @@ function Page(props) {
                 </div>
 
                     <div className={"ui" + dark + "tab segment"} data-tab="options">
-                        <div class='ui red button' id='delete-button' onClick={deleteWarning}>Delete Account</div>
+                        <div className='ui red button' id='delete-button' onClick={deleteWarning}>Delete Account</div>
                         <label id="warning-text">WARNING: This action cannot be reverted. Are you sure you want to delete your account?</label>
                         <br />
                         <br />
-                        <div class='ui red button' id='accept-delete' onclick={deleteAccount}>Yes</div>
-                        <div class='ui button' id='deny-delete' onClick={deleteBackout}>No</div>
+                        <div className='ui red button' id='accept-delete' onClick={deleteAccount}>Yes</div>
+                        <div className='ui button' id='deny-delete' onClick={deleteBackout}>No</div>
                     </div>
                 </div>
             </div>
