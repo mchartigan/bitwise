@@ -30,8 +30,18 @@ function loadPage() {
 
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
+
+    loadTheme().then(() => {
+        background();
+        refreshHeader();
+        //ReactDOM.render(<Page />, document.getElementById("page"));
+        //pageMounted();
+    });
+
     if (topicname != null) {
         loadPage();
+    } else {
+        window.location.replace('/404.html');
     }
 });
 

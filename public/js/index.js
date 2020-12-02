@@ -1,6 +1,13 @@
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
+    loadTheme().then(() => {
+        background();
+        refreshHeader();
+        //ReactDOM.render(<Page />, document.getElementById("page"));
+        //pageMounted();
+    });
+
     loadAllPosts();
 
     if (UID) {

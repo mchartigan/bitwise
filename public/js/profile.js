@@ -9,6 +9,14 @@ var UID = null;
 var urlstring = window.location.href.split('/');
 var viewname = null;
 
+loadTheme().then(() => {
+    console.log("meme")
+    background();
+    refreshHeader();
+    //ReactDOM.render(<Page />, document.getElementById("page"));
+    //pageMounted();
+});
+
 if (urlstring.length === 5 && urlstring[3] === 'user') {
     viewname = urlstring[4];
     // search the database for that username
@@ -73,6 +81,7 @@ function loadPage() {
 
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
+
     if (viewUID != null) {
         loadPage();
     }

@@ -8,18 +8,10 @@ firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
     loadTheme().then(() => {
-        console.log(dark);
         background();
         refreshHeader();
         ReactDOM.render(<Page />, document.getElementById("page"));
         pageMounted();
-        if (UID) {
-            getUserList();
-            loadAccountInfo();
-            getTheme();
-        } else {
-            location.replace("/index.html");
-        }
     });
 });
 
@@ -305,6 +297,14 @@ function saveTheme() {
 }
 
 function pageMounted() {
+    if (UID) {
+        getUserList();
+        loadAccountInfo();
+        getTheme();
+    } else {
+        location.replace("/index.html");
+    }
+    
     $("#warning-text").hide();
     $("#accept-delete").hide();
     $("#deny-delete").hide();
