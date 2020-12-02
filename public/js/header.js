@@ -1,16 +1,10 @@
 var UID = null;
-
-firebase.auth().onAuthStateChanged(function (user) {
-    UID = user ? user.uid : null;
-
-    refreshHeader();
-});
+var dark = " ";
+var accent = " violet ";
 
 // ========================================== Header ========================================== \\
 
-function Header(props) {
-    var accent = " " + props.accent + " ";
-    var dark = props.dark ? " inverted " : " ";
+function Header() {
     return (
             <div className={"ui fixed" + accent + "inverted compact grid menu"}>
                 <a className="item" href="/index.html">
@@ -58,7 +52,7 @@ function refreshHeader() {
     if (UID) {
         // Load dropdown
         db.collection("users").doc(UID).get().then(function (doc) {
-            ReactDOM.render(<Header accent={doc.data().accent} dark={doc.data().dark}/>, document.getElementById("header"));
+            ReactDOM.render(<Header />, document.getElementById("header"));
             scrambleLoad($("#site-logo-text"), "Bitwise", 80, 10);
             $("#login-button").hide();
             $("#user-dropdown").show();
@@ -73,7 +67,7 @@ function refreshHeader() {
             ReactDOM.render(<Login />, document.querySelector("#login-modal"));
         });
     } else {
-        ReactDOM.render(<Header accent="violet" dark={false}/>, document.getElementById("header"));
+        ReactDOM.render(<Header />, document.getElementById("header"));
         scrambleLoad($("#site-logo-text"), "Bitwise", 80, 10);
         $("#login-button").show();
         $("#user-dropdown").hide();
@@ -82,6 +76,32 @@ function refreshHeader() {
         // Load login modal
         ReactDOM.render(<Login />, document.querySelector("#login-modal"));
     }
+}
+
+function loadTheme() {
+    return new Promise(resolve => {
+        if (UID) {
+            // Load dropdown
+            db.collection("users").doc(UID).get().then(function (doc) {
+                dark = doc.data().dark ? " inverted " : " ";
+                accent = " " + doc.data().accent + " ";
+                resolve();
+            });
+        } else {
+            dark = " ";
+            accent = " violet ";
+            resolve();
+        }
+    })
+}
+
+function CreatePostButton() {
+    return (
+        <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html"
+            style={{ display: "none"}}>
+            <i className="plus icon"></i>
+        </a>
+    )
 }
 
 function scrambleLoad(el, message, delay, cycles) {

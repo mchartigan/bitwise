@@ -1,39 +1,43 @@
 // DOM elements
-let endlessObj = new endless();
 var viewUID = null;
 var followState = null;
 var following = null;
-var UID = null;
 
 // check url formatting and make sure its exactly what we want
 var urlstring = window.location.href.split('/');
 var viewname = null;
 
-if (urlstring.length === 5 && urlstring[3] === 'user') {
-    viewname = urlstring[4];
-    // search the database for that username
-    if (viewname === "null") {
-        window.location.replace('/404.html');
+function pageMounted() {
+    ReactDOM.render(<CreatePostButton />, document.getElementById("create-post-button"));
+    if (urlstring.length === 5 && urlstring[3] === 'user') {
+        viewname = urlstring[4];
+        // search the database for that username
+        if (viewname === "null") {
+            window.location.replace('/404.html');
+        } else {
+            db.collection('users')
+                .where('username', '==', viewname).get()
+                .then(querySnapshot => {
+                    if (querySnapshot.empty) {
+                        // user not found
+                        window.location.replace('/404.html');
+
+                    } else {
+                        // continue along loading the page
+                        viewUID = querySnapshot.docs[0].id;
+                        loadPage();
+                    }
+                });
+        }
     } else {
-        db.collection('users')
-            .where('username', '==', viewname).get()
-            .then(querySnapshot => {
-                if (querySnapshot.empty) {
-                    // user not found
-                    window.location.replace('/404.html');
-
-                } else {
-                    // continue along loading the page
-                    viewUID = querySnapshot.docs[0].id;
-                    loadPage();
-                }
-            });
+        window.location.replace('/404.html');
     }
-} else {
-    window.location.replace('/404.html');
-}
 
-document.title = viewname;
+    document.title = viewname;
+
+    // Initialize dynamic tab groups
+    $('.menu .item').tab();
+}
 
 function loadPage() {
     if (viewUID != null) {
@@ -43,10 +47,6 @@ function loadPage() {
 
                 loadProfile(userDoc);
                 loadFollowButton();
-
-                //following = [viewUID];
-                //endlessObj.init(following);
-
                 loadUserPosts(viewUID);
                 loadUserReplies(viewUID);
                 loadFollowedUsers(userDoc);
@@ -73,13 +73,107 @@ function loadPage() {
 
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
-    if (viewUID != null) {
-        loadPage();
-    }
+
+        loadTheme().then(() => {
+            background();
+            refreshHeader();
+            ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
+        });
 });
 
-// Initialize dynamic tab groups
-$('.menu .item').tab();
+function Page() {
+    return (
+        <div className="ui main text container">
+            <div className={"ui" + dark + "segment"}>
+                <div className="ui stackable two column grid">
+                    <div className="four wide column">
+                        <img className="ui small image" id="profile-picture"
+                            src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"></img>
+                    </div>
+
+                    <div className="twelve wide column">
+                        <div className={"ui" + dark + "items"}>
+                            <div className="item">
+                                <div className="top aligned content">
+                                    <div id="follow-button-container" style={{display: "none"}}></div>
+
+                                    <div className="ui huge header" id="profile-username">
+                                        <p>loading...</p>
+                                    </div>
+
+                                    <div className="meta">
+                                        <span>Bio:</span>
+                                    </div>
+
+                                    <div className="bio" id="profile-bio">
+                                        <p>loading...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={"ui" + dark + "top attached tabular menu"}>
+                <a className={accent + dark + "item active"} data-tab="overview">Overview</a>
+                <a className={accent + dark + "item"} data-tab="following">Following</a>
+                <a className={accent + dark + "item"} data-tab="interactions">Interactions</a>
+            </div>
+
+            <div className={"ui" + dark + "bottom attached tab segment active"} data-tab="overview">
+                <div className={"ui secondary" + dark + "pointing tabular menu"}>
+                    <a className={accent + dark +"item active"} data-tab="posts">Posts</a>
+                    <a className={accent + dark + "item"} data-tab="replies">Replies</a>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab active"} data-tab="posts" id="posts-container">
+                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab"} data-tab="replies" id="replies-container">
+                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                </div>
+            </div>
+
+            <div className={"ui" + dark + "bottom attached tab segment"} data-tab="following">
+                <div className={"ui secondary" + dark + "pointing tabular menu"}>
+                    <a className={accent + dark + "item active"} data-tab="users">Users</a>
+                    <a className={accent + dark + "item"} data-tab="topics">Topics</a>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab active"} data-tab="users" id="followed-users-container">
+                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab"} data-tab="topics" id="followed-topics-container">
+                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                </div>
+            </div>
+
+            <div className={"ui" + dark + "bottom attached tab segment"} data-tab="interactions">
+                <div className={"ui secondary" + dark + "pointing tabular menu"}>
+                    <a className="green item active" data-tab="liked">Liked</a>
+                    <a className="red item" data-tab="disliked">Disliked</a>
+                    <a className={accent + dark + "item"} id="saved-tab" data-tab="saved" style={{display: "none"}}>Saved</a>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab active"} data-tab="liked" id="liked-posts-container">
+                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab"} data-tab="disliked" id="disliked-posts-container">
+                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                </div>
+
+                <div className={"ui" + dark + "bottom attached tab"} data-tab="saved" id="saved-posts-container">
+                    <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                </div>
+            </div>
+            <br />
+        </div>
+    )
+}
 
 function loadProfile(userDoc) {
     $('#profile-picture').attr('src', userDoc.data().profileImageURL);
@@ -100,7 +194,7 @@ function loadFollowButton() {
                 // they are currently following
                 followState = true;
                 ReactDOM.render(
-                    <div className="ui violet right floated button" onClick={changeFollowState}>
+                    <div className={"ui" + accent + "right floated button"} onClick={changeFollowState}>
                         <i className="user minus icon"></i>
                         Unfollow
                     </div>,
@@ -108,7 +202,7 @@ function loadFollowButton() {
             } else {
                 followState = false;
                 ReactDOM.render(
-                    <div className="ui basic violet right floated button" onClick={changeFollowState}>
+                    <div className={"ui basic" + accent + "right floated button"} onClick={changeFollowState}>
                         <i className="user plus icon"></i>
                         Follow
                     </div>,
@@ -213,9 +307,8 @@ function loadUserPosts(viewUID) {
 
                 // Threaded post container
                 ReactDOM.render(
-                    <div className="ui threaded comments">
+                    <div className={"ui" + dark + "threaded comments"}>
                         {posts}
-                        <div className="ui inline centered active slow violet double loader"></div>
                     </div>,
                     document.querySelector('#posts-container'));
             }
@@ -252,9 +345,8 @@ function loadUserReplies(viewUID) {
 
                 // Threaded post container
                 ReactDOM.render(
-                    <div className="ui threaded comments">
-                        {posts}
-                        <div className="ui inline centered active slow violet double loader"></div>
+                    <div className={"ui" + dark + "threaded comments"}>
+                    {posts}
                     </div>,
                     document.querySelector('#replies-container'));
             }
@@ -279,7 +371,7 @@ function loadFollowedUsers(userDoc) {
 
                     users.push(
                         <div className="item" key={userID}>
-                            <span className="ui compact basic violet right floated button" style={{ display: (UID == viewUID ? "" : "none") }}
+                            <span className={"ui compact basic" + accent + "right floated button"} style={{ display: (UID == viewUID ? "" : "none") }}
                                 onClick={() => {
                                     if (UID == viewUID) {
                                         db.collection('users').doc(UID).update({
@@ -293,7 +385,7 @@ function loadFollowedUsers(userDoc) {
                                 Unfollow
                             </span>
 
-                            <a className="ui basic image medium label" href={"/user/" + usernamehere}>
+                            <a className={"ui basic" + dark + "image medium label"} href={"/user/" + usernamehere}>
                                 <img src={profileImageURL}></img>
                                 {usernamehere}
                             </a>
@@ -307,7 +399,7 @@ function loadFollowedUsers(userDoc) {
 
         Promise.all(promises).then(() => {
             ReactDOM.render(
-                <div className="ui relaxed divided list">
+                <div className={"ui relaxed" + dark + "divided list"}>
                     {users}
                 </div>,
                 document.querySelector('#followed-users-container'));
@@ -326,7 +418,7 @@ function loadFollowedTopics(userDoc) {
         userDoc.data().followingTopics.slice().reverse().forEach(topicname => {
             topics.push(
                 <div className="item" key={topicname}>
-                    <span className="ui compact basic violet right floated button" style={{ display: (UID == viewUID ? "" : "none") }}
+                    <span className={"ui compact basic" + accent + "right floated button"} style={{ display: (UID == viewUID ? "" : "none") }}
                         onClick={() => {
                             if (UID == viewUID) {
                                 db.collection('users').doc(UID).update({
@@ -340,7 +432,7 @@ function loadFollowedTopics(userDoc) {
                         Unfollow
                     </span>
 
-                    <a className="ui violet circular label" href={"/topic/" + topicname} style={{ margin: "0.25em 0" }}>
+                    <a className={"ui" + accent + "circular label"} href={"/topic/" + topicname} style={{ margin: "0.25em 0" }}>
                         {'#' + topicname}
                     </a>
                 </div>
@@ -349,7 +441,7 @@ function loadFollowedTopics(userDoc) {
 
         // Followed topics container
         ReactDOM.render(
-            <div className="ui relaxed divided list">
+            <div className={"ui relaxed" + dark + "divided list"}>
                 {topics}
             </div>,
             document.querySelector('#followed-topics-container'));
@@ -378,7 +470,7 @@ function loadSavedPosts(userDoc) {
 
         // Saved posts container
         ReactDOM.render(
-            <div className="ui threaded comments">
+            <div className={"ui" + dark + "threaded comments"}>
                 {posts}
             </div>,
             document.querySelector('#saved-posts-container'));
@@ -407,7 +499,7 @@ function loadLikedPosts(userDoc) {
 
         // Liked posts container
         ReactDOM.render(
-            <div className="ui threaded comments">
+            <div className={"ui" + dark + "threaded comments"}>
                 {posts}
             </div>,
             document.querySelector('#liked-posts-container'));
@@ -436,7 +528,7 @@ function loadDislikedPosts(userDoc) {
 
         // Disliked posts container
         ReactDOM.render(
-            <div className="ui threaded comments">
+            <div className={"ui" + dark + "threaded comments"}>
                 {posts}
             </div>,
             document.querySelector('#disliked-posts-container'));

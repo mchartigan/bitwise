@@ -1,10 +1,8 @@
 // ========================================== Matrix Effect ========================================== \\
-function background(dark, accent) {
+function background() {
     // Canvas element
     var c = document.getElementById("background");
     var ctx = c.getContext("2d");
-    var accent = " " + accent + " ";
-    var dark = dark ? " inverted " : " ";
 
     var matrix = "bitwse@#$%^&*()*&^%+-/~{[|`]}";
     matrix = matrix.split("");
