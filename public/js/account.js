@@ -25,23 +25,23 @@ function Page() {
                     <div className={"ui secondary" + dark + "vertical pointing fluid menu"}>
                         <a className={accent + "item active"} data-tab="information">
                             <i className="user icon"></i>
-                        Information
-                    </a>
+                            Information
+                        </a>
 
                         <a className={accent + "item"} data-tab="display">
                             <i className="desktop icon"></i>
-                        Display
-                    </a>
+                            Display
+                        </a>
 
                         <a className={accent + "item"} data-tab="accessibility">
                             <i className="universal access icon"></i>
-                        Accessibility
-                    </a>
+                            Accessibility
+                        </a>
 
                         <a className={accent + "item"} data-tab="options">
                             <i className="sliders horizontal icon"></i>
-                        Options
-                    </a>
+                            Options
+                        </a>
                     </div>
                 </div>
 
@@ -58,14 +58,14 @@ function Page() {
 
                             <label className={"ui" + dark + "basic button"} htmlFor="image-file-field">
                                 <i className="file icon"></i>
-                            Upload
-                        </label>
+                                Upload
+                            </label>
                             <input type="file" accept=".png, .jpg, .jpeg" id="image-file-field" style={{ display: "none" }}
                                 onChange={e => uploadImage(e)} />
                             <div className={"ui" + dark + "basic button"} onClick={removeImage}>
                                 <i className="trash icon"></i>
-                            Remove
-                        </div>
+                                Remove
+                            </div>
                             <br /><br />
 
                             <div className='field'>
@@ -111,44 +111,48 @@ function Page() {
                             <div className="scrollhint menu">
                                 <div className="item" data-value="red">
                                     <div className="ui red empty circular label"></div>
-                                Red
-                            </div>
+                                    Red
+                                </div>
                                 <div className="item" data-value="orange">
                                     <div className="ui orange empty circular label"></div>
-                                Orange
-                            </div><div className="item" data-value="yellow">
+                                    Orange
+                                </div>
+                                <div className="item" data-value="yellow">
                                     <div className="ui yellow empty circular label"></div>
-                                Yellow
-                            </div>
+                                    Yellow
+                                </div>
                                 <div className="item" data-value="olive">
                                     <div className="ui olive empty circular label"></div>
-                                Olive
-                            </div><div className="item" data-value="green">
+                                    Olive
+                                </div>
+                                <div className="item" data-value="green">
                                     <div className="ui green empty circular label"></div>
-                                Green
-                            </div>
+                                    Green
+                                </div>
                                 <div className="item" data-value="teal">
                                     <div className="ui teal empty circular label"></div>
-                                Teal
-                            </div><div className="item" data-value="blue">
+                                    Teal
+                                </div>
+                                <div className="item" data-value="blue">
                                     <div className="ui blue empty circular label"></div>
-                                Blue
-                            </div>
+                                    Blue
+                                </div>
                                 <div className="item" data-value="violet">
                                     <div className="ui violet empty circular label"></div>
-                                Violet
-                            </div><div className="item" data-value="purple">
+                                    Violet
+                                </div>
+                                <div className="item" data-value="purple">
                                     <div className="ui purple empty circular label"></div>
-                                Purple
-                            </div>
+                                    Purple
+                                </div>
                                 <div className="item" data-value="pink">
                                     <div className="ui pink empty circular label"></div>
-                                Pink
-                            </div>
+                                    Pink
+                                </div>
                                 <div className="item" data-value="brown">
                                     <div className="ui brown empty circular label"></div>
-                                Brown
-                            </div>
+                                    Brown
+                                </div>
                             </div>
                         </div>
                         <br />
@@ -159,7 +163,7 @@ function Page() {
 
                     <div className={"ui" + dark + "tab segment"} data-tab="accessibility">
                         Enable Accessibility Features
-                </div>
+                    </div>
 
                     <div className={"ui" + dark + "tab segment"} data-tab="options">
                         <div className='ui red button' id='delete-button' onClick={deleteWarning}>Delete Account</div>
@@ -304,7 +308,7 @@ function pageMounted() {
     } else {
         location.replace("/index.html");
     }
-    
+
     $("#warning-text").hide();
     $("#accept-delete").hide();
     $("#deny-delete").hide();
