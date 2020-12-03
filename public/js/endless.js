@@ -5,112 +5,171 @@
 
 class endless {
     constructor() {
-        this.hasMore = true; // have more contents to load?
-        this.proceed = true; // is another page currently loading?
-        this.first = true; // is this the first loading cycle?
+        this.allPosts = false;
+        this.repliesOnly = false;
+        this.users = [];
+        this.topics = [];
+        this.first = true;
+        this.loaded = false;
+        this.done = false;
         this.prevDoc = null;
-        this.following = null;
-        this.query = null;
         this.posts = [];
     }
-    
-    init(filters, isTopic=false) {
-        this.filters = filters;
-        this.query = [];
 
-        var numQueries = Math.ceil(filters.length / 10);
-
-        for (var i = 0; i < numQueries; i++) {
-            if (!isTopic) {
-                this.query[i] = db.collection('posts')
-                .where('authorUID', 'in', filters.slice(i*10, (i+1)*10))
-                .orderBy('created', 'desc');
-            } else {
-                this.query[i] = db.collection('posts')
-                .where('topic', 'in', filters.slice(i*10, (i+1)*10))
-                .orderBy('created', 'desc');
-            }
-            
+    init(containerName, UID, users, topics, repliesOnly=false) {
+        // if both are empty, then this will display a timeline
+        // if either has any values, then it will only show those posts
+        if (users.length == 0 && topics.length == 0) {
+            this.allPosts = true;
+        } else {
+            this.users = users;
+            this.topics = topics;
         }
 
-        //window.addEventListener("scroll", function () {});
-        window.addEventListener("scroll", function () {
-            var screen = window.innerHeight + document.body.scrollTop;
-            var scroll = document.body.scrollHeight - 100;
-            //console.log(screen + " " + scroll);
-            if (screen >= scroll) {
-                endlessObj.loadPosts();
-            }
-        })
-        // INITIAL LOAD CONTENTS
+        this.containerName = containerName;
+        this.UID = UID;
+        this.repliesOnly = repliesOnly;
+
+        this.qu = db.collection('posts')
+            .orderBy('created', 'desc').limit(15);
+
         this.loadPosts();
     }
 
-    refresh() {
-        // not used
-        this.first = true;
-        this.hasMore = true;
-        this.prevDoc = null;
-        this.loadPosts;
-    }
-
-    processQuery(querySnapshot) {
-        if (this.first && querySnapshot.empty) {
-            // Display error message
-            ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#feed'));
-            // theres no more posts
-            this.hasMore = false;
-            this.first = false;
-        } else {
-            // Loop through each post to add formatted JSX element to list
-            querySnapshot.forEach(doc => {
-                // Only display parent posts (no comments)
-                if (doc.data().parent == null) {
-
-                    if (!doc.data().anon || doc.data().authorUID == UID) {
-                        const postProps = {
-                            postID: doc.id,
-                            type: "post"
-                        };
-    
-                        this.posts.push(<Post {...postProps} key={doc.id}/>);
-                        this.prevDoc = doc;
-                        this.proceed = true;
-                        this.first = false;
-                    }
-                }
-            });
-            // Threaded post container
-            ReactDOM.render(<div className="ui threaded comments">
-                                {this.posts}
-                            </div>,
-                            document.querySelector('#all-posts-container'));
-
-            
+    trigger() {
+        var screen = window.innerHeight + document.body.scrollTop;
+        var scroll = document.body.scrollHeight - 100;
+        if (screen >= scroll) {
+            if (this.loaded) {
+                this.loadPosts();
+            }
         }
     }
 
     loadPosts() {
-        // BLOCK MORE LOADING UNTIL THIS PAGE IS DONE
-        if (this.proceed && this.hasMore) {
-            this.proceed = false;
+        var query;
+        this.loaded = false;
+        if (this.first) {
+            // load posts with no offset
+            query = this.qu;
 
-            // pull posts
-            if (this.first) {
-                // load some posts to start the query offset
-                this.query.forEach(q => {
-                    q.limit(30)
-                    .get().then(querySnapshot => this.processQuery(querySnapshot));
-                })
-            }
+        } else {
+            // load posts with a specific offset
+            query = this.qu.startAfter(this.prevDoc);
+        }
 
+        var tLength = this.topics.length;
+        var uLength = this.users.length;
 
-            if (!this.first && this.hasMore) {
-                this.query.forEach(q => {
-                    q.startAfter(this.prevDoc).limit(2)
-                    .get().then(querySnapshot => this.processQuery(querySnapshot));
-                })
-            }
+        if ((uLength == 0) && (tLength > 0 && tLength < 10)) {
+            query = query.where('topic', 'in', this.topics);
+        }
+
+        if ((tLength == 0) && (uLength > 0 && uLength < 10)) {
+            query = query.where('authorUID', 'in', this.users);
+        }
+
+        
+
+        if (!this.done) {
+            query.get().then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    if (this.first) {
+                        ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector(this.containerName));
+                    }
+                    this.done = true;
+                    ReactDOM.render(
+                            <div className="ui threaded comments">
+                            {this.posts}
+                            <div className="ui message">No more posts!</div>
+                            </div>,
+                        document.querySelector(this.containerName));
+                } else {
+                    var newposts = [];
+                    var lastdoc;
+
+                    querySnapshot.forEach(doc => {
+                        // Display only followed users or topics
+                        var topic = doc.data().topic;
+                        var author = doc.data().authorUID;
+                        var anon = doc.data().anon;
+                        lastdoc = doc;
+
+                        if (this.allPosts
+                            || this.topics.includes(topic)
+                            || (this.users.includes(author) && !anon)
+                            || author == this.UID) {
+
+                            // Only display parent posts (no comments)
+                            if (!this.repliesOnly) {
+                                if (doc.data().parent == null) {
+                                    var postProps = {
+                                        postID: doc.id,
+                                        instance: Math.floor(Math.random() * Math.pow(10, 8)),
+                                        type: "post",
+                                        topDivider: false,
+                                        botDivider: true,
+                                        key: doc.id
+                                    };
+                                    this.posts.push(<Post {...postProps} key={doc.id} />);
+                                }
+                            } else {
+                                if (doc.data().parent != null) {
+                                    if (!doc.data().anon || doc.data().authorUID == UID) {
+                                        var postProps = {
+                                            postID: doc.id,
+                                            instance: Math.floor(Math.random() * Math.pow(10, 8)),
+                                            type: "post",
+                                            topDivider: false,
+                                            botDivider: true,
+                                            key: doc.id
+                                        };
+            
+                                        this.posts.push(<Post {...postProps} key={doc.id} />);
+                                    }
+                                }
+                            }
+                            
+                        }
+                    });
+
+                    this.prevDoc = lastdoc;
+                    ReactDOM.render(
+                        <div className="ui threaded comments">
+                        {this.posts.slice(0,-1)}
+                        {this.posts.slice(-1)}
+                        <div className="ui inline centered active slow violet double loader"></div>
+                        </div>,
+                        document.querySelector(this.containerName));
+                    
+                    // clean up the loading spinner if theres
+                    // no more posts on that first load
+                    if (this.first) {
+                        this.first = false;
+                        this.loadPosts();
+                    }
+                }
+                this.loaded = true;
+            })
         }
     }
 };
+
+
+        /*
+        $('#main').visibility({
+            //onBottomVisible: function() {
+            //    console.log("container " + this.containerName);
+            //}
+            offset: 50,
+            observeChanges: true,
+            componentDidUpdate: function() {
+                $('#main').visibility('refresh');
+                console.log("CDI");
+            },
+            onBottomVisible: this.loadPosts(),
+            onPassed: {
+                '20%': console.log("20 percent")
+            }
+        })
+        */

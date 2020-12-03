@@ -1,3 +1,4 @@
+var topicposts;
 var followState = null;
 var UID = null;
 
@@ -7,7 +8,13 @@ var topicname = null;
 
 function loadPage() {
     loadTopicHeader();
-    loadPosts();
+    //loadPosts();
+
+    topicposts = new endless();
+    window.addEventListener("scroll", function () {
+        topicposts.trigger();
+    })
+    topicposts.init("#topic-feed-container", UID, [], [topicname]);
 
     if (UID) {
         $('#create-post-button').transition('zoom');
@@ -130,44 +137,3 @@ function changeFollowState() {
         loadFollowButton();
     });
 }
-
-// Loads all of the logged in users posts
-function loadPosts() {
-    db.collection('posts')
-        .orderBy('created', 'desc')
-        .where('topic', '==', topicname)
-        .get().then(function (querySnapshot) {
-            if (querySnapshot.empty) {
-                // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#topic-feed-container'));
-            } else {
-                var posts = [];
-
-                // Loop through each post to add formatted JSX element to list
-                let index = 0;
-                querySnapshot.forEach(doc => {
-                    // Only display parent posts (no comments)
-                    if (doc.data().parent == null) {
-                        var postProps = {
-                            postID: doc.id,
-                            instance: Math.floor(Math.random() * Math.pow(10, 8)),
-                            type: "post",
-                            topDivider: false,
-                            botDivider: (index != (querySnapshot.size - 1))
-                        };
-
-                        posts.push(<Post {...postProps} key={doc.id} />);
-                    }
-
-                    index++;
-                });
-
-                // Threaded post container
-                ReactDOM.render(
-                    <div className={"ui" + dark + "threaded comments"}>
-                        {posts}
-                    </div>,
-                    document.querySelector('#topic-feed-container'));
-            }
-        });
-    }
