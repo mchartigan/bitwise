@@ -66,10 +66,7 @@ function loadPage() {
                     } else {
                         $("#saved-tab").hide();
                     }
-
-                    $('#create-post-button').transition('zoom');
                 } else {
-                    $('#create-post-button').hide();
                     $("#saved-tab").hide();
                 }
             });
@@ -179,7 +176,7 @@ function Page() {
                 <br />
             </div>
             <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html">
-            <i className="plus icon"></i>
+                <i className="plus icon"></i>
             </a>
         </div>
     )

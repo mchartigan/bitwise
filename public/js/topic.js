@@ -15,12 +15,6 @@ function loadPage() {
         topicposts.trigger();
     })
     topicposts.init("#topic-feed-container", UID, [], [topicname]);
-
-    if (UID) {
-        $('#create-post-button').transition('zoom');
-    } else {
-        $('#create-post-button').hide();
-    }
 }
 
 firebase.auth().onAuthStateChanged(function (user) {
@@ -51,6 +45,9 @@ function Page() {
 
                 <div className={"ui" + dark + "segment"} id="topic-feed-container"></div>
             </div>
+            <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html">
+                <i className="plus icon"></i>
+            </a>
         </div>
     )
 }

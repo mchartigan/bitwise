@@ -79,9 +79,9 @@ class endless {
                     }
                     this.done = true;
                     ReactDOM.render(
-                            <div className="ui threaded comments">
+                            <div className={"ui" + dark + "threaded comments"}>
                             {this.posts}
-                            <div className="ui message">No more posts!</div>
+                            <div className={"ui" + accent + "message"}>No more posts!</div>
                             </div>,
                         document.querySelector(this.containerName));
                 } else {
@@ -135,10 +135,10 @@ class endless {
 
                     this.prevDoc = lastdoc;
                     ReactDOM.render(
-                        <div className="ui threaded comments">
+                        <div className={"ui" + dark + "threaded comments"}>
                         {this.posts.slice(0,-1)}
                         {this.posts.slice(-1)}
-                        <div className="ui inline centered active slow violet double loader"></div>
+                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
                         </div>,
                         document.querySelector(this.containerName));
                     
@@ -154,22 +154,3 @@ class endless {
         }
     }
 };
-
-
-        /*
-        $('#main').visibility({
-            //onBottomVisible: function() {
-            //    console.log("container " + this.containerName);
-            //}
-            offset: 50,
-            observeChanges: true,
-            componentDidUpdate: function() {
-                $('#main').visibility('refresh');
-                console.log("CDI");
-            },
-            onBottomVisible: this.loadPosts(),
-            onPassed: {
-                '20%': console.log("20 percent")
-            }
-        })
-        */
