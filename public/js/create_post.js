@@ -401,14 +401,6 @@ class PostForm extends React.Component {
     }
 
     render() {
-        var dataStyle = {
-            fontSize: '12px'
-        }
-        var labelStyle = {
-            fontWeight: 'bold',
-            fontSize: '14px'
-        }
-
         return (
             <div className='ui main text container'>
                 <div className={"ui" + dark + "segment"}>
