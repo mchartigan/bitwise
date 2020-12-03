@@ -6,45 +6,45 @@ var accent = " violet ";
 
 function Header() {
     return (
-            <div className={"ui fixed" + accent + "inverted compact grid menu"}>
-                <a className="item" href="/index.html">
-                    <img className="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5"></img>
+        <div className={"ui fixed" + accent + "inverted compact grid menu"}>
+            <a className="item" href="/index.html">
+                <img className="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5"></img>
                     &nbsp;&nbsp;
                     <div id="site-logo-text"></div>
-                </a>
+            </a>
 
-                <a className="right item" id="login-button">
-                    <div id="login-button-text"></div>
-                </a>
+            <a className="right item" id="login-button">
+                <div id="login-button-text"></div>
+            </a>
 
-                <div className={"ui simple" + dark + "dropdown right item"} id="user-dropdown" style={{ display: "none" }}>
-                    <img id="profile-icon"></img>
+            <div className={"ui simple" + dark + "dropdown right item"} id="user-dropdown" style={{ display: "none" }}>
+                <img id="profile-icon"></img>
                     &nbsp;&nbsp;
                     <div id="account-dropdown-text"></div>
 
-                    <i className="dropdown icon"></i>
-                    <div className="menu">
-                        <a className="item" href="/user/" id="user-own-profile">
-                            <i className={accent + "user circle icon"}></i>
+                <i className="dropdown icon"></i>
+                <div className="menu">
+                    <a className="item" href="/user/" id="user-own-profile">
+                        <i className={accent + "user circle icon"}></i>
                             Profile
                         </a>
 
-                        <a className="item" href="/common/account.html">
-                            <i className={accent + "cogs icon"}></i>
+                    <a className="item" href="/common/account.html">
+                        <i className={accent + "cogs icon"}></i>
                             Settings
                         </a>
 
-                        <a className="item" onClick={completeSignOut}>
-                            <i className="red sign out alternate icon"></i>
-                            <span className="ui small red header">
-                                Sign Out
+                    <a className="item" onClick={completeSignOut}>
+                        <i className="red sign out alternate icon"></i>
+                        <span className="ui small red header">
+                            Sign Out
                             </span>
-                        </a>
-                    </div>
+                    </a>
                 </div>
-
-                <div id="login-modal"></div>
             </div>
+
+            <div id="login-modal"></div>
+        </div>
     )
 }
 
@@ -64,7 +64,7 @@ function refreshHeader() {
                 $('#profile-icon').transition('swing left in', '1000ms');
             });
             // Load login modal
-            ReactDOM.render(<Login />, document.querySelector("#login-modal"));
+            ReactDOM.render(<Login key={Math.floor(Math.random() * Math.pow(10, 8))} />, document.querySelector("#login-modal"));
         });
     } else {
         ReactDOM.render(<Header />, document.getElementById("header"));
@@ -74,7 +74,7 @@ function refreshHeader() {
 
         scrambleLoad($("#login-button-text"), "Log In", 80, 10);
         // Load login modal
-        ReactDOM.render(<Login />, document.querySelector("#login-modal"));
+        ReactDOM.render(<Login key={Math.floor(Math.random() * Math.pow(10, 8))} />, document.querySelector("#login-modal"));
     }
 }
 
@@ -183,7 +183,6 @@ var uiConfig = {
             db.collection("users").doc(UID).get().then(function (doc) {
                 if (doc.data()) {
                     // Hide popup
-
                 } else {
                     // Set default account information
                     db.collection("users").doc(UID).set({
@@ -248,11 +247,8 @@ class Login extends React.Component {
     }
 }
 
-function completeLoginModal() {
-    ReactDOM.render(<Login />, document.querySelector("#login-modal"));
-}
-
 function completeSignOut() {
     firebase.auth().signOut();
-    window.location.reload();
+    //window.location.reload();
+    ReactDOM.render(<Login key={Math.floor(Math.random() * Math.pow(10, 8))} />, document.querySelector("#login-modal"));
 }
