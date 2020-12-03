@@ -11,6 +11,16 @@ var replyline;
 var urlstring = window.location.href.split('/');
 var viewname = null;
 
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+
+    loadTheme().then(() => {
+        bg = new Background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
+    });
+});
+
 function pageMounted() {
     if (urlstring.length === 5 && urlstring[3] === 'user') {
         viewname = urlstring[4];
@@ -67,7 +77,7 @@ function loadPage() {
                     } else {
                         $("#saved-tab").hide();
                     }
-                    
+
                     $('#create-post-button').transition('zoom');
                 } else {
                     $('#create-post-button').hide();
@@ -76,16 +86,6 @@ function loadPage() {
             });
     }
 }
-
-firebase.auth().onAuthStateChanged(function (user) {
-    UID = user ? user.uid : null;
-
-    loadTheme().then(() => {
-        background();
-        refreshHeader();
-        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
-    });
-});
 
 function Page() {
     return (

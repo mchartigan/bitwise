@@ -7,7 +7,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
     loadTheme().then(() => {
-        background();
+        bg = new Background();
         refreshHeader();
         pageMounted();
     });
@@ -58,7 +58,7 @@ function Page() {
     return (
         <div className="ui main text container">
             <div className={"ui" + dark + "segment"} id="post-container"></div>
-            <br/>
+            <br />
         </div>
     )
 }

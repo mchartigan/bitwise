@@ -9,7 +9,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
     loadTheme().then(() => {
-        background();
+        bg = new Background();
         refreshHeader();
         ReactDOM.render(<PostForm />, document.querySelector('#post-form'));
     });

@@ -6,6 +6,16 @@ var UID = null;
 var topicstring = window.location.href.split('/');
 var topicname = null;
 
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+
+    loadTheme().then(() => {
+        bg = new Background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
+    });
+});
+
 function loadPage() {
     loadTopicHeader();
     //loadPosts();
@@ -15,23 +25,13 @@ function loadPage() {
         topicposts.trigger();
     })
     topicposts.init("#topic-feed-container", UID, [], [topicname]);
-    
-    if (UID) {	
-        $('#create-post-button').transition('zoom');	
-    } else {	
-        $('#create-post-button').hide();	
+
+    if (UID) {
+        $('#create-post-button').transition('zoom');
+    } else {
+        $('#create-post-button').hide();
     }
 }
-
-firebase.auth().onAuthStateChanged(function (user) {
-    UID = user ? user.uid : null;
-
-    loadTheme().then(() => {
-        background();
-        refreshHeader();
-        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
-    });
-});
 
 function Page() {
     return (
@@ -39,7 +39,7 @@ function Page() {
             <div className="ui main text container">
                 <div className={"ui" + dark + "segment"}>
                     <div className={accent + "item"}>
-                        <div id="follow-button-container" style={{display: "none"}}></div>
+                        <div id="follow-button-container" style={{ display: "none" }}></div>
 
                         <div className={"ui" + accent + "huge header"} id="topic-name">
                             <p>loading...</p>

@@ -3,6 +3,11 @@ var bg = null;
 // ========================================== Matrix Effect ========================================== \\
 class Background {
     constructor() {
+        // Clear existing backgrounds
+        if (bg) {
+            bg.stop();
+        }
+
         // Canvas element
         this.c = document.getElementById("background");
         this.ctx = this.c.getContext("2d");
