@@ -36,6 +36,12 @@ class Post extends React.Component {
             this.contentText = postDoc.data().content;
             this.imageURL = postDoc.data().image;
 
+            if (Object.keys(postDoc.data()).includes("alt")) {
+                this.altText = postDoc.data().alt;
+            } else {
+                this.altText = "Image posted without alt text";
+            }
+
             this.repliesID = postDoc.data().children;
 
             this.numLikes = postDoc.data().likedUsers.length;
@@ -95,10 +101,14 @@ class Post extends React.Component {
     likeClick = (event) => {
         // Prevent highlighting on double click
         event.target.onselectstart = function () { return false; };
+        
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
 
         if (UID) {
             if (this.state.liked) {
-                console.log("Un-Like Post:", this.postID);
+                //console.log("Un-Like Post:", this.postID);
 
                 // Un-like
                 db.collection('posts').doc(this.postID).update({
@@ -113,7 +123,7 @@ class Post extends React.Component {
 
                 this.setState({ liked: false });
             } else {
-                console.log("Like Post:", this.postID);
+                //console.log("Like Post:", this.postID);
 
                 // Like
                 db.collection('posts').doc(this.postID).update({
@@ -141,9 +151,13 @@ class Post extends React.Component {
         // Prevent highlighting on double click
         event.target.onselectstart = function () { return false; };
 
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+
         if (UID) {
             if (this.state.disliked) {
-                console.log("Un-Dislike Post:", this.postID);
+                //console.log("Un-Dislike Post:", this.postID);
 
                 // Un-dislike
                 db.collection('posts').doc(this.postID).update({
@@ -158,7 +172,7 @@ class Post extends React.Component {
 
                 this.setState({ disliked: false });
             } else {
-                console.log("Dislike Post:", this.postID);
+                //console.log("Dislike Post:", this.postID);
 
                 // Dislike
                 db.collection('posts').doc(this.postID).update({
@@ -186,9 +200,13 @@ class Post extends React.Component {
         // Prevent highlighting on double click
         event.target.onselectstart = function () { return false; };
 
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+
         if (UID) {
             if (this.state.saved) {
-                console.log("Un-Save Post:", this.postID)
+                //console.log("Un-Save Post:", this.postID)
 
                 // Un-save
                 db.collection('posts').doc(this.postID).update({
@@ -201,7 +219,7 @@ class Post extends React.Component {
 
                 this.setState({ saved: false });
             } else {
-                console.log("Save Post:", this.postID);
+                //console.log("Save Post:", this.postID);
 
                 // Save
                 db.collection('posts').doc(this.postID).update({
@@ -220,6 +238,10 @@ class Post extends React.Component {
     replyClick = (event) => {
         // Prevent highlighting on double click
         event.target.onselectstart = function () { return false; };
+
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
 
         // Remove form error messages
         $('.ui.reply.form').form('reset');
@@ -281,6 +303,10 @@ class Post extends React.Component {
         // Prevent highlighting on double click
         event.target.onselectstart = function () { return false; };
 
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+
         if (!this.state.retrievedReplies) {
             this.updateReplies();
             this.setState({
@@ -296,10 +322,20 @@ class Post extends React.Component {
         // Prevent highlighting on double click
         event.target.onselectstart = function () { return false; };
 
+        // Accept pressing "enter" if keypress
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+
         this.setState({ collapsedReplies: true });
     }
 
     deleteClick = () => {
+        // Accept pressing "enter" if keypress
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+
         if (this.authorUID == UID) {
             this.setState({ confirmDelete: true });
 
@@ -352,7 +388,7 @@ class Post extends React.Component {
 
                 <div className="comment" style={{ display: (this.state.retrievedPost ? "" : "none") }}>
                     <a className="avatar" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
-                        <img src={this.authorImageURL}></img>
+                        <img src={this.authorImageURL} alt="avatar link to profile"></img>
                     </a>
 
                     <div className="content">
@@ -375,12 +411,13 @@ class Post extends React.Component {
                             <div className="text">
                                 <span className={"ui" + accent + "medium header"}>{this.titleText}</span>
                                 <div dangerouslySetInnerHTML={{__html: marked(this.contentText)}}/>
-                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
+                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} alt={this.altText}/>}
                             </div>
 
                             <div className="actions">
                                 <span>
-                                    <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                    <a className="like" onClick={this.likeClick} style={{ pointerEvents: (UID ? "" : "none") }} 
+                                        onKeyDown={this.likeClick} tabIndex="0">
                                         {this.numLikes}
                                         &nbsp;
                                         {this.state.liked ? <i className="green thumbs up icon"></i> : <i className="thumbs up outline icon"></i>}
@@ -390,7 +427,8 @@ class Post extends React.Component {
 
                                 <span>
                                     &nbsp;&middot;&nbsp;
-                                    <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }}>
+                                    <a className="dislike" onClick={this.dislikeClick} style={{ pointerEvents: (UID ? "" : "none") }} 
+                                        onKeyDown={this.dislikeClick} tabIndex="0">
                                         {this.numDislikes}
                                         &nbsp;
                                         {this.state.disliked ? <i className="red thumbs down icon"></i> : <i className="thumbs down outline icon"></i>}
@@ -400,7 +438,7 @@ class Post extends React.Component {
 
                                 <span style={{ display: (UID ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
-                                    <a className="save" onClick={this.saveClick}>
+                                    <a className="save" onClick={this.saveClick} onKeyDown={this.saveClick} tabIndex="0">
                                         {this.state.saved ? <i className={accent + "bookmark icon"}></i> : <i className="bookmark outline icon"></i>}
                                         {this.state.saved ? "Saved" : "Save"}
                                     </a>
@@ -408,7 +446,7 @@ class Post extends React.Component {
 
                                 <span style={{ display: (UID && !this.static ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
-                                    <a className="reply" onClick={this.replyClick}>
+                                    <a className="reply" onClick={this.replyClick} onKeyDown={this.replyClick} tabIndex="0">
                                         <i className="reply icon"></i>
                                         Reply
                                     </a>
@@ -416,12 +454,12 @@ class Post extends React.Component {
 
                                 <span style={{ display: (this.state.retrievedPost && this.repliesID.length && !this.static ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
-                                    <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }}>
+                                    <a className="expand" onClick={this.expandClick} style={{ display: (this.state.collapsedReplies ? "" : "none") }} onKeyDown={this.expandClick} tabIndex="0">
                                         <i className="chevron down icon"></i>
                                         Expand ({this.repliesID.length})
                                     </a>
 
-                                    <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }}>
+                                    <a className="collapse" onClick={this.collapseClick} style={{ display: (this.state.collapsedReplies ? "none" : "") }} onKeyDown={this.collapseClick} tabIndex="0">
                                         <i className="chevron up icon"></i>
                                         Collapse ({this.repliesID.length})
                                     </a>
@@ -429,19 +467,28 @@ class Post extends React.Component {
 
                                 <span style={{ float: "right", display: (this.authorUID == UID ? "" : "none") }} >
                                     <a className="ui red label" id="delete-post-label" onClick={this.deleteClick}
-                                        style={{ display: (this.state.confirmDelete ? "" : "none") }}>Delete</a>
+                                        style={{ display: (this.state.confirmDelete ? "" : "none") }} onKeyDown={this.deleteClick} tabIndex="0">Delete</a>
 
                                     <a className="ui label" id="delete-post-label" style={{ display: (this.state.confirmDelete ? "" : "none") }}
                                         onClick={(event) => {
                                             event.target.onselectstart = function () { return false; };
                                             this.setState({ confirmDelete: false });
-                                        }}>Cancel</a>
+                                        }} onKeyDown={(event) => {
+                                            // Accept pressing "enter" only
+                                            if (event.which != 13) {return false;}
+                                            event.target.onselectstart = function () { return false; };
+                                            this.setState({ confirmDelete: false });
+                                        }} tabIndex="0">Cancel</a>
 
                                     <a className="delete" style={{ display: (this.state.confirmDelete ? "none" : "") }}
                                         onClick={(event) => {
                                             event.target.onselectstart = function () { return false; };
                                             this.setState({ confirmDelete: true });
-                                        }}>
+                                        }} onKeyDown={(event) => {
+                                            if (event.which != 13) {return false;}
+                                            event.target.onselectstart = function () { return false; };
+                                            this.setState({ confirmDelete: true });
+                                        }} tabIndex="0">
                                         <i className="trash alternate outline icon" ></i>
                                     </a>
                                 </span>
@@ -461,9 +508,9 @@ class Post extends React.Component {
                         <div className="ui error message"></div>
 
                         <div className="field">
-                            <div className="ui checkbox" id="anonymous-reply-flag">
+                            <div className="ui checkbox" id="anonymous-reply-flag" label="anonymous checkbox">
                                 <input type="checkbox"></input>
-                                <label>Anonymous</label>
+                                <label name="anonymous">Anonymous</label>
                             </div>
                         </div>
 
