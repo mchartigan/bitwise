@@ -15,6 +15,7 @@ class Post extends React.Component {
         };
 
         this.postID = this.props.postID;
+        //this.key = this.props.key;
         this.instance = this.props.instance;
         this.type = this.props.type;
         this.topDivider = false;

@@ -1,13 +1,32 @@
+var allposts;
+var timeline;
+
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
-    loadAllPosts();
+    allposts = new endless();
+    window.addEventListener("scroll", function () {
+        allposts.trigger();
+    })
+    allposts.init("#all-posts-container", UID, [], []);
 
     if (UID) {
         $('#create-post-button').transition('zoom');
         $("#timeline-tab").show();
 
-        loadMyTimeline(UID);
+        db.collection('users').doc(UID).get().then(userDoc => {
+
+            var followingUsers = userDoc.data().followingUsers;
+            var followingTopics = userDoc.data().followingTopics;
+            
+            timeline = new endless();
+            window.addEventListener("scroll", function () {
+                timeline.trigger();
+            })
+            timeline.init("#timeline-container", UID, followingUsers, followingTopics);
+            
+        });
+
     } else {
         $('#create-post-button').hide();
         $("#timeline-tab").hide();
@@ -17,6 +36,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 // Initialize dynamic tab groups
 $('.menu .item').tab();
 
+/*
 function loadAllPosts() {
     db.collection('posts')
         .orderBy('created', 'desc').get().then(querySnapshot => {
@@ -98,3 +118,4 @@ function loadMyTimeline(myUID) {
             });
     });
 }
+*/

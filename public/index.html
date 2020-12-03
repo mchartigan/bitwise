@@ -17,6 +17,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
 
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
     <link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
@@ -38,9 +39,9 @@
         <i class="plus icon"></i>
     </a>
 
-    <div class="ui main text container">
+    <div class="ui main text container" id="main">
         <div class="ui top attached tabular menu">
-            <a class="item active" data-tab="all-posts">All Posts</a>
+            <a class="item active" data-tab="all-posts" id="tab">All Posts</a>
             <a class="item" data-tab="timeline" id="timeline-tab" style="display:none;">My Timeline</a>
         </div>
 

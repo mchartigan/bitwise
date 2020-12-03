@@ -1,3 +1,4 @@
+var topicposts;
 var followState = null;
 var UID = null;
 
@@ -16,9 +17,17 @@ if (topicstring.length === 5 && topicstring[3] === 'topic') {
 
 
 
+
+
 function loadPage() {
     loadTopicHeader();
-    loadPosts();
+    //loadPosts();
+
+    topicposts = new endless();
+    window.addEventListener("scroll", function () {
+        topicposts.trigger();
+    })
+    topicposts.init("#topic-feed-container", UID, [], [topicname]);
 
     if (UID) {
         $('#create-post-button').transition('zoom');
@@ -107,6 +116,7 @@ function changeFollowState() {
     });
 }
 
+/*
 // Loads all of the logged in users posts
 function loadPosts() {
     db.collection('posts')
@@ -147,3 +157,4 @@ function loadPosts() {
             }
         });
 }
+*/

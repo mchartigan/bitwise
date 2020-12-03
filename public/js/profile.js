@@ -1,9 +1,11 @@
 // DOM elements
-let endlessObj = new endless();
 var viewUID = null;
 var followState = null;
 var following = null;
 var UID = null;
+
+// scroller objecets
+var userline;
 
 // check url formatting and make sure its exactly what we want
 var urlstring = window.location.href.split('/');
@@ -34,6 +36,9 @@ if (urlstring.length === 5 && urlstring[3] === 'user') {
 }
 
 document.title = viewname;
+
+// ======= END URL CHECKING =======
+
 
 function loadPage() {
     if (viewUID != null) {
@@ -183,82 +188,19 @@ function refreshTab(tabName) {
 }
 
 function loadUserPosts(viewUID) {
-    db.collection('posts')
-        .where('authorUID', '==', viewUID)
-        .orderBy('created', 'desc').get().then(querySnapshot => {
-            if (querySnapshot.empty) {
-                // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#posts-container'));
-            } else {
-                var posts = [];
-
-                // Loop through each post to add formatted JSX element to list
-                querySnapshot.forEach(doc => {
-                    // Only display parent posts (no replies)
-                    if (doc.data().parent == null) {
-
-                        if (!doc.data().anon || doc.data().authorUID == UID) {
-                            var postProps = {
-                                postID: doc.id,
-                                instance: Math.floor(Math.random() * Math.pow(10, 8)),
-                                type: "post",
-                                topDivider: false,
-                                botDivider: true
-                            };
-
-                            posts.push(<Post {...postProps} key={doc.id} />);
-                        }
-                    }
-                });
-
-                // Threaded post container
-                ReactDOM.render(
-                    <div className="ui threaded comments">
-                        {posts}
-                        <div className="ui inline centered active slow violet double loader"></div>
-                    </div>,
-                    document.querySelector('#posts-container'));
-            }
-        })
+    userline = new endless();
+    window.addEventListener("scroll", function () {
+        userline.trigger();
+    })
+    userline.init("#posts-container", UID, [viewUID], []);
 }
 
 function loadUserReplies(viewUID) {
-    db.collection('posts')
-        .where('authorUID', '==', viewUID)
-        .orderBy('created', 'desc').get().then(querySnapshot => {
-            if (querySnapshot.empty) {
-                // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#replies-container'));
-            } else {
-                var posts = [];
-
-                // Loop through each post to add formatted JSX element to list
-                querySnapshot.forEach(doc => {
-                    // Only display reply posts (no parent)
-                    if (doc.data().parent != null) {
-                        if (!doc.data().anon || doc.data().authorUID == UID) {
-                            var postProps = {
-                                postID: doc.id,
-                                instance: Math.floor(Math.random() * Math.pow(10, 8)),
-                                type: "post",
-                                topDivider: false,
-                                botDivider: true
-                            };
-
-                            posts.push(<Post {...postProps} key={doc.id} />);
-                        }
-                    }
-                });
-
-                // Threaded post container
-                ReactDOM.render(
-                    <div className="ui threaded comments">
-                        {posts}
-                        <div className="ui inline centered active slow violet double loader"></div>
-                    </div>,
-                    document.querySelector('#replies-container'));
-            }
-        })
+    userline = new endless();
+    window.addEventListener("scroll", function () {
+        userline.trigger();
+    })
+    userline.init("#replies-container", UID, [viewUID], [], true);
 }
 
 function loadFollowedUsers(userDoc) {
