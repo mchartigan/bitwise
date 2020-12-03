@@ -56,9 +56,9 @@ function pageMounted() {
         topicposts.init("#topic-feed-container", UID, [], [topicname]);
 
         if (UID) {
-            $('#create-post-button').transition('zoom');
+            $('#create-post-button').show();
         } else {
-            $('#create-post-button').transition('hide');
+            $('#create-post-button').hide();
         }
     } else {
         window.location.replace('/404.html');
