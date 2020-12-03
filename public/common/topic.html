@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="/favicon.ico">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.5/marked.min.js"></script>
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -33,26 +34,7 @@
     <div id="header"></div>
     <br><br><br><br>
 
-    <a class="huge circular violet ui icon button" id="create-post-button" href="/common/create_post.html"
-        style="display:none;">
-        <i class="plus icon"></i>
-    </a>
-
-    <div class="ui main text container">
-        <div class="ui segment">
-            <div class="item">
-                <div id="follow-button-container" style="display:none;"></div>
-
-                <div class="ui violet huge header" id="topic-name">
-                    <p>loading...</p>
-                </div>
-
-                <div id="num-posts"></div>
-            </div>
-        </div>
-
-        <div class="ui segment" id="topic-feed-container"></div>
-    </div>
+    <div id="page"></div>
     <br>
 
     <script>

@@ -1,20 +1,12 @@
 var UID = null;
-
-ReactDOM.render(<Header />, document.getElementById("header"));
-scrambleLoad($("#site-logo-text"), "Bitwise", 80, 10);
-
-firebase.auth().onAuthStateChanged(function (user) {
-    UID = user ? user.uid : null;
-
-    refreshHeader();
-});
+var dark = " ";
+var accent = " violet ";
 
 // ========================================== Header ========================================== \\
 
-function Header(props) {
+function Header() {
     return (
-        <div>
-            <div className="ui fixed violet inverted compact grid menu">
+            <div className={"ui fixed" + accent + "inverted compact grid menu"}>
                 <a className="item" href="/index.html">
                     <img className="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5"></img>
                     &nbsp;&nbsp;
@@ -25,7 +17,7 @@ function Header(props) {
                     <div id="login-button-text"></div>
                 </a>
 
-                <div className="ui simple dropdown right item" id="user-dropdown" style={{ display: "none" }}>
+                <div className={"ui simple" + dark + "dropdown right item"} id="user-dropdown" style={{ display: "none" }}>
                     <img id="profile-icon"></img>
                     &nbsp;&nbsp;
                     <div id="account-dropdown-text"></div>
@@ -33,12 +25,12 @@ function Header(props) {
                     <i className="dropdown icon"></i>
                     <div className="menu">
                         <a className="item" href="/user/" id="user-own-profile">
-                            <i className="violet user circle icon"></i>
+                            <i className={accent + "user circle icon"}></i>
                             Profile
                         </a>
 
                         <a className="item" href="/common/account.html">
-                            <i className="violet cogs icon"></i>
+                            <i className={accent + "cogs icon"}></i>
                             Settings
                         </a>
 
@@ -53,30 +45,54 @@ function Header(props) {
 
                 <div id="login-modal"></div>
             </div>
-        </div>
     )
 }
 
 function refreshHeader() {
     if (UID) {
-        $("#login-button").hide();
-        $("#user-dropdown").show();
-
         // Load dropdown
         db.collection("users").doc(UID).get().then(function (doc) {
+            ReactDOM.render(<Header />, document.getElementById("header"));
+            scrambleLoad($("#site-logo-text"), "Bitwise", 80, 10);
+            $("#login-button").hide();
+            $("#user-dropdown").show();
+
             $('#user-own-profile').attr('href', '/user/' + doc.data().username);
             scrambleLoad($("#account-dropdown-text"), doc.data().username, 50, 6).then(() => {
                 $('#profile-icon').attr('src', doc.data().profileImageURL);
                 $('#profile-icon').hide();
                 $('#profile-icon').transition('swing left in', '1000ms');
             });
+            // Load login modal
+            ReactDOM.render(<Login />, document.querySelector("#login-modal"));
         });
     } else {
+        ReactDOM.render(<Header />, document.getElementById("header"));
+        scrambleLoad($("#site-logo-text"), "Bitwise", 80, 10);
         $("#login-button").show();
         $("#user-dropdown").hide();
 
         scrambleLoad($("#login-button-text"), "Log In", 80, 10);
+        // Load login modal
+        ReactDOM.render(<Login />, document.querySelector("#login-modal"));
     }
+}
+
+function loadTheme() {
+    return new Promise(resolve => {
+        if (UID) {
+            // Load dropdown
+            db.collection("users").doc(UID).get().then(function (doc) {
+                dark = doc.data().dark ? " inverted " : " ";
+                accent = " " + doc.data().accent + " ";
+                resolve();
+            });
+        } else {
+            dark = " ";
+            accent = " violet ";
+            resolve();
+        }
+    })
 }
 
 function scrambleLoad(el, message, delay, cycles) {
@@ -174,9 +190,16 @@ var uiConfig = {
                         profileImageURL: "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551",
                         username: firebase.auth().currentUser.displayName,
                         bioText: '',
-                        email: firebase.auth().currentUser.email
+                        email: firebase.auth().currentUser.email,
+                        followingTopics: [],
+                        followingUsers: [],
+                        postsDisliked: [],
+                        postsLiked: [],
+                        postsSaved: [],
+                        dark: false,
+                        accent: "violet"
                     }, { merge: true }).then(() => {
-                        // Allow user to modify default account settngs
+                        // Allow user to modify default account settings
                         location.replace("/common/account.html");
                     });
                 }
@@ -233,6 +256,3 @@ function completeSignOut() {
     firebase.auth().signOut();
     window.location.reload();
 }
-
-// Load login modal
-ReactDOM.render(<Login />, document.querySelector("#login-modal"));

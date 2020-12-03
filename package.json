@@ -14,7 +14,7 @@
     "fomantic-ui": "^2.8.7",
     "fomantic-ui-css": "^2.8.7",
     "fomantic-ui-less": "^2.8.7",
-    "react-infinite-scroller": "^1.2.4"
+    "marked": "^1.2.5"
   },
   "devDependencies": {},
   "scripts": {

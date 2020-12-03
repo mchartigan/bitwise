@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="/favicon.ico">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.5/marked.min.js"></script>
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -32,95 +33,10 @@
 
     <div id="header"></div>
     <br><br><br><br>
+    
+    <a id="create-post-button"></a>
 
-    <a class="huge circular violet ui icon button" id="create-post-button" href="/common/create_post.html"
-        style="display:none;">
-        <i class="plus icon"></i>
-    </a>
-
-    <div class="ui main text container">
-        <div class="ui segment">
-            <div class="ui items">
-                <div class="item">
-                    <img class="ui small image" id="profile-picture"
-                        src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"></img>
-
-                    <div class="top aligned content">
-                        <div id="follow-button-container" style="display:none;"></div>
-
-                        <div class="ui huge header" id="profile-username">
-                            <p>loading...</p>
-                        </div>
-
-                        <div class="meta">
-                            <span>Bio:</span>
-                        </div>
-
-                        <div class="bio" id="profile-bio">
-                            <p>loading...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="ui top attached tabular menu">
-            <a class="violet item active" data-tab="overview">Overview</a>
-            <a class="violet item" data-tab="following">Following</a>
-            <a class="violet item" data-tab="interactions">Interactions</a>
-        </div>
-
-        <div class="ui bottom attached tab segment active" data-tab="overview">
-            <div class="ui secondary pointing tabular menu">
-                <a class="violet item active" data-tab="posts">Posts</a>
-                <a class="violet item" data-tab="replies">Replies</a>
-            </div>
-
-            <div class="ui bottom attached tab active" data-tab="posts" id="posts-container">
-                <div class="ui inline centered active slow violet double loader"></div>
-            </div>
-
-            <div class="ui bottom attached tab" data-tab="replies" id="replies-container">
-                <div class="ui inline centered active slow violet double loader"></div>
-            </div>
-        </div>
-
-        <div class="ui bottom attached tab segment" data-tab="following">
-            <div class="ui secondary pointing tabular menu">
-                <a class="violet item active" data-tab="users">Users</a>
-                <a class="violet item" data-tab="topics">Topics</a>
-            </div>
-
-            <div class="ui bottom attached tab active" data-tab="users" id="followed-users-container">
-                <div class="ui inline centered active slow violet double loader"></div>
-            </div>
-
-            <div class="ui bottom attached tab" data-tab="topics" id="followed-topics-container">
-                <div class="ui inline centered active slow violet double loader"></div>
-            </div>
-        </div>
-
-        <div class="ui bottom attached tab segment" data-tab="interactions">
-            <div class="ui secondary pointing tabular menu">
-                <a class="green item active" data-tab="liked">Liked</a>
-                <a class="red item" data-tab="disliked">Disliked</a>
-                <a class="violet item" id="saved-tab" data-tab="saved" style="display:none;">Saved</a>
-            </div>
-
-            <div class="ui bottom attached tab active" data-tab="liked" id="liked-posts-container">
-                <div class="ui inline centered active slow violet double loader"></div>
-            </div>
-
-            <div class="ui bottom attached tab" data-tab="disliked" id="disliked-posts-container">
-                <div class="ui inline centered active slow violet double loader"></div>
-            </div>
-
-            <div class="ui bottom attached tab" data-tab="saved" id="saved-posts-container">
-                <div class="ui inline centered active slow violet double loader"></div>
-            </div>
-        </div>
-    </div>
-    <br>
+    <div id="page"></div>
 
     <script>
         // Initialize Firebase

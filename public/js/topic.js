@@ -6,19 +6,6 @@ var UID = null;
 var topicstring = window.location.href.split('/');
 var topicname = null;
 
-if (topicstring.length === 5 && topicstring[3] === 'topic') {
-    topicname = topicstring[4];
-    document.title = "#" + topicname;
-    // search the database for that topic and display its posts
-    loadPage();
-} else {
-    window.location.replace('/404.html');
-}
-
-
-
-
-
 function loadPage() {
     loadTopicHeader();
     //loadPosts();
@@ -36,13 +23,48 @@ function loadPage() {
     }
 }
 
-
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
-    if (topicname != null) {
-        loadPage();
-    }
+
+    loadTheme().then(() => {
+        background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
+    });
 });
+
+function Page() {
+    return (
+        <div>
+            <div className="ui main text container">
+                <div className={"ui" + dark + "segment"}>
+                    <div className={accent + "item"}>
+                        <div id="follow-button-container" style={{display: "none"}}></div>
+
+                        <div className={"ui" + accent + "huge header"} id="topic-name">
+                            <p>loading...</p>
+                        </div>
+
+                        <div id="num-posts"></div>
+                    </div>
+                </div>
+
+                <div className={"ui" + dark + "segment"} id="topic-feed-container"></div>
+            </div>
+        </div>
+    )
+}
+
+function pageMounted() {
+    if (topicstring.length === 5 && topicstring[3] === 'topic') {
+        topicname = topicstring[4];
+        document.title = "#" + topicname;
+        // search the database for that topic and display its posts
+        loadPage();
+    } else {
+        window.location.replace('/404.html');
+    }
+}
 
 function loadTopicHeader() {
     $("#topic-name").text("#" + topicname);
@@ -77,7 +99,7 @@ function loadFollowButton() {
                 // they are currently following
                 followState = true;
                 ReactDOM.render(
-                    <div className="ui violet right floated button" onClick={changeFollowState}>
+                    <div className={"ui" + accent + "right floated button"} onClick={changeFollowState}>
                         <i className="comment slash icon"></i>
                         Unfollow
                     </div>,
@@ -85,7 +107,7 @@ function loadFollowButton() {
             } else {
                 followState = false;
                 ReactDOM.render(
-                    <div className="ui basic violet right floated button" onClick={changeFollowState}>
+                    <div className={"ui basic" + accent + "right floated button"} onClick={changeFollowState}>
                         <i className="comment medical icon"></i>
                         Follow
                     </div>,
@@ -115,46 +137,3 @@ function changeFollowState() {
         loadFollowButton();
     });
 }
-
-/*
-// Loads all of the logged in users posts
-function loadPosts() {
-    db.collection('posts')
-        .orderBy('created', 'desc')
-        .where('topic', '==', topicname)
-        .get().then(function (querySnapshot) {
-            if (querySnapshot.empty) {
-                // Display error message
-                ReactDOM.render(<div className="ui red message">No Posts Available!</div>, document.querySelector('#topic-feed-container'));
-            } else {
-                var posts = [];
-
-                // Loop through each post to add formatted JSX element to list
-                let index = 0;
-                querySnapshot.forEach(doc => {
-                    // Only display parent posts (no comments)
-                    if (doc.data().parent == null) {
-                        var postProps = {
-                            postID: doc.id,
-                            instance: Math.floor(Math.random() * Math.pow(10, 8)),
-                            type: "post",
-                            topDivider: false,
-                            botDivider: (index != (querySnapshot.size - 1))
-                        };
-
-                        posts.push(<Post {...postProps} key={doc.id} />);
-                    }
-
-                    index++;
-                });
-
-                // Threaded post container
-                ReactDOM.render(
-                    <div className="ui threaded comments">
-                        {posts}
-                    </div>,
-                    document.querySelector('#topic-feed-container'));
-            }
-        });
-}
-*/

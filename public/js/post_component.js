@@ -22,6 +22,9 @@ class Post extends React.Component {
         this.botDivider = true;
         this.static = (this.props.static == null) ? false : this.props.static;
 
+        //prevent "input parameter is null" errors from marked
+        this.contentText = '';
+
         this.repliesID = [];
         this.repliesHTML = [];
 
@@ -47,7 +50,6 @@ class Post extends React.Component {
                     if (this.anonymous) {
                         if (this.authorUID == UID) {
                             this.profileClickable = true;
-
                             this.authorText = "Anonymous (" + userDoc.data().username + ")";
                             this.authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
                             this.profileLinkName = userDoc.data().username;
@@ -346,7 +348,7 @@ class Post extends React.Component {
             <div className="post" id={this.postID} style={{ display: (this.state.deleted ? "none" : "") }}>
                 <div className="ui divider" style={{ display: (this.topDivider ? "" : "none") }}></div>
 
-                <div className="ui inline centered active slow violet double loader" style={{ display: (this.state.retrievedPost ? "none" : "") }}></div>
+                <div className={"ui inline centered active slow" + accent + "double loader"} style={{ display: (this.state.retrievedPost ? "none" : "") }}></div>
 
                 <div className="comment" style={{ display: (this.state.retrievedPost ? "" : "none") }}>
                     <a className="avatar" href={"/user/" + this.profileLinkName} style={{ pointerEvents: (this.profileClickable ? "" : "none") }}>
@@ -360,7 +362,7 @@ class Post extends React.Component {
 
                         <div className="metadata">
                             <span className="date">{this.createdText}</span>
-                            <a className="ui violet circular label" id="topic-label" href={"/topic/" + this.topicText} style={{ display: (this.topicText ? "" : "none") }}>{"#" + this.topicText}</a>
+                            <a className={"ui" + accent + "circular label"} id="topic-label" href={"/topic/" + this.topicText} style={{ display: (this.topicText ? "" : "none") }}>{"#" + this.topicText}</a>
                         </div>
 
                         <span className="actions" style={{ float: "right" }}>
@@ -371,8 +373,8 @@ class Post extends React.Component {
 
                         <div className="thread">
                             <div className="text">
-                                <span className="ui violet medium header">{this.titleText}</span>
-                                <div>{this.contentText}</div>
+                                <span className={"ui" + accent + "medium header"}>{this.titleText}</span>
+                                <div dangerouslySetInnerHTML={{__html: marked(this.contentText)}}/>
                                 {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
                             </div>
 
@@ -399,7 +401,7 @@ class Post extends React.Component {
                                 <span style={{ display: (UID ? "" : "none") }}>
                                     &nbsp;&middot;&nbsp;
                                     <a className="save" onClick={this.saveClick}>
-                                        {this.state.saved ? <i className="violet bookmark icon"></i> : <i className="bookmark outline icon"></i>}
+                                        {this.state.saved ? <i className={accent + "bookmark icon"}></i> : <i className="bookmark outline icon"></i>}
                                         {this.state.saved ? "Saved" : "Save"}
                                     </a>
                                 </span>
@@ -439,7 +441,6 @@ class Post extends React.Component {
                                         onClick={(event) => {
                                             event.target.onselectstart = function () { return false; };
                                             this.setState({ confirmDelete: true });
-                                            setTimeout(() => { this.setState({ confirmDelete: false }); }, 3000);
                                         }}>
                                         <i className="trash alternate outline icon" ></i>
                                     </a>
@@ -466,7 +467,7 @@ class Post extends React.Component {
                             </div>
                         </div>
 
-                        <div className="ui violet submit labeled icon button">
+                        <div className={"ui" + accent + "submit labeled icon button"}>
                             <i className="icon edit"></i> Add Reply
                     </div>
                     </form>

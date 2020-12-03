@@ -34,7 +34,7 @@
 @white            : #FFFFFF;
 
 /*---  Brand Colors  ---*/
-@primaryColor        : @violet;
+@primaryColor        : @blue;
 @secondaryColor      : @grey;
 /*-------------------
       Sizes
