@@ -39,7 +39,7 @@ function pageMounted() {
         });
 
     } else {
-        $('#create-post-button').hide();
+        $('#create-post-button').transition('hide');
         $("#timeline-tab").hide();
     }
 }

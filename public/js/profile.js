@@ -7,7 +7,6 @@ var following = null;
 var userline;
 var replyline;
 
-// check url formatting and make sure its exactly what we want
 var urlstring = window.location.href.split('/');
 var viewname = null;
 
@@ -52,9 +51,6 @@ function pageMounted() {
     $('.menu .item').tab();
 }
 
-// ======= END URL CHECKING =======
-
-
 function loadPage() {
     if (viewUID != null) {
         db.collection('users').doc(viewUID)
@@ -80,7 +76,7 @@ function loadPage() {
 
                     $('#create-post-button').transition('zoom');
                 } else {
-                    $('#create-post-button').hide();
+                    $('#create-post-button').transition('hide');
                     $("#saved-tab").hide();
                 }
             });
@@ -179,7 +175,7 @@ function Page() {
                 </div>
                 <br />
             </div>
-            <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html">
+            <a className={"huge circular" + accent + "ui icon button"} style={{ display: "none" }} id="create-post-button" href="/common/create_post.html">
                 <i className="plus icon"></i>
             </a>
         </div>

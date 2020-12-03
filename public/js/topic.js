@@ -16,23 +16,6 @@ firebase.auth().onAuthStateChanged(function (user) {
     });
 });
 
-function loadPage() {
-    loadTopicHeader();
-    //loadPosts();
-
-    topicposts = new endless();
-    window.addEventListener("scroll", function () {
-        topicposts.trigger();
-    })
-    topicposts.init("#topic-feed-container", UID, [], [topicname]);
-
-    if (UID) {
-        $('#create-post-button').transition('zoom');
-    } else {
-        $('#create-post-button').hide();
-    }
-}
-
 function Page() {
     return (
         <div>
@@ -51,7 +34,7 @@ function Page() {
 
                 <div className={"ui" + dark + "segment"} id="topic-feed-container"></div>
             </div>
-            <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html">
+            <a className={"huge circular" + accent + "ui icon button"} style={{ display: "none" }} id="create-post-button" href="/common/create_post.html">
                 <i className="plus icon"></i>
             </a>
         </div>
@@ -62,8 +45,21 @@ function pageMounted() {
     if (topicstring.length === 5 && topicstring[3] === 'topic') {
         topicname = topicstring[4];
         document.title = "#" + topicname;
+
         // search the database for that topic and display its posts
-        loadPage();
+        loadTopicHeader();
+
+        topicposts = new endless();
+        window.addEventListener("scroll", function () {
+            topicposts.trigger();
+        })
+        topicposts.init("#topic-feed-container", UID, [], [topicname]);
+
+        if (UID) {
+            $('#create-post-button').transition('zoom');
+        } else {
+            $('#create-post-button').transition('hide');
+        }
     } else {
         window.location.replace('/404.html');
     }
