@@ -22,9 +22,6 @@ function pageMounted() {
     allposts.init("#all-posts-container", UID, [], []);
 
     if (UID) {
-        $('#create-post-button').transition('zoom');
-        $("#timeline-tab").show();
-
         db.collection('users').doc(UID).get().then(userDoc => {
 
             var followingUsers = userDoc.data().followingUsers;
@@ -38,8 +35,10 @@ function pageMounted() {
 
         });
 
+        $("#timeline-tab").show();
+        $('#create-post-button').show();
     } else {
-        $('#create-post-button').transition('hide');
+        $('#create-post-button').hide();
         $("#timeline-tab").hide();
     }
 }

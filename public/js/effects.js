@@ -38,20 +38,22 @@ class Background {
         this.clearLoop = setInterval(this.clear, 100000);
 
         // Allow user clicks to start drops
-        this.c.addEventListener('mousedown', function (e) {
-            const rect = c.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Cursor grid position
-            var col = Math.floor(x / this.font_size + 0.2);
-            var row = Math.ceil(y / this.font_size);
-
-            this.drops[col] = row;
-        })
+        window.addEventListener("mousedown", this.click);
 
         // Window resize should properly reset the drop columns
         window.addEventListener("resize", this.resetEffects, false);
+    }
+
+    click = (e) => {
+        const rect = this.c.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Cursor grid position
+        var col = Math.floor(x / this.font_size + 0.2);
+        var row = Math.ceil(y / this.font_size);
+
+        this.drops[col] = row;
     }
 
     resetEffects = () => {
@@ -108,5 +110,7 @@ class Background {
         clearInterval(this.drawLoop);
         clearInterval(this.clearLoop);
         this.clear();
+        window.removeEventListener("mousedown", this.click);
+        window.removeEventListener("resize", this.resetEffects)
     }
 }

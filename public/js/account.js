@@ -33,11 +33,6 @@ function Page() {
                             Display
                         </a>
 
-                        <a className={accent + "item"} data-tab="accessibility">
-                            <i className="universal access icon"></i>
-                            Accessibility
-                        </a>
-
                         <a className={accent + "item"} data-tab="options">
                             <i className="sliders horizontal icon"></i>
                             Options
@@ -76,7 +71,7 @@ function Page() {
                             <div className='field'>
                                 <label>Short Bio</label>
                                 <textarea rows="2" type="text" id="bio-txt-field" onKeyUp={e => countChars(e.target)}></textarea>
-                                <p id="charNum"></p>
+                                <p id="charNum" className="counter"></p>
                             </div>
 
                             <div className='field'>
@@ -96,7 +91,7 @@ function Page() {
                     <div className={"ui" + dark + "tab segment"} data-tab="display">
                         Theme
                         <br />
-                        <div className={"ui" + dark + "selection dropdown"} id="dark-value">
+                        <div className="ui selection dropdown" id="dark-value">
                             <input type="hidden" />
                             <i className="dropdown icon"></i>
                             <div className="default text">Default</div>
@@ -115,7 +110,7 @@ function Page() {
                         <br />
                         Accent Color
                         <br />
-                        <div className={"ui" + dark + "selection dropdown"} id="accent-value">
+                        <div className="ui selection dropdown" id="accent-value">
                             <input type="hidden" />
                             <i className="dropdown icon"></i>
                             <div className="default text">Default</div>
@@ -172,10 +167,6 @@ function Page() {
                         <div className={'ui' + dark + 'basic button'} onClick={cancelTheme}>Cancel</div>
                     </div>
 
-                    <div className={"ui" + dark + "tab segment"} data-tab="accessibility">
-                        Enable Accessibility Features
-                    </div>
-
                     <div className={"ui" + dark + "tab segment"} data-tab="options">
                         <div className='ui red button' id='delete-button' onClick={deleteWarning}>Delete Account</div>
                         <label id="warning-text">WARNING: This action cannot be reverted. Are you sure you want to delete your account?</label>
@@ -210,6 +201,7 @@ function loadAccountInfo() {
         $('#username-field').val(doc.data().username)
         $('#email-field').val(doc.data().email)
         $('#bio-txt-field').val(doc.data().bioText)
+        countChars(document.getElementById("bio-txt-field"));
         curProfileImageURL = doc.data().profileImageURL
         $('#profile-image').attr('src', curProfileImageURL);
     });

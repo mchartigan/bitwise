@@ -20,21 +20,33 @@ img {
 }
 
 ::-moz-selection {
-    background: #6435c980;
+    background: #ACCEF7;
 }
 ::-webkit-selection {
-    background: #6435c980;
+    background: #ACCEF7;
 }
 ::selection {
-    background: #6435c980;
+    background: #ACCEF7;
 }
 
 .ui.basic.labels a.label:hover, a.ui.basic.label:hover {
-    color: #6435c9;
+    color: #ACCEF7;
 }
 
 .ui.header {
     margin: 0em 0 0;
+}
+
+.counter {
+    font-size: 0.8rem!important;
+}
+
+.ui.tabular.menu .active.item {
+    border-color: #5555;
+}
+
+.ui.attached.inverted.tabular.menu {
+    border-bottom: 1px solid #555;
 }
 
 .ui.inverted.segment {
@@ -56,7 +68,11 @@ img {
 }
 
 .ui.comments .comment a.author:hover {
-    color: #6435c9;
+    color: #ACCEF7;
+}
+
+.ui.inverted.comments .comment a.author:hover {
+    color: #ACCEF7;
 }
 
 .ui.threaded.comments .comment>.comments {
@@ -105,6 +121,10 @@ img {
         font-size: 3rem;
     }
 
+    .counter {
+        font-size: 2.4rem!important;
+    }
+
     .ui.menu {
         font-size: 3rem;
     }
@@ -145,6 +165,14 @@ img {
         font-size: 3rem;
     }
 
+    .ui.selection.dropdown .menu {
+        max-height: 50rem;
+    }
+
+    .ui.selection.dropdown .menu>.item {
+        padding: 2.1426rem 1.1428rem!important;
+    }
+
     .ui.button, .ui.buttons .button, .ui.buttons .or {
         font-size: 3rem;
     }
@@ -164,6 +192,10 @@ img {
         font-size: 42px;
         width: 51px;
         height: 51px;
+    }
+
+    #anonymous-post-flag label {
+        padding-top: 0.4em;
     }
 
     #topic-label {

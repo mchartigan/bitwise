@@ -80,9 +80,9 @@ function pageMounted() {
                 .then(doc => {
                     if (doc.exists) {
                         if (UID) {
-                            $('#create-post-button').transition('zoom');
+                            $('#create-post-button').show();
                         } else {
-                            $('#create-post-button').transition('hide');;
+                            $('#create-post-button').hide();
                         }
 
                         // continue loading that post

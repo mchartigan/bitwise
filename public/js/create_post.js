@@ -62,16 +62,16 @@ class PostForm extends React.Component {
                 })
 
                 // sort into alphabetical order first
-                this.topics.sort(function(a, b) {
+                this.topics.sort(function (a, b) {
                     return a.title.localeCompare(b.title);
                 });
                 // sort into descending number of posts
-                this.topics.sort(function(a, b) {
+                this.topics.sort(function (a, b) {
                     if (a.num > b.num) {
                         return -1;
                     }
                     if (a.num < b.num) {
-                    return 1;
+                        return 1;
                     }
                     return 0;
                 });
@@ -247,7 +247,7 @@ class PostForm extends React.Component {
             document.querySelector('#post-image').src = '//:0';
             document.querySelector('#preview-image').src = '//:0';
 
-            this.setState({alt: ''});
+            this.setState({ alt: '' });
         }
     }
 
@@ -275,9 +275,9 @@ class PostForm extends React.Component {
     }
 
     handleTitleChange(event) {
-        this.setState({title: event.target.value});
+        this.setState({ title: event.target.value });
         var length = event.target.value.length
-        this.state.errors.title = 
+        this.state.errors.title =
             (length == 0 || length > 64) ? 'Please enter a post title (maximum 64 characters)' : '';
     }
 
@@ -290,7 +290,7 @@ class PostForm extends React.Component {
                 ? '' : 'Topics must be at 3 to 32 characters long and not contain spaces or special characters';
     }
 
-    handleAltChange(event) { this.setState({alt: event.target.value}); }
+    handleAltChange(event) { this.setState({ alt: event.target.value }); }
 
     handleAnonChange(event) {
         this.setState({ anon: event.target.checked }, () => {
@@ -401,124 +401,151 @@ class PostForm extends React.Component {
     }
 
     render() {
-        var dataStyle = {
-            fontSize: '12px'
-        }
-        var labelStyle = {
-            fontWeight: 'bold',
-            fontSize: '14px'
-        }
-
         return (
             <div className='ui main text container'>
-                <h1 className={"ui" + dark + "header"}>Create a Post</h1>
+                <div className={"ui" + dark + "segment"}>
+                    <div className={"ui" + dark + "huge header"}>Create a Post</div>
+                    <div className={"ui" + dark + "divider"}></div>
 
-                <form className={'ui' + dark + 'form'} onSubmit={this.submitPost} noValidate>
-                    <div className='field'>
-                        <label style={labelStyle}>Title</label>
-                        <input type="text" name="title" placeholder="Title your post here"
-                            value={this.state.title} onChange={this.handleTitleChange} noValidate/>
-                        <label className={"ui" + dark + "text"} style={dataStyle}>
-                            {this.state.title.length}/64 characters
-                        </label>
-                        {!this.state.isTitleValid &&
-                            <div className='ui red message'>Please enter a post title (maximum 64 characters)</div>}
-                    </div>
+                    <form className={'ui' + dark + 'form'} onSubmit={this.submitPost} noValidate>
+                        <div className='field'>
+                            <label>Title</label>
+                            <input type="text" name="title" placeholder="Title your post here"
+                                value={this.state.title} onChange={this.handleTitleChange} noValidate />
+                            <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
+                                {this.state.title.length}/64 characters
+                            </label>
+                            {!this.state.isTitleValid &&
+                                <div className='ui red message'>Please enter a post title (maximum 64 characters)</div>}
+                        </div>
 
-                    <div className='field'>
-                        <label style={labelStyle}>Body</label>
-                        <textarea rows="4" type="text" name="body" placeholder="Add a post body here"
-                            value={this.state.body} onChange={this.handleBodyChange} />
-                        <div className='ui grid'>
-                            <div className='ui left floated left aligned six wide column'>
-                                <label className={"ui" + dark + "text"} style={dataStyle}>
-                                    {this.state.body.length} characters
+                        <div className='field'>
+                            <label>Body</label>
+                            <textarea rows="4" type="text" name="body" placeholder="Add a post body here"
+                                value={this.state.body} onChange={this.handleBodyChange} />
+                            <div className='ui grid'>
+                                <div className='ui left floated left aligned six wide column'>
+                                    <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
+                                        {this.state.body.length} characters
                                 </label>
-                            </div>
-                            <div className='ui right floated right aligned six wide column'>
-                                <label className={"ui" + dark + "text"} style={dataStyle}>
-                                    <i className='alternate file outline icon'/>
+                                </div>
+                                <div className='ui right floated right aligned six wide column'>
+                                    <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
+                                        <i className='alternate file outline icon' />
                                     Markdown supported
                                 </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className='field'>
-                        <label style={labelStyle}>Topic</label>
-                        <div className="ui search">
-                            <div className="ui icon input">
-                                <input className="prompt" type="text" name="topic" placeholder="Tag with a topic (optional)"
-                                    value={this.state.topic} onChange={this.handleTopicChange} noValidate/>
-                                <i className="search icon"></i>
+                        <div className='field'>
+                            <label>Topic</label>
+                            <div className="ui search">
+                                <div className="ui icon input">
+                                    <input className="prompt" type="text" name="topic" placeholder="Tag with a topic (optional)"
+                                        value={this.state.topic} onChange={this.handleTopicChange} noValidate />
+                                    <i className="search icon"></i>
+                                </div>
+                                <div className="results"></div>
                             </div>
-                            <div className="results"></div>
-                        </div>
-                        
-                        <label className={"ui" + dark + "text"} style={dataStyle}>
-                            {this.state.topic.length}/32 characters
-                        </label>
-                        {!this.state.isTopicValid &&
-                            <div className='ui red message'>
-                                Topics must be 3 to 32 characters long and not contain spaces or special characters
+
+                            <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
+                                {this.state.topic.length}/32 characters
+                            </label>
+                            {!this.state.isTopicValid &&
+                                <div className='ui red message'>
+                                    Topics must be 3 to 32 characters long and not contain spaces or special characters
                             </div>}
-                    </div>
-
-                    <div className='field'>
-                        <label style={labelStyle}>Attach a Picture</label>
-                    </div>
-                    {this.state.hasImage && <div>
-                            <img src='//:0' className='ui small image' id='post-image' style={{
-                                imageRendering: '-moz-crisp-edges',
-                                imageRendering: '-webkit-crisp-edges',
-                                imageRendering: 'pixelated',
-                                imageRendering: 'crisp-edges'
-                            }} />
-                            <br/>
-                        </div>}
-                    <label className={"ui" + accent + "button"} htmlFor="image-file-field" tabIndex="0">
-                        <i className="file icon"></i>
-                        Upload
-                    </label>
-                    <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
-                        style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
-                    <div className={"ui button"} onClick={() => this.removeImage()} onKeyDown={() => this.removeImage()} tabIndex="0">
-                        <i className="trash icon"></i>
-                        Remove
-                    </div>
-                    <div className="ui input" style={{width: '50%'}}>
-                        {this.state.hasImage && <input
-                            type="text" name="alt" placeholder="Add an image description"
-                            value={this.state.alt} onChange={this.handleAltChange}/>
-                        }
-                    </div>
-                    <br/><br/>
-
-                    <div className='ui fluid accordion'>
-                        <div className="active title">
-                            <a className="ui image label" style={{fontWeight: 'bold', fontSize: '14px'}}>
-                                <i className="dropdown icon"></i>
-                                Post preview
-                            </a>
                         </div>
-                        <div className='active content'>
-                            <div className={"ui" + dark + "threaded comments"}>
-                                <this.getPostStruct />
+
+                        <div className='field'>
+                            <label>Attach a Picture</label>
+                        </div>
+                        <img src='//:0' className='hidden ui small image' id='post-image' style={{
+                            imageRendering: '-moz-crisp-edges',
+                            imageRendering: '-webkit-crisp-edges',
+                            imageRendering: 'pixelated',
+                            imageRendering: 'crisp-edges'
+                        }} />
+                        <br /><br />
+                        <label className={"ui" + accent + "basic button"} htmlFor="image-file-field">
+                            <i className="file icon"></i>
+                            Upload
+                        </label>
+                        <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
+                            style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
+                        <div className={"ui" + dark + "basic button"} onClick={() => this.removeImage()}>
+                            <i className="trash icon"></i>
+                            Remove
+                        </div>
+                        <div className="ui input" style={{ width: '50%' }}>
+                            {this.state.hasImage && <input
+                                type="text" name="alt" placeholder="Add an image description"
+                                value={this.state.alt} onChange={this.handleAltChange} />
+                            }
+                        </div>
+                        <br /><br />
+
+                        <div className='field'>
+                            <label style={labelStyle}>Attach a Picture</label>
+                        </div>
+                        {this.state.hasImage && <div>
+                                <img src='//:0' className='ui small image' id='post-image' style={{
+                                    imageRendering: '-moz-crisp-edges',
+                                    imageRendering: '-webkit-crisp-edges',
+                                    imageRendering: 'pixelated',
+                                    imageRendering: 'crisp-edges'
+                                }} />
+                                <br/>
+                            </div>}
+                        <label className={"ui" + accent + "button"} htmlFor="image-file-field" tabIndex="0">
+                            <i className="file icon"></i>
+                            Upload
+                        </label>
+                        <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
+                            style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
+                        <div className={"ui button"} onClick={() => this.removeImage()} onKeyDown={() => this.removeImage()} tabIndex="0">
+                            <i className="trash icon"></i>
+                            Remove
+                        </div>
+                        <div className="ui input" style={{width: '50%'}}>
+                            {this.state.hasImage && <input
+                                type="text" name="alt" placeholder="Add an image description"
+                                value={this.state.alt} onChange={this.handleAltChange}/>
+                            }
+                        </div>
+                        <br/><br/>
+                      
+                        <div className="field">
+                            <div className="ui checkbox" id="anonymous-post-flag">
+                                <input type="checkbox" name='anon' checked={this.state.anon} onChange={this.handleAnonChange} ></input>
+                                <label className={"ui" + dark + "text"}>Anonymous</label>
                             </div>
                         </div>
-                    </div>
-                    <br/>
-                    <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()} onKeyDown={() => this.submitPost()} tabIndex="0">Submit</div>
-                    <div className={'ui button'} onClick={(event) => this.cancelPost(event)} onKeyDown={(event) => this.cancelPost(event)} tabIndex="0">Clear</div>
-                    &nbsp;
-                    <div className={'ui' + accent + 'toggle checkbox'}>
-                        <input type='checkbox' name='anon'
-                            checked={this.state.anon} onChange={this.handleAnonChange} />
-                        <label>Anonymous?</label>
-                    </div>
-                    <div className="ui error message"></div>
-                    <br /><br /><br /><br />
-                </form>
+
+                        <div className='ui fluid accordion'>
+                            <div className="active title">
+                                <a className="ui image label" style={{ fontWeight: 'bold' }}>
+                                    <i className="dropdown icon"></i>
+                                Post Preview
+                            </a>
+                            </div>
+                            <div className='active content'>
+                                <div className={"ui" + dark + "divider"}></div>
+                                <div className={"ui" + dark + "threaded comments"}>
+                                    <this.getPostStruct />
+                                </div>
+                                <div className={"ui" + dark + "divider"}></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()} onKeyDown={() => this.submitPost()} tabIndex="0">Submit</div>
+                        <div className={'ui button'} onClick={(event) => this.cancelPost(event)} onKeyDown={(event) => this.cancelPost(event)} tabIndex="0">Clear</div>
+                        <div className="ui error message"></div>
+                    </form>
+                </div>
+                <br />
             </div>
         )
     }
@@ -537,8 +564,8 @@ class PostForm extends React.Component {
                 fields: {
                     price: 'num'
                 },
-                onSelect: function(result, response) {
-                    that.setState({topic: result.title});
+                onSelect: function (result, response) {
+                    that.setState({ topic: result.title });
                     return true;
                 }
             });

@@ -74,9 +74,9 @@ function loadPage() {
                         $("#saved-tab").hide();
                     }
 
-                    $('#create-post-button').transition('zoom');
+                    $('#create-post-button').show();
                 } else {
-                    $('#create-post-button').transition('hide');
+                    $('#create-post-button').hide();
                     $("#saved-tab").hide();
                 }
             });
