@@ -5,6 +5,7 @@ var following = null;
 
 // scroller objecets
 var userline;
+var replyline;
 
 // check url formatting and make sure its exactly what we want
 var urlstring = window.location.href.split('/');
@@ -295,11 +296,11 @@ function loadUserPosts(viewUID) {
 }
 
 function loadUserReplies(viewUID) {
-    userline = new endless();
+    replyline = new endless();
     window.addEventListener("scroll", function () {
-        userline.trigger();
+        replyline.trigger();
     })
-    userline.init("#replies-container", UID, [viewUID], [], true);
+    replyline.init("#replies-container", UID, [viewUID], [], true);
 }
 
 function loadFollowedUsers(userDoc) {

@@ -80,8 +80,10 @@ class endless {
                     this.done = true;
                     ReactDOM.render(
                             <div className={"ui" + dark + "threaded comments"}>
-                            {this.posts}
-                            <div className={"ui" + accent + "message"}>No more posts!</div>
+                                {this.posts.slice(0)}
+                                <div className={"ui" + accent + "message"}>
+                                    No more posts!
+                                </div>
                             </div>,
                         document.querySelector(this.containerName));
                 } else {
@@ -136,9 +138,8 @@ class endless {
                     this.prevDoc = lastdoc;
                     ReactDOM.render(
                         <div className={"ui" + dark + "threaded comments"}>
-                        {this.posts.slice(0,-1)}
-                        {this.posts.slice(-1)}
-                        <div className={"ui inline centered active slow" + accent + "double loader"}></div>
+                            {this.posts.slice(0)}
+                            <div className={"ui inline centered active slow" + accent + "double loader"}></div>
                         </div>,
                         document.querySelector(this.containerName));
                     
