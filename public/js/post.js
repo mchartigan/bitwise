@@ -7,9 +7,9 @@ firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
     loadTheme().then(() => {
-        background();
+        bg = new Background();
         refreshHeader();
-        pageMounted();
+        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
     });
 });
 
@@ -56,15 +56,19 @@ function loadPost(postID, childPost) {
 
 function Page() {
     return (
-        <div className="ui main text container">
-            <div className={"ui" + dark + "segment"} id="post-container"></div>
-            <br/>
+        <div>
+            <div className="ui main text container">
+                <div className={"ui" + dark + "segment"} id="post-container"></div>
+                <br />
+            </div>
+            <a className={"huge circular" + accent + "ui icon button"} style={{ display: "none" }} id="create-post-button" href="/common/create_post.html">
+                <i className="plus icon"></i>
+            </a>
         </div>
     )
 }
 
 function pageMounted() {
-    ReactDOM.render(<Page />, document.getElementById("page"));
     if (urlstring.length === 5 && urlstring[3] === 'post') {
         postID = urlstring[4];
         // search the database for that post
@@ -75,6 +79,12 @@ function pageMounted() {
                 .doc(postID).get()
                 .then(doc => {
                     if (doc.exists) {
+                        if (UID) {
+                            $('#create-post-button').transition('zoom');
+                        } else {
+                            $('#create-post-button').transition('hide');;
+                        }
+
                         // continue loading that post
                         loadPost(postID, null).then(posts => {
                             // Threaded post container

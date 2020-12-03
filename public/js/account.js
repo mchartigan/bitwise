@@ -8,7 +8,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
     loadTheme().then(() => {
-        background();
+        bg = new Background();
         refreshHeader();
         ReactDOM.render(<Page />, document.getElementById("page"));
         pageMounted();
@@ -94,17 +94,28 @@ function Page() {
                     </div>
 
                     <div className={"ui" + dark + "tab segment"} data-tab="display">
-                        Dark Mode
+                        Theme
                         <br />
-                        <div className={"ui toggle checkbox"} id="dark-value">
-                            <input type="checkbox" />
-                            <label></label>
+                        <div className={"ui" + dark + "selection dropdown"} id="dark-value">
+                            <input type="hidden" />
+                            <i className="dropdown icon"></i>
+                            <div className="default text">Default</div>
+                            <div className="scrollhint menu">
+                                <div className="item" data-value="light">
+                                    <div className="ui empty circular label"></div>
+                                    Light
+                                </div>
+                                <div className="item" data-value="dark">
+                                    <div className="ui black empty circular label"></div>
+                                    Dark
+                                </div>
+                            </div>
                         </div>
                         <br />
                         <br />
                         Accent Color
                         <br />
-                        <div className="ui selection dropdown" id="accent-value">
+                        <div className={"ui" + dark + "selection dropdown"} id="accent-value">
                             <input type="hidden" />
                             <i className="dropdown icon"></i>
                             <div className="default text">Default</div>
@@ -282,9 +293,9 @@ function cancelTheme() {
 function getTheme() {
     db.collection("users").doc(UID).get().then(doc => {
         if (doc.data().dark) {
-            $('#dark-value').checkbox('check')
+            $('#dark-value').dropdown('set selected', "dark")
         } else {
-            $('#dark-value').checkbox('uncheck')
+            $('#dark-value').dropdown('set selected', "light")
         }
         $('#accent-value').dropdown('set selected', doc.data().accent)
     })
@@ -293,7 +304,7 @@ function getTheme() {
 function saveTheme() {
     // Update firestore with new theme values
     db.collection("users").doc(UID).update({
-        dark: $('#dark-value').checkbox('is checked'),
+        dark: ($('#dark-value').dropdown('get value') == "dark") ? true : false,
         accent: $('#accent-value').dropdown('get value')
     }).then(() => {
         window.location.reload();

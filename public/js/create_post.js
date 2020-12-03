@@ -6,7 +6,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
     loadTheme().then(() => {
-        background();
+        bg = new Background();
         refreshHeader();
         ReactDOM.render(<PostForm />, document.querySelector('#post-form'));
     });
@@ -92,16 +92,16 @@ class PostForm extends React.Component {
     validateForm(errors) {
         let valid = true;
         Object.values(errors).forEach(
-          // if we have an error string set valid to false
-          (val) => val.length > 0 && (valid = false)
+            // if we have an error string set valid to false
+            (val) => val.length > 0 && (valid = false)
         );
-        this.setState({isTitleValid: this.state.errors.title.length == 0});
-        this.setState({isTopicValid: this.state.errors.topic.length == 0});
+        this.setState({ isTitleValid: this.state.errors.title.length == 0 });
+        this.setState({ isTopicValid: this.state.errors.topic.length == 0 });
         return valid;
     }
 
     submitPost() {
-        if(this.validateForm(this.state.errors)) {
+        if (this.validateForm(this.state.errors)) {
             console.info('Valid Form');
             var topic = this.state.topic;
 
@@ -147,7 +147,7 @@ class PostForm extends React.Component {
         }
         else { console.error('Invalid Form'); }
     }
-    
+
     // function to generate post s.t. posting with username agrees with promise
     addPost(anonymous, uid, title, body, subject, altText) {
         db.collection('posts').add({
@@ -183,21 +183,21 @@ class PostForm extends React.Component {
                         resolve();
                     }
                 });
-    
+
                 var imageCheck = new Promise(resolve => {
                     if (this.fileInput.current.files.length > 0) {
                         // Update storage with new image file
                         var path = `posts/${reference.id}/1.jpg`;
                         firebase.storage().ref().child(path).put(this.imageFile).then(function (upload) {
-    
+
                             // get download URL for image and attach to post
                             return upload.ref.getDownloadURL();
                         }).then(function (downloadURL) {
-    
+
                             reference.set({
                                 image: downloadURL
                             }, { merge: true });
-    
+
                             console.log('Successfully Uploaded: ', path); // DEBUG LOG
                             resolve();
                         }).catch(err => {
@@ -208,7 +208,7 @@ class PostForm extends React.Component {
                         resolve();
                     }
                 });
-    
+
                 Promise.all([topicCheck, imageCheck]).then(() => {
                     this.cancelPost();
                     location.replace("/index.html");
@@ -218,14 +218,14 @@ class PostForm extends React.Component {
             }
         });
     }
-    
+
     cancelPost() {
-        this.setState({title: ''});
-        this.setState({body: ''});
-        this.setState({topic: ''});
+        this.setState({ title: '' });
+        this.setState({ body: '' });
+        this.setState({ topic: '' });
         this.removeImage();
     }
-    
+
     previewImage() {
         if (this.fileInput.current.files.length > 0) {
             // Display chosen image file
@@ -235,7 +235,7 @@ class PostForm extends React.Component {
                 document.querySelector('#preview-image').src = e.target.result;
             };
             reader.readAsDataURL(this.imageFile);
-    
+
             $('#post-image').show();
             $('#preview-image').show();
         }
@@ -248,21 +248,21 @@ class PostForm extends React.Component {
             this.setState({alt: ''});
         }
     }
-    
+
     uploadImage(event) {
         event.preventDefault();
         this.imageFile = this.fileInput.current.files[0];
-        this.setState({hasImage: true});
+        this.setState({ hasImage: true });
         // Stage chosen image file
         this.previewImage();
     }
-    
+
     removeImage() {
         // Stage remove image change
         if (this.fileInput.current.files.length > 0) {
             this.fileInput.current.value = '';
             this.imageFile = {};
-            this.setState({hasImage: false});
+            this.setState({ hasImage: false });
 
             this.previewImage();
         }
@@ -275,10 +275,10 @@ class PostForm extends React.Component {
             (length == 0 || length > 64) ? 'Please enter a post title (maximum 64 characters)' : '';
     }
 
-    handleBodyChange(event) { this.setState({body: event.target.value}); }
+    handleBodyChange(event) { this.setState({ body: event.target.value }); }
 
     handleTopicChange(event) {
-        this.setState({topic: event.target.value});
+        this.setState({ topic: event.target.value });
         this.state.errors.topic =
             RegExp(/^$|^[A-Za-z0-9_-]{3,32}$/).test(event.target.value)
                 ? '' : 'Topics must be at 3 to 32 characters long and not contain spaces or special characters';
@@ -287,14 +287,14 @@ class PostForm extends React.Component {
     handleAltChange(event) { this.setState({alt: event.target.value}); }
 
     handleAnonChange(event) {
-        this.setState({anon: event.target.checked}, () => {
+        this.setState({ anon: event.target.checked }, () => {
             if (this.state.anon) {
-                this.setState({authorImageURL: "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"});
-                this.setState({author: "Anonymous (" + username + ")"});
+                this.setState({ authorImageURL: "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551" });
+                this.setState({ author: "Anonymous" });
             }
             else {
-                this.setState({authorImageURL: authorImageURL});
-                this.setState({author: username});
+                this.setState({ authorImageURL: authorImageURL });
+                this.setState({ author: username });
             }
         });
     }
@@ -304,7 +304,7 @@ class PostForm extends React.Component {
             <div className="post">
                 <div className="comment" style={{ display: (this.state.retrieved ? "" : "none") }}>
                     <a className="avatar">
-                        <img src={this.state.authorImageURL}/>
+                        <img src={this.state.authorImageURL} />
                     </a>
 
                     <div className="content">
@@ -313,7 +313,7 @@ class PostForm extends React.Component {
                         <div className="metadata">
                             <span className="date">less than a minute ago</span>
                             <a className={"ui" + accent + "circular label"}
-                                style={{ display: (this.state.topic.length > 0 ? "" : "none" )}}>{"#" + this.state.topic}
+                                style={{ display: (this.state.topic.length > 0 ? "" : "none") }}>{"#" + this.state.topic}
                             </a>
                         </div>
 
@@ -325,7 +325,7 @@ class PostForm extends React.Component {
                             <div className="text">
                                 <span className={"ui" + accent + "medium header"}>{this.state.title}</span>
                                 <div dangerouslySetInnerHTML={{ __html: marked(this.state.body) }} />
-                                <img className="hidden ui small image" src='//:0' id='preview-image'/>
+                                <img className="hidden ui image" src='//:0' id='preview-image' />
                             </div>
 
                             <div className="actions">
@@ -366,9 +366,9 @@ class PostForm extends React.Component {
 
                                 <span style={{ float: "right" }}>
                                     <a className="ui red label" id="delete-post-label" onClick={() => {
-                                            this.cancelPost();
-                                            this.setState({ confirmDelete: false });
-                                        }}
+                                        this.cancelPost();
+                                        this.setState({ confirmDelete: false });
+                                    }}
                                         style={{ display: (this.state.confirmDelete ? "" : "none") }}>Delete</a>
 
                                     <a className="ui label" id="delete-post-label" style={{ display: (this.state.confirmDelete ? "" : "none") }}
@@ -422,7 +422,7 @@ class PostForm extends React.Component {
                     <div className='field'>
                         <label style={labelStyle}>Body</label>
                         <textarea rows="4" type="text" name="body" placeholder="Add a post body here"
-                            value={this.state.body} onChange={this.handleBodyChange}/>
+                            value={this.state.body} onChange={this.handleBodyChange} />
                         <div className='ui grid'>
                             <div className='ui left floated left aligned six wide column'>
                                 <label className={"ui" + dark + "text"} style={dataStyle}>
@@ -466,14 +466,14 @@ class PostForm extends React.Component {
                         imageRendering: '-webkit-crisp-edges',
                         imageRendering: 'pixelated',
                         imageRendering: 'crisp-edges'
-                    }}/>
-                    <br/><br/>
+                    }} />
+                    <br /><br />
                     <label className={"ui" + accent + "basic button"} htmlFor="image-file-field">
                         <i className="file icon"></i>
                         Upload
                     </label>
                     <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
-                        style={{display: 'none'}} ref={this.fileInput} onChange={this.uploadImage}/>
+                        style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
                     <div className={"ui" + dark + "basic button"} onClick={() => this.removeImage()}>
                         <i className="trash icon"></i>
                         Remove
@@ -509,7 +509,7 @@ class PostForm extends React.Component {
                         <label>Anonymous?</label>
                     </div>
                     <div className="ui error message"></div>
-                    <br/><br/><br/><br/>
+                    <br /><br /><br /><br />
                 </form>
             </div>
         )
@@ -540,12 +540,12 @@ class PostForm extends React.Component {
 
             firebase.auth().onAuthStateChanged(function (user) {
                 UID = user ? user.uid : null;
-            
+
                 if (UID) {
                     db.collection("users").doc(UID).get().then(userDoc => {
                         username = userDoc.data().username;
                         authorImageURL = userDoc.data().profileImageURL;
-                        
+
                         resolve();
                     });
                 } else {
@@ -554,9 +554,9 @@ class PostForm extends React.Component {
                 }
             });
         }).then(() => {
-            this.setState({author: username});
-            this.setState({authorImageURL: authorImageURL});
-            this.setState({retrieved: true});
+            this.setState({ author: username });
+            this.setState({ authorImageURL: authorImageURL });
+            this.setState({ retrieved: true });
         });
     }
 }

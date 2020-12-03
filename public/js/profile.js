@@ -7,9 +7,18 @@ var following = null;
 var userline;
 var replyline;
 
-// check url formatting and make sure its exactly what we want
 var urlstring = window.location.href.split('/');
 var viewname = null;
+
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+
+    loadTheme().then(() => {
+        bg = new Background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
+    });
+});
 
 function pageMounted() {
     if (urlstring.length === 5 && urlstring[3] === 'user') {
@@ -42,9 +51,6 @@ function pageMounted() {
     $('.menu .item').tab();
 }
 
-// ======= END URL CHECKING =======
-
-
 function loadPage() {
     if (viewUID != null) {
         db.collection('users').doc(viewUID)
@@ -67,25 +73,15 @@ function loadPage() {
                     } else {
                         $("#saved-tab").hide();
                     }
-                    
+
                     $('#create-post-button').transition('zoom');
                 } else {
-                    $('#create-post-button').hide();
+                    $('#create-post-button').transition('hide');
                     $("#saved-tab").hide();
                 }
             });
     }
 }
-
-firebase.auth().onAuthStateChanged(function (user) {
-    UID = user ? user.uid : null;
-
-        loadTheme().then(() => {
-            background();
-            refreshHeader();
-            ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
-        });
-});
 
 function Page() {
     return (
@@ -102,7 +98,7 @@ function Page() {
                             <div className={"ui" + dark + "items"}>
                                 <div className="item">
                                     <div className="top aligned content">
-                                        <div id="follow-button-container" style={{display: "none"}}></div>
+                                        <div id="follow-button-container" style={{ display: "none" }}></div>
 
                                         <div className="ui huge header" id="profile-username">
                                             <p>loading...</p>
@@ -130,7 +126,7 @@ function Page() {
 
                 <div className={"ui" + dark + "bottom attached tab segment active"} data-tab="overview">
                     <div className={"ui secondary" + dark + "pointing tabular menu"}>
-                        <a className={accent + dark +"item active"} data-tab="posts">Posts</a>
+                        <a className={accent + dark + "item active"} data-tab="posts">Posts</a>
                         <a className={accent + dark + "item"} data-tab="replies">Replies</a>
                     </div>
 
@@ -162,7 +158,7 @@ function Page() {
                     <div className={"ui secondary" + dark + "pointing tabular menu"}>
                         <a className="green item active" data-tab="liked">Liked</a>
                         <a className="red item" data-tab="disliked">Disliked</a>
-                        <a className={accent + dark + "item"} id="saved-tab" data-tab="saved" style={{display: "none"}}>Saved</a>
+                        <a className={accent + dark + "item"} id="saved-tab" data-tab="saved" style={{ display: "none" }}>Saved</a>
                     </div>
 
                     <div className={"ui" + dark + "bottom attached tab active"} data-tab="liked" id="liked-posts-container">
@@ -179,7 +175,7 @@ function Page() {
                 </div>
                 <br />
             </div>
-            <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html">
+            <a className={"huge circular" + accent + "ui icon button"} style={{ display: "none" }} id="create-post-button" href="/common/create_post.html">
                 <i className="plus icon"></i>
             </a>
         </div>
