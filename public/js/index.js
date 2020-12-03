@@ -22,6 +22,7 @@ function pageMounted() {
     allposts.init("#all-posts-container", UID, [], []);
   
     if (UID) {
+        $('#create-post-button').transition('zoom');
         $("#timeline-tab").show();
 
         db.collection('users').doc(UID).get().then(userDoc => {
@@ -38,6 +39,7 @@ function pageMounted() {
         });
 
     } else {
+        $('#create-post-button').hide();
         $("#timeline-tab").hide();
     }
 }
