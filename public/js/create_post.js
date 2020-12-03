@@ -250,7 +250,7 @@ class PostForm extends React.Component {
         this.setState({ anon: event.target.checked }, () => {
             if (this.state.anon) {
                 this.setState({ authorImageURL: "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551" });
-                this.setState({ author: "Anonymous (" + username + ")" });
+                this.setState({ author: "Anonymous" });
             }
             else {
                 this.setState({ authorImageURL: authorImageURL });

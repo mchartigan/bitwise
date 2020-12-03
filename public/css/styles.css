@@ -140,6 +140,23 @@ img {
         font-size: 3rem;
     }
 
+    .ui.checkbox input[type=checkbox], .ui.checkbox input[type=radio] {
+        top: 11px;
+        width: 51px;
+        height: 51px;
+    }
+
+    .ui.checkbox label:before {
+        width: 51px;
+        height: 51px;
+    }
+
+    .ui.checkbox label:after {
+        font-size: 42px;
+        width: 51px;
+        height: 51px;
+    }
+
     #topic-label {
         font-size: 2.57142858rem;
     }
