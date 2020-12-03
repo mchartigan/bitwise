@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="/favicon.ico">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.5/marked.min.js"></script>
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -33,59 +34,7 @@
     <div id="header"></div>
     <br><br><br><br>
 
-    <div class='ui main text container'>
-        <h1 class="ui header">Create a Post</h1>
-
-        <form class='ui form' id='create-post'>
-            <div class='field'>
-                <label>Title</label>
-                <input type="text" placeholder="Title your post here" id="title-field" required />
-            </div>
-
-            <div class='field'>
-                <label>Body</label>
-                <textarea rows="4" type="text" placeholder="Add a post body here" id="body-field"></textarea>
-            </div>
-
-            <div class='field'>
-                <label>Topic</label>
-                <input type="text" placeholder="Tag with a topic (optional)" id="topic-field" />
-            </div>
-
-            <div class='field'>
-                <label>Attach a Picture</label>
-            </div>
-            <img src='//:0' class='hidden ui small image' id='post-image'>
-            <style>
-                img {
-                    image-rendering: -moz-crisp-edges;
-                    image-rendering: -webkit-crisp-edges;
-                    image-rendering: pixelated;
-                    image-rendering: crisp-edges;
-                }
-            </style>
-            <br><br>
-            <label class="ui violet basic button" for="image-file-field">
-                <i class="file icon"></i>
-                Upload
-            </label>
-            <input type="file" accept=".png, .jpg, .jpeg" id="image-file-field" style="display: none"
-                onchange='uploadImage(event)' />
-            <div class="ui basic button" onclick="removeImage()">
-                <i class="trash icon"></i>
-                Remove
-            </div>
-            <br><br>
-
-            <div class=' ui violet submit button'>Submit</div>
-            <div class=' ui basic button' onclick="cancelPost()">Clear</div>
-            <div class='ui violet toggle checkbox'>
-                <input type='checkbox' name='anonymous'>
-                <label>Anonymous?</label>
-            </div>
-            <div class="ui error message"></div>
-        </form>
-    </div>
+    <div id="post-form"></div>
 
     <script>
         // Initialize Firebase
@@ -110,7 +59,7 @@
 
     <script src="/js/header.js" type="text/babel"></script>
     <script src="/js/effects.js" type="text/babel"></script>
-    <script src="/js/create_post.js"></script>
+    <script src="/js/create_post.js" type="text/babel"></script>
 </body>
 
 </html>

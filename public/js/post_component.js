@@ -15,11 +15,15 @@ class Post extends React.Component {
         };
 
         this.postID = this.props.postID;
+        //this.key = this.props.key;
         this.instance = this.props.instance;
         this.type = this.props.type;
         this.topDivider = false;
         this.botDivider = true;
         this.static = (this.props.static == null) ? false : this.props.static;
+
+        //prevent "input parameter is null" errors from marked
+        this.contentText = '';
 
         this.repliesID = [];
         this.repliesHTML = [];
@@ -370,8 +374,8 @@ class Post extends React.Component {
                         <div className="thread">
                             <div className="text">
                                 <span className={"ui" + accent + "medium header"}>{this.titleText}</span>
-                                <div>{this.contentText}</div>
-                                {this.imageURL != null && <img className="ui image" src={this.imageURL} />}
+                                <div dangerouslySetInnerHTML={{ __html: marked(this.contentText) }} />
+                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
                             </div>
 
                             <div className="actions">
