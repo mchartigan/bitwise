@@ -626,11 +626,11 @@
 }
 .ui.inverted.steps .step {
   color: #ffffff;
-  background: #000000;
+  background: #1B1C1D;
   border-color: #555555;
 }
 .ui.inverted.steps .step:after {
-  background-color: #000000;
+  background-color: #1B1C1D;
   border-color: #555555;
 }
 .ui.inverted.steps .step .description {
