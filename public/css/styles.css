@@ -96,7 +96,7 @@ img {
 }
 
 .ui.search>.results .result .price {
-    color: rgba(0,0,0,0.4);
+    color: rgba(0,0,0,0.8);
 }
 
 #delete-post-label {

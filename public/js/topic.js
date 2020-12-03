@@ -98,7 +98,7 @@ function loadFollowButton() {
                 // they are currently following
                 followState = true;
                 ReactDOM.render(
-                    <div className={"ui" + accent + "right floated button"} onClick={changeFollowState}>
+                    <div className={"ui" + accent + "right floated button"} onClick={changeFollowState} onKeyDown={changeFollowState} tabIndex="0">
                         <i className="comment slash icon"></i>
                         Unfollow
                     </div>,
@@ -106,7 +106,7 @@ function loadFollowButton() {
             } else {
                 followState = false;
                 ReactDOM.render(
-                    <div className={"ui basic" + accent + "right floated button"} onClick={changeFollowState}>
+                    <div className={"ui basic" + accent + "right floated button"} onClick={changeFollowState} onKeyDown={changeFollowState} tabIndex="0">
                         <i className="comment medical icon"></i>
                         Follow
                     </div>,
@@ -117,6 +117,11 @@ function loadFollowButton() {
 }
 
 function changeFollowState() {
+
+    if (event.type != "click" && event.which != 13) {
+        return false;
+    }
+    
     new Promise((resolve) => {
         if (followState) {
             // they are currently following. unfollow.

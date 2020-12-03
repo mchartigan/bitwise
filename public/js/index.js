@@ -48,8 +48,8 @@ function Page() {
         <div>
             <div className="ui main text container">
                 <div className={"ui" + dark + "top attached tabular menu"}>
-                    <a className={accent + "item active"} data-tab="all-posts">All Posts</a>
-                    <a className={accent + "item"} data-tab="timeline" id="timeline-tab" style={{ display: "none" }}>My Timeline</a>
+                    <a className={accent + "item active"} data-tab="all-posts" tabIndex="0">All Posts</a>
+                    <a className={accent + "item"} data-tab="timeline" id="timeline-tab" style={{ display: "none" }} tabIndex="0">My Timeline</a>
                 </div>
 
                 <div className={"ui" + dark + "bottom attached tab segment active"} data-tab="all-posts" id="all-posts-container">

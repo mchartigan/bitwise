@@ -101,6 +101,10 @@ class PostForm extends React.Component {
     }
 
     submitPost() {
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form');
             var topic = this.state.topic;
@@ -210,7 +214,6 @@ class PostForm extends React.Component {
                 });
 
                 Promise.all([topicCheck, imageCheck]).then(() => {
-                    this.cancelPost();
                     location.replace("/index.html");
                 });
             } else {
@@ -219,10 +222,14 @@ class PostForm extends React.Component {
         });
     }
 
-    cancelPost() {
+    cancelPost(event) {
+        if (typeof event !== "undefined" && event.type != "click" && event.which != 13) {
+            return false;
+        }
         this.setState({ title: '' });
         this.setState({ body: '' });
         this.setState({ topic: '' });
+
         this.removeImage();
     }
 
@@ -235,13 +242,8 @@ class PostForm extends React.Component {
                 document.querySelector('#preview-image').src = e.target.result;
             };
             reader.readAsDataURL(this.imageFile);
-
-            $('#post-image').show();
-            $('#preview-image').show();
         }
         else {
-            $('#post-image').hide();
-            $('#preview-image').hide();
             document.querySelector('#post-image').src = '//:0';
             document.querySelector('#preview-image').src = '//:0';
 
@@ -258,6 +260,10 @@ class PostForm extends React.Component {
     }
 
     removeImage() {
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+        
         // Stage remove image change
         if (this.fileInput.current.files.length > 0) {
             this.fileInput.current.value = '';
@@ -325,7 +331,7 @@ class PostForm extends React.Component {
                             <div className="text">
                                 <span className={"ui" + accent + "medium header"}>{this.state.title}</span>
                                 <div dangerouslySetInnerHTML={{ __html: marked(this.state.body) }} />
-                                <img className="hidden ui image" src='//:0' id='preview-image' />
+                                {this.state.hasImage && <img className="ui image" src='//:0' id='preview-image' />}
                             </div>
 
                             <div className="actions">
@@ -365,8 +371,8 @@ class PostForm extends React.Component {
                                 </span>
 
                                 <span style={{ float: "right" }}>
-                                    <a className="ui red label" id="delete-post-label" onClick={() => {
-                                        this.cancelPost();
+                                    <a className="ui red label" id="delete-post-label" onClick={(event) => {
+                                        this.cancelPost(event);
                                         this.setState({ confirmDelete: false });
                                     }}
                                         style={{ display: (this.state.confirmDelete ? "" : "none") }}>Delete</a>
@@ -488,6 +494,36 @@ class PostForm extends React.Component {
                         </div>
                         <br /><br />
 
+                        <div className='field'>
+                            <label style={labelStyle}>Attach a Picture</label>
+                        </div>
+                        {this.state.hasImage && <div>
+                                <img src='//:0' className='ui small image' id='post-image' style={{
+                                    imageRendering: '-moz-crisp-edges',
+                                    imageRendering: '-webkit-crisp-edges',
+                                    imageRendering: 'pixelated',
+                                    imageRendering: 'crisp-edges'
+                                }} />
+                                <br/>
+                            </div>}
+                        <label className={"ui" + accent + "button"} htmlFor="image-file-field" tabIndex="0">
+                            <i className="file icon"></i>
+                            Upload
+                        </label>
+                        <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
+                            style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
+                        <div className={"ui button"} onClick={() => this.removeImage()} onKeyDown={() => this.removeImage()} tabIndex="0">
+                            <i className="trash icon"></i>
+                            Remove
+                        </div>
+                        <div className="ui input" style={{width: '50%'}}>
+                            {this.state.hasImage && <input
+                                type="text" name="alt" placeholder="Add an image description"
+                                value={this.state.alt} onChange={this.handleAltChange}/>
+                            }
+                        </div>
+                        <br/><br/>
+                      
                         <div className="field">
                             <div className="ui checkbox" id="anonymous-post-flag">
                                 <input type="checkbox" name='anon' checked={this.state.anon} onChange={this.handleAnonChange} ></input>
@@ -512,8 +548,8 @@ class PostForm extends React.Component {
                         </div>
                         <br />
 
-                        <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()}>Submit</div>
-                        <div className={'ui' + dark + 'basic button'} onClick={() => this.cancelPost()}>Clear</div>
+                        <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()} onKeyDown={() => this.submitPost()} tabIndex="0">Submit</div>
+                        <div className={'ui button'} onClick={(event) => this.cancelPost(event)} onKeyDown={(event) => this.cancelPost(event)} tabIndex="0">Clear</div>
                         <div className="ui error message"></div>
                     </form>
                 </div>
