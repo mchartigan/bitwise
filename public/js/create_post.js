@@ -414,7 +414,7 @@ class PostForm extends React.Component {
                             <label>Title</label>
                             <input type="text" name="title" placeholder="Title your post here"
                                 value={this.state.title} onChange={this.handleTitleChange} noValidate />
-                            <label className={"ui" + dark + "text"} style={{ fontWeight: "normal" }}>
+                            <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
                                 {this.state.title.length}/64 characters
                             </label>
                             {!this.state.isTitleValid &&
@@ -427,12 +427,12 @@ class PostForm extends React.Component {
                                 value={this.state.body} onChange={this.handleBodyChange} />
                             <div className='ui grid'>
                                 <div className='ui left floated left aligned six wide column'>
-                                    <label className={"ui" + dark + "text"} style={{ fontWeight: "normal" }}>
+                                    <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
                                         {this.state.body.length} characters
                                 </label>
                                 </div>
                                 <div className='ui right floated right aligned six wide column'>
-                                    <label className={"ui" + dark + "text"} style={{ fontWeight: "normal" }}>
+                                    <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
                                         <i className='alternate file outline icon' />
                                     Markdown supported
                                 </label>
@@ -451,7 +451,7 @@ class PostForm extends React.Component {
                                 <div className="results"></div>
                             </div>
 
-                            <label className={"ui" + dark + "text"} style={{ fontWeight: "normal" }}>
+                            <label className={"ui" + dark + "text counter"} style={{ fontWeight: "normal" }}>
                                 {this.state.topic.length}/32 characters
                             </label>
                             {!this.state.isTopicValid &&
