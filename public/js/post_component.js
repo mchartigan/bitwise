@@ -21,6 +21,9 @@ class Post extends React.Component {
         this.botDivider = true;
         this.static = (this.props.static == null) ? false : this.props.static;
 
+        //prevent "input parameter is null" errors from marked
+        this.contentText = '';
+
         this.repliesID = [];
         this.repliesHTML = [];
 
@@ -382,7 +385,7 @@ class Post extends React.Component {
                         <div className="thread">
                             <div className="text">
                                 <span className="ui violet medium header">{this.titleText}</span>
-                                <div>{this.contentText}</div>
+                                <div dangerouslySetInnerHTML={{__html: marked(this.contentText)}}/>
                                 {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
                             </div>
 
