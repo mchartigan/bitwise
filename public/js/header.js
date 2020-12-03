@@ -64,7 +64,7 @@ function refreshHeader() {
                 $('#profile-icon').transition('swing left in', '1000ms');
             });
             // Load login modal
-            ReactDOM.render(<Login />, document.querySelector("#login-modal"));
+            ReactDOM.render(<Login key={Math.floor(Math.random() * Math.pow(10, 8))} />, document.querySelector("#login-modal"));
         });
     } else {
         ReactDOM.render(<Header />, document.getElementById("header"));
@@ -74,7 +74,7 @@ function refreshHeader() {
 
         scrambleLoad($("#login-button-text"), "Log In", 80, 10);
         // Load login modal
-        ReactDOM.render(<Login />, document.querySelector("#login-modal"));
+        ReactDOM.render(<Login key={Math.floor(Math.random() * Math.pow(10, 8))} />, document.querySelector("#login-modal"));
     }
 }
 
@@ -183,7 +183,6 @@ var uiConfig = {
             db.collection("users").doc(UID).get().then(function (doc) {
                 if (doc.data()) {
                     // Hide popup
-
                 } else {
                     // Set default account information
                     db.collection("users").doc(UID).set({
@@ -248,11 +247,8 @@ class Login extends React.Component {
     }
 }
 
-function completeLoginModal() {
-    ReactDOM.render(<Login />, document.querySelector("#login-modal"));
-}
-
 function completeSignOut() {
     firebase.auth().signOut();
-    window.location.reload();
+    //window.location.reload();
+    ReactDOM.render(<Login key={Math.floor(Math.random() * Math.pow(10, 8))} />, document.querySelector("#login-modal"));
 }

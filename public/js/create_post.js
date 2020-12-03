@@ -5,6 +5,16 @@ var UID = null;
 var username = '';
 var authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
 
+firebase.auth().onAuthStateChanged(function (user) {
+    UID = user ? user.uid : null;
+
+    loadTheme().then(() => {
+        background();
+        refreshHeader();
+        ReactDOM.render(<PostForm />, document.querySelector('#post-form'));
+    });
+});
+
 class PostForm extends React.Component {
     constructor(props) {
         super(props);
@@ -262,7 +272,7 @@ class PostForm extends React.Component {
 
                         <div className="metadata">
                             <span className="date">less than a minute ago</span>
-                            <a className="ui violet circular label"
+                            <a className={"ui" + accent + "circular label"}
                                 style={{ display: (this.state.topic.length > 0 ? "" : "none") }}>{"#" + this.state.topic}
                             </a>
                         </div>
@@ -273,7 +283,7 @@ class PostForm extends React.Component {
 
                         <div className="thread">
                             <div className="text">
-                                <span className="ui violet medium header">{this.state.title}</span>
+                                <span className={"ui" + accent + "medium header"}>{this.state.title}</span>
                                 <div dangerouslySetInnerHTML={{ __html: marked(this.state.body) }} />
                                 <img className="hidden ui image" src='//:0' id='preview-image' />
                             </div>
@@ -352,9 +362,9 @@ class PostForm extends React.Component {
 
         return (
             <div className='ui main text container'>
-                <h1 className="ui header">Create a Post</h1>
+                <h1 className={"ui" + dark + "header"}>Create a Post</h1>
 
-                <form className='ui form' onSubmit={this.submitPost} noValidate>
+                <form className={'ui' + dark + 'form'} onSubmit={this.submitPost} noValidate>
                     <div className='field'>
                         <label>Title</label>
                         <input type="text" name="title" placeholder="Title your post here"
@@ -369,11 +379,15 @@ class PostForm extends React.Component {
                             value={this.state.body} onChange={this.handleBodyChange} />
                         <div className='ui grid'>
                             <div className='ui left floated left aligned six wide column'>
-                                <span className='chars' style={dataStyle}>{this.state.body.length} characters</span>
+                                <label className={"ui" + dark + "text"}>
+                                    {this.state.body.length} Characters
+                                </label>
                             </div>
                             <div className='ui right floated right aligned six wide column'>
-                                <i className='alternate file outline icon' style={dataStyle} />
-                                <span className='markdown' style={dataStyle}>Markdown supported</span>
+                                <label className={"ui" + dark + "text"}>
+                                    <i className='alternate file outline icon' />
+                                    Markdown Supported
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -398,34 +412,31 @@ class PostForm extends React.Component {
                         imageRendering: 'crisp-edges'
                     }} />
                     <br /><br />
-                    <label className="ui violet basic button" htmlFor="image-file-field">
+                    <label className={"ui" + accent + "basic button"} htmlFor="image-file-field">
                         <i className="file icon"></i>
                         Upload
                     </label>
                     <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
                         style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
-                    <div className="ui basic button" onClick={() => this.removeImage()}>
+                    <div className={"ui" + dark + "basic button"} onClick={() => this.removeImage()}>
                         <i className="trash icon"></i>
                         Remove
                     </div>
                     <br /><br />
 
-                    <div className='ui styled fluid accordion'>
-                        <div className='active title'>
-                            <i className="dropdown icon"></i>
-                            Post preview
-                        </div>
-                        <div className='active content'>
-                            <div className="ui threaded comments">
-                                <this.getPostStruct />
-                            </div>
-                        </div>
+                    <div className='field'>
+                        <label>Post Preview</label>
                     </div>
-                    <br /><br />
+                    <div className={"ui" + dark + "divider"}></div>
+                    <div className={"ui" + dark + "threaded comments"}>
+                        <this.getPostStruct />
+                    </div>
+                    <div className={"ui" + dark + "divider"}></div>
+                    <br />
 
-                    <div className=' ui violet submit button' onClick={() => this.submitPost()}>Submit</div>
-                    <div className=' ui basic button' onClick={() => this.cancelPost()}>Clear</div>
-                    <div className='ui violet toggle checkbox'>
+                    <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()}>Submit</div>
+                    <div className={'ui' + dark + 'basic button'} onClick={() => this.cancelPost()}>Clear</div>
+                    <div className={'ui' + accent + 'toggle checkbox'}>
                         <input type='checkbox' name='anon'
                             checked={this.state.anon} onChange={this.handleAnonChange} />
                         <label>Anonymous?</label>
@@ -464,5 +475,3 @@ class PostForm extends React.Component {
         });
     }
 }
-
-ReactDOM.render(<PostForm />, document.querySelector('#post-form'));
