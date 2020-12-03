@@ -103,7 +103,7 @@
   font-size: 4rem;
   font-weight: normal;
   line-height: 1em;
-  color: #000000;
+  color: #1B1C1D;
   text-transform: uppercase;
   text-align: center;
 }
@@ -330,7 +330,7 @@
 .ui.primary.statistics .statistic > .value,
 .ui.statistics .primary.statistic > .value,
 .ui.primary.statistic > .value {
-  color: #6435C9;
+  color: #3B83C0;
 }
 .ui.inverted.primary.statistics .statistic > .value,
 .ui.statistics .inverted.primary.statistic > .value,
@@ -470,7 +470,7 @@
 .ui.black.statistics .statistic > .value,
 .ui.statistics .black.statistic > .value,
 .ui.black.statistic > .value {
-  color: #000000;
+  color: #1B1C1D;
 }
 .ui.inverted.black.statistics .statistic > .value,
 .ui.statistics .inverted.black.statistic > .value,
