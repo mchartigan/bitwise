@@ -411,7 +411,7 @@ class Post extends React.Component {
                             <div className="text">
                                 <span className={"ui" + accent + "medium header"}>{this.titleText}</span>
                                 <div dangerouslySetInnerHTML={{__html: marked(this.contentText)}}/>
-                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} alt={this.altText}/>}
+                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} alt={this.altText} title={this.altText} />}
                             </div>
 
                             <div className="actions">
@@ -500,23 +500,23 @@ class Post extends React.Component {
                         {this.repliesHTML}
                     </div>
 
-                    <form className="ui reply form" id={"reply-form-" + this.instance} style={{ display: "none" }}>
+                    <form className="ui reply form" id={"reply-form-" + this.instance} style={{ display: "none" }} tabIndex="0">
                         <div className="field">
-                            <textarea className="reply text area" id="reply-text-area"></textarea>
+                            <textarea className="reply text area" id="reply-text-area" name="reply text entry"></textarea>
                         </div>
 
                         <div className="ui error message"></div>
 
                         <div className="field">
-                            <div className="ui checkbox" id="anonymous-reply-flag" label="anonymous checkbox">
-                                <input type="checkbox"></input>
-                                <label name="anonymous">Anonymous</label>
+                            <div className="ui checkbox" id="anonymous-reply-flag" name="anonymous checkbox">
+                                <input type="checkbox" name="anonymous"></input>
+                                <label label="anonymous">Anonymous</label>
                             </div>
                         </div>
 
-                        <div className={"ui" + accent + "submit labeled icon button"}>
+                        <div className={"ui" + accent + "submit labeled icon button"} label="post repy button" tabIndex="0">
                             <i className="icon edit"></i> Add Reply
-                    </div>
+                        </div>
                     </form>
                 </div>
 
