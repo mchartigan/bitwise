@@ -66,7 +66,10 @@ function loadPage() {
                     } else {
                         $("#saved-tab").hide();
                     }
+                    
+                    $('#create-post-button').transition('zoom');
                 } else {
+                    $('#create-post-button').hide();
                     $("#saved-tab").hide();
                 }
             });
