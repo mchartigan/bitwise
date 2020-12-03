@@ -374,8 +374,8 @@ class Post extends React.Component {
                         <div className="thread">
                             <div className="text">
                                 <span className={"ui" + accent + "medium header"}>{this.titleText}</span>
-                                <div dangerouslySetInnerHTML={{__html: marked(this.contentText)}}/>
-                                {this.imageURL != null && <img className="ui small image" src={this.imageURL} />}
+                                <div dangerouslySetInnerHTML={{ __html: marked(this.contentText) }} />
+                                {this.imageURL != null && <img className="ui image" src={this.imageURL} />}
                             </div>
 
                             <div className="actions">
@@ -463,7 +463,7 @@ class Post extends React.Component {
                         <div className="field">
                             <div className="ui checkbox" id="anonymous-reply-flag">
                                 <input type="checkbox"></input>
-                                <label>Anonymous</label>
+                                <label className={"ui" + dark + "text"}>Anonymous</label>
                             </div>
                         </div>
 
