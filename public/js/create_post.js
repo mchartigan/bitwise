@@ -235,13 +235,8 @@ class PostForm extends React.Component {
                 document.querySelector('#preview-image').src = e.target.result;
             };
             reader.readAsDataURL(this.imageFile);
-
-            $('#post-image').show();
-            $('#preview-image').show();
         }
         else {
-            $('#post-image').hide();
-            $('#preview-image').hide();
             document.querySelector('#post-image').src = '//:0';
             document.querySelector('#preview-image').src = '//:0';
 
@@ -325,7 +320,7 @@ class PostForm extends React.Component {
                             <div className="text">
                                 <span className={"ui" + accent + "medium header"}>{this.state.title}</span>
                                 <div dangerouslySetInnerHTML={{ __html: marked(this.state.body) }} />
-                                <img className="hidden ui image" src='//:0' id='preview-image' />
+                                {this.state.hasImage && <img className="ui image" src='//:0' id='preview-image' />}
                             </div>
 
                             <div className="actions">
@@ -461,20 +456,22 @@ class PostForm extends React.Component {
                     <div className='field'>
                         <label style={labelStyle}>Attach a Picture</label>
                     </div>
-                    <img src='//:0' className='hidden ui small image' id='post-image' style={{
-                        imageRendering: '-moz-crisp-edges',
-                        imageRendering: '-webkit-crisp-edges',
-                        imageRendering: 'pixelated',
-                        imageRendering: 'crisp-edges'
-                    }} />
-                    <br /><br />
-                    <label className={"ui" + accent + "basic button"} htmlFor="image-file-field">
+                    {this.state.hasImage && <div>
+                            <img src='//:0' className='ui small image' id='post-image' style={{
+                                imageRendering: '-moz-crisp-edges',
+                                imageRendering: '-webkit-crisp-edges',
+                                imageRendering: 'pixelated',
+                                imageRendering: 'crisp-edges'
+                            }} />
+                            <br/>
+                        </div>}
+                    <label className={"ui" + accent + "button"} htmlFor="image-file-field">
                         <i className="file icon"></i>
                         Upload
                     </label>
                     <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
                         style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
-                    <div className={"ui" + dark + "basic button"} onClick={() => this.removeImage()}>
+                    <div className={"ui button"} onClick={() => this.removeImage()}>
                         <i className="trash icon"></i>
                         Remove
                     </div>
@@ -499,10 +496,11 @@ class PostForm extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <br/><br/>
+                    <br/>
 
                     <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()}>Submit</div>
-                    <div className={'ui' + dark + 'basic button'} onClick={() => this.cancelPost()}>Clear</div>
+                    <div className={'ui button'} onClick={() => this.cancelPost()}>Clear</div>
+                    &nbsp;
                     <div className={'ui' + accent + 'toggle checkbox'}>
                         <input type='checkbox' name='anon'
                             checked={this.state.anon} onChange={this.handleAnonChange} />
