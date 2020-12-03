@@ -73,9 +73,14 @@ img {
     box-shadow: -1px 0 0 rgba(34,36,38,.15);
 }
 
+
 .ui.inverted.threaded.comments .thread {
     -webkit-box-shadow: -1px 0 0 #555;
     box-shadow: -1px 0 0 #555;
+}
+
+.ui.search>.results .result .price {
+    color: rgba(0,0,0,0.4);
 }
 
 #delete-post-label {
