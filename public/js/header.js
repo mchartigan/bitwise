@@ -8,37 +8,37 @@ function Header() {
     return (
         <div className={"ui fixed" + accent + "inverted compact grid menu"}>
             <a className="item" href="/index.html">
-                <img className="logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5"></img>
-                &nbsp;&nbsp;
-                <div id="site-logo-text"></div>
+                <img className="logo" alt="Bitwise Logo" src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/assets%2Flogo.png?alt=media&token=1498c5a1-3b43-436c-bed0-d764d91fe3e5"></img>
+                    &nbsp;&nbsp;
+                    <div id="site-logo-text"></div>
             </a>
 
-            <a className="right item" id="login-button">
+            <a className="right item" id="login-button" tabIndex="0" onClick={modalToggle} onKeyDown={modalToggle}>
                 <div id="login-button-text"></div>
             </a>
 
             <div className={"ui simple" + dark + "dropdown right item"} id="user-dropdown" style={{ display: "none" }}>
-                <img id="profile-icon"></img>
-                &nbsp;&nbsp;
-                <div id="account-dropdown-text"></div>
+                <img id="profile-icon" alt="Profile Icon"></img>
+                    &nbsp;&nbsp;
+                    <div id="account-dropdown-text"></div>
 
                 <i className="dropdown icon"></i>
                 <div className="menu">
                     <a className="item" href="/user/" id="user-own-profile">
                         <i className={accent + "user circle icon"}></i>
-                        Profile
-                    </a>
+                            Profile
+                        </a>
 
                     <a className="item" href="/common/account.html">
                         <i className={accent + "cogs icon"}></i>
-                        Settings
-                    </a>
+                            Settings
+                        </a>
 
-                    <a className="item" onClick={completeSignOut}>
+                    <a className="item" onClick={completeSignOut} onKeyDown={completeSignOut} tabIndex="0">
                         <i className="red sign out alternate icon"></i>
                         <span className="ui small red header">
                             Sign Out
-                        </span>
+                            </span>
                     </a>
                 </div>
             </div>
@@ -49,6 +49,8 @@ function Header() {
 }
 
 function refreshHeader() {
+    //$('.ui.dropdown').dropdown();
+
     if (UID) {
         // Load dropdown
         db.collection("users").doc(UID).get().then(function (doc) {
@@ -234,7 +236,7 @@ class Login extends React.Component {
                     <div className="ui inline centered active slow violet double loader" id="google-widget-loader"></div>
                 </div>
                 <div className="actions">
-                    <a className='ui fluid violet cancel button'>Continue Without Signing In</a>
+                    <a className='ui fluid violet cancel button' tabIndex="0" onKeyDown={hideModal}>Continue Without Signing In</a>
                 </div>
             </div>
         )
@@ -243,11 +245,31 @@ class Login extends React.Component {
     componentDidMount() {
         // The start method will wait until the DOM is loaded.
         ui.start('#firebaseui-auth-container', uiConfig);
-        $('#login-modal').modal('setting', 'closable', false).modal('attach events', '#login-button', 'show');
+        $('#login-modal').modal('setting', 'closable', false) //.modal('attach events', '#login-button', 'show');
     }
 }
 
+function modalToggle() {
+    if (event.type != "click" && event.which != 13) {
+        return false;
+    }
+
+    $('#login-modal').modal('show');
+}
+
+function hideModal() {
+    if (event.type != "click" && event.which != 13) {
+        return false;
+    }
+
+    $('#login-modal').modal('hide');
+}
+
 function completeSignOut() {
+    if (event.type != "click" && event.which != 13) {
+        return false;
+    }
+
     firebase.auth().signOut();
     //window.location.reload();
     ReactDOM.render(<Login key={Math.floor(Math.random() * Math.pow(10, 8))} />, document.querySelector("#login-modal"));
