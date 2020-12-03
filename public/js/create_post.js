@@ -32,7 +32,7 @@ class PostForm extends React.Component {
             retrieved: false,
             confirmDelete: false,
             errors: {
-                title: 'Please enter a post title',
+                title: 'Please enter a post title (maximum 64 characters)',
                 topic: ''
             }
         }
@@ -51,9 +51,43 @@ class PostForm extends React.Component {
         this.getPostStruct = this.getPostStruct.bind(this);
 
         this.fileInput = React.createRef();
+        this.topics = [];
 
         // initialize variables
         this.imageFile = {};
+
+        this.topicPromise = new Promise(resolve => {
+            db.collection("topics").get().then((querySnapshot) => {
+                querySnapshot.forEach(doc => {
+                    this.topics.push({ title: doc.get("name"), num: doc.get("posts").length });
+                })
+
+                // sort into alphabetical order first
+                this.topics.sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                });
+                // sort into descending number of posts
+                this.topics.sort(function(a, b) {
+                    if (a.num > b.num) {
+                        return -1;
+                    }
+                    if (a.num < b.num) {
+                    return 1;
+                    }
+                    return 0;
+                });
+
+                this.topics.forEach(topic => {
+                    if (topic.num == 1) {
+                        topic.num = topic.num + " post"
+                    } else {
+                        topic.num = topic.num + " posts"
+                    }
+                })
+
+                resolve(this.topics);
+            });
+        });
     }
 
     validateForm(errors) {
@@ -233,8 +267,9 @@ class PostForm extends React.Component {
 
     handleTitleChange(event) {
         this.setState({title: event.target.value});
+        var length = event.target.value.length
         this.state.errors.title = 
-            event.target.value.length == 0 ? 'Please enter a post title' : '';
+            (length == 0 || length > 64) ? 'Please enter a post title (maximum 64 characters)' : '';
     }
 
     handleBodyChange(event) { this.setState({body: event.target.value}); }
@@ -242,8 +277,8 @@ class PostForm extends React.Component {
     handleTopicChange(event) {
         this.setState({topic: event.target.value});
         this.state.errors.topic =
-            RegExp(/^$|^[A-Za-z0-9_-]{3,}$/).test(event.target.value)
-                ? '' : 'Topics must be at least three characters long and not contain spaces or special characters';
+            RegExp(/^$|^[A-Za-z0-9_-]{3,32}$/).test(event.target.value)
+                ? '' : 'Topics must be at 3 to 32 characters long and not contain spaces or special characters';
     }
 
     handleAnonChange(event) {
@@ -369,8 +404,9 @@ class PostForm extends React.Component {
                         <label>Title</label>
                         <input type="text" name="title" placeholder="Title your post here"
                             value={this.state.title} onChange={this.handleTitleChange} noValidate/>
+                        <span className='chars' style={dataStyle}>{this.state.title.length}/64 characters</span>
                         {!this.state.isTitleValid &&
-                            <div className='ui red message'>Please enter a post title</div>}
+                            <div className='ui red message'>Please enter a post title (maximum 64 characters)</div>}
                     </div>
 
                     <div className='field'>
@@ -394,11 +430,19 @@ class PostForm extends React.Component {
 
                     <div className='field'>
                         <label>Topic</label>
-                        <input type="text" name="topic" placeholder="Tag with a topic (optional)"
-                            value={this.state.topic} onChange={this.handleTopicChange} noValidate/>
+                        <div className="ui search">
+                            <div className="ui icon input">
+                                <input className="prompt" type="text" name="topic" placeholder="Tag with a topic (optional)"
+                                    value={this.state.topic} onChange={this.handleTopicChange} noValidate/>
+                                <i className="search icon"></i>
+                            </div>
+                            <div className="results"></div>
+                        </div>
+                        
+                        <span className='chars' style={dataStyle}>{this.state.topic.length}/32 characters</span>
                         {!this.state.isTopicValid &&
                             <div className='ui red message'>
-                                Topics must be at least three characters long and not contain spaces or special characters
+                                Topics must be 3 to 32 characters long and not contain spaces or special characters
                             </div>}
                     </div>
 
@@ -449,7 +493,25 @@ class PostForm extends React.Component {
     }
 
     componentDidMount() {
+        var that = this;
+
         $('.ui.accordion').accordion();
+        this.topicPromise.then((topics) => {
+            $('.ui.search').search({
+                source: topics,
+                fullTextSearch: false,
+                minCharacters: 0,
+                maxResults: 6,
+                showNoResults: false,
+                fields: {
+                    price: 'num'
+                },
+                onSelect: function(result, response) {
+                    that.setState({topic: result.title});
+                    return true;
+                }
+            });
+        });
 
         new Promise(resolve => {
 
