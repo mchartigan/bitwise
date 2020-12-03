@@ -214,7 +214,6 @@ class PostForm extends React.Component {
                 });
 
                 Promise.all([topicCheck, imageCheck]).then(() => {
-                    this.cancelPost();
                     location.replace("/index.html");
                 });
             } else {
@@ -223,8 +222,8 @@ class PostForm extends React.Component {
         });
     }
 
-    cancelPost() {
-        if (event.type != "click" && event.which != 13) {
+    cancelPost(event) {
+        if (typeof event !== "undefined" && event.type != "click" && event.which != 13) {
             return false;
         }
         this.setState({ title: '' });
@@ -372,8 +371,8 @@ class PostForm extends React.Component {
                                 </span>
 
                                 <span style={{ float: "right" }}>
-                                    <a className="ui red label" id="delete-post-label" onClick={() => {
-                                        this.cancelPost();
+                                    <a className="ui red label" id="delete-post-label" onClick={(event) => {
+                                        this.cancelPost(event);
                                         this.setState({ confirmDelete: false });
                                     }}
                                         style={{ display: (this.state.confirmDelete ? "" : "none") }}>Delete</a>
@@ -510,7 +509,7 @@ class PostForm extends React.Component {
                     </div>
                     <br/>
                     <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()} onKeyDown={() => this.submitPost()} tabIndex="0">Submit</div>
-                    <div className={'ui button'} onClick={() => this.cancelPost()} onKeyDown={() => this.cancelPost()} tabIndex="0">Clear</div>
+                    <div className={'ui button'} onClick={(event) => this.cancelPost(event)} onKeyDown={(event) => this.cancelPost(event)} tabIndex="0">Clear</div>
                     &nbsp;
                     <div className={'ui' + accent + 'toggle checkbox'}>
                         <input type='checkbox' name='anon'
