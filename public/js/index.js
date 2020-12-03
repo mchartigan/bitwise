@@ -25,6 +25,7 @@ function pageMounted() {
         db.collection('users').doc(UID).get().then(userDoc => {
 
             var followingUsers = userDoc.data().followingUsers;
+            followingUsers.push(UID);
             var followingTopics = userDoc.data().followingTopics;
 
             timeline = new endless();
