@@ -90,7 +90,7 @@ function Page() {
                 <div className={"ui" + dark + "segment"}>
                     <div className="ui stackable two column grid">
                         <div className="four wide column">
-                            <img className="ui small image" id="profile-picture"
+                            <img className="ui small image" id="profile-picture" alt={viewname + " profile picture"}
                                 src="https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551"></img>
                         </div>
 
@@ -119,15 +119,15 @@ function Page() {
                 </div>
 
                 <div className={"ui" + dark + "top attached tabular menu"}>
-                    <a className={accent + dark + "item active"} data-tab="overview">Overview</a>
-                    <a className={accent + dark + "item"} data-tab="following">Following</a>
-                    <a className={accent + dark + "item"} data-tab="interactions">Interactions</a>
+                    <a className={accent + dark + "item active"} data-tab="overview" tabIndex="0">Overview</a>
+                    <a className={accent + dark + "item"} data-tab="following" tabIndex="0">Following</a>
+                    <a className={accent + dark + "item"} data-tab="interactions" tabIndex="0">Interactions</a>
                 </div>
 
                 <div className={"ui" + dark + "bottom attached tab segment active"} data-tab="overview">
                     <div className={"ui secondary" + dark + "pointing tabular menu"}>
-                        <a className={accent + dark + "item active"} data-tab="posts">Posts</a>
-                        <a className={accent + dark + "item"} data-tab="replies">Replies</a>
+                        <a className={accent + dark + "item active"} data-tab="posts" tabIndex="0">Posts</a>
+                        <a className={accent + dark + "item"} data-tab="replies" tabIndex="0">Replies</a>
                     </div>
 
                     <div className={"ui" + dark + "bottom attached tab active"} data-tab="posts" id="posts-container">
@@ -201,7 +201,7 @@ function loadFollowButton() {
                 // they are currently following
                 followState = true;
                 ReactDOM.render(
-                    <div className={"ui" + accent + "right floated button"} onClick={changeFollowState}>
+                    <div className={"ui" + accent + "right floated button"} onClick={changeFollowState} onKeyDown={changeFollowState} tabIndex="0">
                         <i className="user minus icon"></i>
                         Unfollow
                     </div>,
@@ -209,7 +209,7 @@ function loadFollowButton() {
             } else {
                 followState = false;
                 ReactDOM.render(
-                    <div className={"ui basic" + accent + "right floated button"} onClick={changeFollowState}>
+                    <div className={"ui basic" + accent + "right floated button"} onClick={changeFollowState} onKeyDown={changeFollowState} tabIndex="0">
                         <i className="user plus icon"></i>
                         Follow
                     </div>,
@@ -220,6 +220,9 @@ function loadFollowButton() {
 }
 
 function changeFollowState() {
+    // check enter key
+    if (event.type != "click" && event.which != 13) {return false;}
+
     new Promise((resolve) => {
         if (followState) {
             // they are currently following. unfollow.

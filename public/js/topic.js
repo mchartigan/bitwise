@@ -118,9 +118,7 @@ function loadFollowButton() {
 
 function changeFollowState() {
 
-    if (event.type != "click" && event.which != 13) {
-        return false;
-    }
+    if (event.type != "click" && event.which != 13) {return false;}
     
     new Promise((resolve) => {
         if (followState) {
