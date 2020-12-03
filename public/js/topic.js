@@ -15,6 +15,12 @@ function loadPage() {
         topicposts.trigger();
     })
     topicposts.init("#topic-feed-container", UID, [], [topicname]);
+    
+    if (UID) {	
+        $('#create-post-button').transition('zoom');	
+    } else {	
+        $('#create-post-button').hide();	
+    }
 }
 
 firebase.auth().onAuthStateChanged(function (user) {
