@@ -502,7 +502,8 @@ class Post extends React.Component {
 
                     <form className="ui reply form" id={"reply-form-" + this.instance} style={{ display: "none" }} tabIndex="0">
                         <div className="field">
-                            <textarea className="reply text area" id="reply-text-area" name="reply text entry"></textarea>
+                            <textarea type='text' id="reply-text-area" name="reply text entry"
+                                placeholder="Enter your reply here"/>
                         </div>
 
                         <div className="ui error message"></div>
