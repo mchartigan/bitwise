@@ -18,7 +18,7 @@ function Header() {
             </a>
 
             <div className={"ui simple" + dark + "dropdown right item"} id="user-dropdown" style={{ display: "none" }}>
-                <img id="profile-icon" alt="Profile Icon"></img>
+                <img id="profile-icon" alt="Profile Icon" style={{ textIndent: "-9999px" }}></img>
                     &nbsp;&nbsp;
                     <div id="account-dropdown-text"></div>
 
