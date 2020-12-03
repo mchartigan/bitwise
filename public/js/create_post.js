@@ -1,6 +1,3 @@
-// ------TO DO------
-// Give live preview of post card
-
 var UID = null;
 var username = '';
 var authorImageURL = "https://firebasestorage.googleapis.com/v0/b/bitwise-a3c2d.appspot.com/o/usercontent%2Fdefault%2Fprofile.jpg?alt=media&token=f35c1c16-d557-4b94-b5f0-a1782869b551";
@@ -27,6 +24,7 @@ class PostForm extends React.Component {
             author: 'temp',
             authorImageURL: '',
             hasImage: false,
+            alt: '',
             isTitleValid: true,
             isTopicValid: true,
             retrieved: false,
@@ -46,6 +44,7 @@ class PostForm extends React.Component {
         this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleBodyChange = this.handleBodyChange.bind(this);
         this.handleTopicChange = this.handleTopicChange.bind(this);
+        this.handleAltChange = this.handleAltChange.bind(this);
         this.handleAnonChange = this.handleAnonChange.bind(this);
         this.validateForm = this.validateForm.bind(this);
         this.getPostStruct = this.getPostStruct.bind(this);
@@ -104,17 +103,16 @@ class PostForm extends React.Component {
     submitPost() {
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form');
+            var topic = this.state.topic;
 
             // check topic -- can be performed asynchronously
-            if (this.state.topic != '') {
-                // Remove spaces if there are any (regex won't detect them sometimes for some reason)
-                this.setState({ topic: this.state.topic.replace(/ /g, '') });
+            if (topic != '') {
                 // create topic if nonexistent in database
-                db.collection('topics').where('name', '==', this.state.topic).get().then(function (query) {
+                db.collection('topics').where('name', '==', topic).get().then(function (query) {
 
                     if (!query.size) {
                         db.collection('topics').add({
-                            name: this.state.topic
+                            name: topic
                         });
                     }
                 });
@@ -129,7 +127,8 @@ class PostForm extends React.Component {
                     UID,
                     this.state.title,
                     this.state.body,
-                    this.state.topic
+                    this.state.topic,
+                    this.state.alt
                 );
             }
             // otherwise post with username attached
@@ -140,7 +139,8 @@ class PostForm extends React.Component {
                         UID,
                         this.state.title,
                         this.state.body,
-                        this.state.topic
+                        this.state.topic,
+                        this.state.alt
                     );
                 });
             }
@@ -149,13 +149,14 @@ class PostForm extends React.Component {
     }
 
     // function to generate post s.t. posting with username agrees with promise
-    addPost(anonymous, uid, title, body, subject) {
+    addPost(anonymous, uid, title, body, subject, altText) {
         db.collection('posts').add({
             anon: anonymous,
             authorUID: uid,
             title: title,
             content: body,
             image: null,
+            alt: altText,
             created: new Date(),
             parent: null,
             children: [],
@@ -243,6 +244,8 @@ class PostForm extends React.Component {
             $('#preview-image').hide();
             document.querySelector('#post-image').src = '//:0';
             document.querySelector('#preview-image').src = '//:0';
+
+            this.setState({alt: ''});
         }
     }
 
@@ -280,6 +283,8 @@ class PostForm extends React.Component {
             RegExp(/^$|^[A-Za-z0-9_-]{3,32}$/).test(event.target.value)
                 ? '' : 'Topics must be at 3 to 32 characters long and not contain spaces or special characters';
     }
+
+    handleAltChange(event) { this.setState({alt: event.target.value}); }
 
     handleAnonChange(event) {
         this.setState({ anon: event.target.checked }, () => {
@@ -391,8 +396,11 @@ class PostForm extends React.Component {
 
     render() {
         var dataStyle = {
-            fontSize: '12px',
-            color: 'rgba(0,0,0,0.4)'
+            fontSize: '12px'
+        }
+        var labelStyle = {
+            fontWeight: 'bold',
+            fontSize: '14px'
         }
 
         return (
@@ -401,35 +409,37 @@ class PostForm extends React.Component {
 
                 <form className={'ui' + dark + 'form'} onSubmit={this.submitPost} noValidate>
                     <div className='field'>
-                        <label>Title</label>
+                        <label style={labelStyle}>Title</label>
                         <input type="text" name="title" placeholder="Title your post here"
                             value={this.state.title} onChange={this.handleTitleChange} noValidate/>
-                        <span className='chars' style={dataStyle}>{this.state.title.length}/64 characters</span>
+                        <label className={"ui" + dark + "text"} style={dataStyle}>
+                            {this.state.title.length}/64 characters
+                        </label>
                         {!this.state.isTitleValid &&
                             <div className='ui red message'>Please enter a post title (maximum 64 characters)</div>}
                     </div>
 
                     <div className='field'>
-                        <label>Body</label>
+                        <label style={labelStyle}>Body</label>
                         <textarea rows="4" type="text" name="body" placeholder="Add a post body here"
                             value={this.state.body} onChange={this.handleBodyChange} />
                         <div className='ui grid'>
                             <div className='ui left floated left aligned six wide column'>
-                                <label className={"ui" + dark + "text"}>
-                                    {this.state.body.length} Characters
+                                <label className={"ui" + dark + "text"} style={dataStyle}>
+                                    {this.state.body.length} characters
                                 </label>
                             </div>
                             <div className='ui right floated right aligned six wide column'>
-                                <label className={"ui" + dark + "text"}>
-                                    <i className='alternate file outline icon' />
-                                    Markdown Supported
+                                <label className={"ui" + dark + "text"} style={dataStyle}>
+                                    <i className='alternate file outline icon'/>
+                                    Markdown supported
                                 </label>
                             </div>
                         </div>
                     </div>
 
                     <div className='field'>
-                        <label>Topic</label>
+                        <label style={labelStyle}>Topic</label>
                         <div className="ui search">
                             <div className="ui icon input">
                                 <input className="prompt" type="text" name="topic" placeholder="Tag with a topic (optional)"
@@ -439,8 +449,9 @@ class PostForm extends React.Component {
                             <div className="results"></div>
                         </div>
                         
-                        <span className='chars' style={dataStyle}>{this.state.topic.length}/32 characters</span>
-      
+                        <label className={"ui" + dark + "text"} style={dataStyle}>
+                            {this.state.topic.length}/32 characters
+                        </label>
                         {!this.state.isTopicValid &&
                             <div className='ui red message'>
                                 Topics must be 3 to 32 characters long and not contain spaces or special characters
@@ -448,7 +459,7 @@ class PostForm extends React.Component {
                     </div>
 
                     <div className='field'>
-                        <label>Attach a Picture</label>
+                        <label style={labelStyle}>Attach a Picture</label>
                     </div>
                     <img src='//:0' className='hidden ui small image' id='post-image' style={{
                         imageRendering: '-moz-crisp-edges',
@@ -467,17 +478,28 @@ class PostForm extends React.Component {
                         <i className="trash icon"></i>
                         Remove
                     </div>
-                    <br /><br />
+                    <div className="ui input" style={{width: '50%'}}>
+                        {this.state.hasImage && <input
+                            type="text" name="alt" placeholder="Add an image description"
+                            value={this.state.alt} onChange={this.handleAltChange}/>
+                        }
+                    </div>
+                    <br/><br/>
 
-                    <div className='field'>
-                        <label>Post Preview</label>
+                    <div className='ui fluid accordion'>
+                        <div className="active title">
+                            <a className="ui image label" style={{fontWeight: 'bold', fontSize: '14px'}}>
+                                <i className="dropdown icon"></i>
+                                Post preview
+                            </a>
+                        </div>
+                        <div className='active content'>
+                            <div className={"ui" + dark + "threaded comments"}>
+                                <this.getPostStruct />
+                            </div>
+                        </div>
                     </div>
-                    <div className={"ui" + dark + "divider"}></div>
-                    <div className={"ui" + dark + "threaded comments"}>
-                        <this.getPostStruct />
-                    </div>
-                    <div className={"ui" + dark + "divider"}></div>
-                    <br />
+                    <br/><br/>
 
                     <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()}>Submit</div>
                     <div className={'ui' + dark + 'basic button'} onClick={() => this.cancelPost()}>Clear</div>

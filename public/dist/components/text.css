@@ -17,7 +17,7 @@ span.ui.text {
   line-height: 1;
 }
 span.ui.primary.text {
-  color: #6435C9;
+  color: #3B83C0;
 }
 span.ui.inverted.primary.text {
   color: #54C8FF;
@@ -101,7 +101,7 @@ span.ui.inverted.grey.text {
   color: #DCDDDE;
 }
 span.ui.black.text {
-  color: #000000;
+  color: #1B1C1D;
 }
 span.ui.inverted.black.text {
   color: #333333;

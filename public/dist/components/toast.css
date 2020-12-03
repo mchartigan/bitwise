@@ -480,7 +480,7 @@
 -------------- */
 
 .ui.primary.toast {
-  background-color: #6435C9;
+  background-color: #3B83C0;
   color: #ffffff;
 }
 .ui.inverted.primary.toast,
@@ -606,7 +606,7 @@
   color: #000000;
 }
 .ui.black.toast {
-  background-color: #000000;
+  background-color: #1B1C1D;
   color: #ffffff;
 }
 .ui.inverted.black.toast,
@@ -616,7 +616,7 @@
 }
 .ui.inverted.toast {
   color: #ffffff;
-  background-color: #000000;
+  background-color: #1B1C1D;
 }
 @media only screen and (max-width: 420px) {
   .ui.toast-container .toast-box.toast-box,
