@@ -459,7 +459,7 @@ class Post extends React.Component {
                         <div className="field">
                             <div className="ui checkbox" id="anonymous-reply-flag">
                                 <input type="checkbox"></input>
-                                <label>Anonymous</label>
+                                <label className={"ui" + dark + "text"}>Anonymous</label>
                             </div>
                         </div>
 

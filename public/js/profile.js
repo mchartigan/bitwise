@@ -73,11 +73,11 @@ function loadPage() {
 firebase.auth().onAuthStateChanged(function (user) {
     UID = user ? user.uid : null;
 
-        loadTheme().then(() => {
-            background();
-            refreshHeader();
-            ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
-        });
+    loadTheme().then(() => {
+        background();
+        refreshHeader();
+        ReactDOM.render(<Page />, document.getElementById("page"), pageMounted);
+    });
 });
 
 function Page() {
@@ -95,7 +95,7 @@ function Page() {
                             <div className={"ui" + dark + "items"}>
                                 <div className="item">
                                     <div className="top aligned content">
-                                        <div id="follow-button-container" style={{display: "none"}}></div>
+                                        <div id="follow-button-container" style={{ display: "none" }}></div>
 
                                         <div className="ui huge header" id="profile-username">
                                             <p>loading...</p>
@@ -123,7 +123,7 @@ function Page() {
 
                 <div className={"ui" + dark + "bottom attached tab segment active"} data-tab="overview">
                     <div className={"ui secondary" + dark + "pointing tabular menu"}>
-                        <a className={accent + dark +"item active"} data-tab="posts">Posts</a>
+                        <a className={accent + dark + "item active"} data-tab="posts">Posts</a>
                         <a className={accent + dark + "item"} data-tab="replies">Replies</a>
                     </div>
 
@@ -155,7 +155,7 @@ function Page() {
                     <div className={"ui secondary" + dark + "pointing tabular menu"}>
                         <a className="green item active" data-tab="liked">Liked</a>
                         <a className="red item" data-tab="disliked">Disliked</a>
-                        <a className={accent + dark + "item"} id="saved-tab" data-tab="saved" style={{display: "none"}}>Saved</a>
+                        <a className={accent + dark + "item"} id="saved-tab" data-tab="saved" style={{ display: "none" }}>Saved</a>
                     </div>
 
                     <div className={"ui" + dark + "bottom attached tab active"} data-tab="liked" id="liked-posts-container">
@@ -173,7 +173,7 @@ function Page() {
                 <br />
             </div>
             <a className={"huge circular" + accent + "ui icon button"} id="create-post-button" href="/common/create_post.html">
-            <i className="plus icon"></i>
+                <i className="plus icon"></i>
             </a>
         </div>
     )
@@ -350,7 +350,7 @@ function loadUserReplies(viewUID) {
                 // Threaded post container
                 ReactDOM.render(
                     <div className={"ui" + dark + "threaded comments"}>
-                    {posts}
+                        {posts}
                     </div>,
                     document.querySelector('#replies-container'));
             }

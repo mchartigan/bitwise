@@ -69,6 +69,11 @@ img {
     box-shadow: -1px 0 0 rgba(34,36,38,.15);
 }
 
+.ui.inverted.threaded.comments .thread {
+    -webkit-box-shadow: -1px 0 0 #555;
+    box-shadow: -1px 0 0 #555;
+}
+
 #delete-post-label {
     margin: 0 0.2em 0 0;
     padding: 0.2em 0.5em
