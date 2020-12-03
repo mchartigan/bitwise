@@ -80,7 +80,7 @@ class endless {
                     this.done = true;
                     ReactDOM.render(
                             <div className="ui threaded comments">
-                            {this.posts}
+                            {this.posts.slice(0)}
                             <div className="ui message">No more posts!</div>
                             </div>,
                         document.querySelector(this.containerName));
@@ -136,8 +136,7 @@ class endless {
                     this.prevDoc = lastdoc;
                     ReactDOM.render(
                         <div className="ui threaded comments">
-                        {this.posts.slice(0,-1)}
-                        {this.posts.slice(-1)}
+                        {this.posts.slice(0)}
                         <div className="ui inline centered active slow violet double loader"></div>
                         </div>,
                         document.querySelector(this.containerName));
