@@ -101,6 +101,10 @@ class PostForm extends React.Component {
     }
 
     submitPost() {
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+
         if (this.validateForm(this.state.errors)) {
             console.info('Valid Form');
             var topic = this.state.topic;
@@ -220,9 +224,13 @@ class PostForm extends React.Component {
     }
 
     cancelPost() {
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
         this.setState({ title: '' });
         this.setState({ body: '' });
         this.setState({ topic: '' });
+
         this.removeImage();
     }
 
@@ -253,6 +261,10 @@ class PostForm extends React.Component {
     }
 
     removeImage() {
+        if (event.type != "click" && event.which != 13) {
+            return false;
+        }
+        
         // Stage remove image change
         if (this.fileInput.current.files.length > 0) {
             this.fileInput.current.value = '';
@@ -465,13 +477,13 @@ class PostForm extends React.Component {
                             }} />
                             <br/>
                         </div>}
-                    <label className={"ui" + accent + "button"} htmlFor="image-file-field">
+                    <label className={"ui" + accent + "button"} htmlFor="image-file-field" tabIndex="0">
                         <i className="file icon"></i>
                         Upload
                     </label>
                     <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
                         style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
-                    <div className={"ui button"} onClick={() => this.removeImage()}>
+                    <div className={"ui button"} onClick={() => this.removeImage()} onKeyDown={() => this.removeImage()} tabIndex="0">
                         <i className="trash icon"></i>
                         Remove
                     </div>
@@ -497,9 +509,8 @@ class PostForm extends React.Component {
                         </div>
                     </div>
                     <br/>
-
-                    <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()}>Submit</div>
-                    <div className={'ui button'} onClick={() => this.cancelPost()}>Clear</div>
+                    <div className={'ui' + accent + 'submit button'} onClick={() => this.submitPost()} onKeyDown={() => this.submitPost()} tabIndex="0">Submit</div>
+                    <div className={'ui button'} onClick={() => this.cancelPost()} onKeyDown={() => this.cancelPost()} tabIndex="0">Clear</div>
                     &nbsp;
                     <div className={'ui' + accent + 'toggle checkbox'}>
                         <input type='checkbox' name='anon'
