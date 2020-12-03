@@ -117,6 +117,26 @@ img {
 }
 
 @media only screen and (max-width: 62em) {
+    h1 {
+        font-size: 6rem;
+    }
+    
+    h2 {
+        font-size: 5.14285713rem;
+    }
+    
+    h3 {
+        font-size: 3.85714287rem;
+    }
+    
+    h4 {
+        font-size: 3.21428571rem;
+    }
+    
+    h5 {
+        font-size: 3rem;
+    }
+
     body {
         font-size: 3rem;
     }
@@ -192,6 +212,7 @@ img {
         font-size: 42px;
         width: 51px;
         height: 51px;
+        padding-top: 0.4em;
     }
 
     #anonymous-post-flag label {
