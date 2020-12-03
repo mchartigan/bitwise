@@ -263,7 +263,7 @@ class PostForm extends React.Component {
         if (event.type != "click" && event.which != 13) {
             return false;
         }
-        
+
         // Stage remove image change
         if (this.fileInput.current.files.length > 0) {
             this.fileInput.current.value = '';
@@ -461,20 +461,22 @@ class PostForm extends React.Component {
                         <div className='field'>
                             <label>Attach a Picture</label>
                         </div>
-                        <img src='//:0' className='hidden ui small image' id='post-image' style={{
-                            imageRendering: '-moz-crisp-edges',
-                            imageRendering: '-webkit-crisp-edges',
-                            imageRendering: 'pixelated',
-                            imageRendering: 'crisp-edges'
-                        }} />
-                        <br /><br />
-                        <label className={"ui" + accent + "basic button"} htmlFor="image-file-field">
+                        {this.state.hasImage && <div>
+                            <img src='//:0' className='ui small image' id='post-image' style={{
+                                imageRendering: '-moz-crisp-edges',
+                                imageRendering: '-webkit-crisp-edges',
+                                imageRendering: 'pixelated',
+                                imageRendering: 'crisp-edges'
+                            }} />
+                            <br />
+                        </div>}
+                        <label className={"ui" + accent + "button"} htmlFor="image-file-field" tabIndex="0">
                             <i className="file icon"></i>
                             Upload
                         </label>
                         <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
                             style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
-                        <div className={"ui" + dark + "basic button"} onClick={() => this.removeImage()}>
+                        <div className={"ui button"} onClick={() => this.removeImage()} onKeyDown={() => this.removeImage()} tabIndex="0">
                             <i className="trash icon"></i>
                             Remove
                         </div>
@@ -486,36 +488,6 @@ class PostForm extends React.Component {
                         </div>
                         <br /><br />
 
-                        <div className='field'>
-                            <label style={labelStyle}>Attach a Picture</label>
-                        </div>
-                        {this.state.hasImage && <div>
-                                <img src='//:0' className='ui small image' id='post-image' style={{
-                                    imageRendering: '-moz-crisp-edges',
-                                    imageRendering: '-webkit-crisp-edges',
-                                    imageRendering: 'pixelated',
-                                    imageRendering: 'crisp-edges'
-                                }} />
-                                <br/>
-                            </div>}
-                        <label className={"ui" + accent + "button"} htmlFor="image-file-field" tabIndex="0">
-                            <i className="file icon"></i>
-                            Upload
-                        </label>
-                        <input type="file" name="image" accept=".png, .jpg, .jpeg" id="image-file-field"
-                            style={{ display: 'none' }} ref={this.fileInput} onChange={this.uploadImage} />
-                        <div className={"ui button"} onClick={() => this.removeImage()} onKeyDown={() => this.removeImage()} tabIndex="0">
-                            <i className="trash icon"></i>
-                            Remove
-                        </div>
-                        <div className="ui input" style={{width: '50%'}}>
-                            {this.state.hasImage && <input
-                                type="text" name="alt" placeholder="Add an image description"
-                                value={this.state.alt} onChange={this.handleAltChange}/>
-                            }
-                        </div>
-                        <br/><br/>
-                      
                         <div className="field">
                             <div className="ui checkbox" id="anonymous-post-flag">
                                 <input type="checkbox" name='anon' checked={this.state.anon} onChange={this.handleAnonChange} ></input>
