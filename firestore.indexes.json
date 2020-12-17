@@ -1,4 +1,21 @@
 {
-  "indexes": [],
+  "indexes": [
+    { 
+      collectionGroup: "posts",
+      queryScope: "COLLECTION",
+      fields: [
+        { fieldPath: "authorUID", arrayConfig: "ASCENDING" },
+        { fieldPath: "created", order: "DESCENDING" }
+      ]
+    },
+    { 
+      collectionGroup: "posts",
+      queryScope: "COLLECTION",
+      fields: [
+        { fieldPath: "topic", arrayConfig: "ASCENDING" },
+        { fieldPath: "created", order: "DESCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }
